@@ -204,5 +204,5 @@ Primary textbook reference:
 
 ---
 
-**Note**: This folder contains LaTeX source files. To view the lectures, compile them to PDF using a LaTeX distribution. For repository setup instructions, see the `GITHUB_SETUP_GUIDE.md` in the repository root.
+**Note**: This folder contains LaTeX source files. To view the lectures, compile them to PDF using a LaTeX distribution.
 
