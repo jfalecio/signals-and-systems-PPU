@@ -1,0 +1,12 @@
+\begin{tikzpicture}[node distance=2cm, auto, >=Stealth]
+	% Node for the system block (black and white)
+	\node[draw, rectangle, minimum width=2cm, minimum height=1cm, text width=5em, text centered] (system) {DTS};
+	
+	% Input and Output nodes
+	\node (input) [left=of system] {$x[n]$};
+	\node (output) [right=of system] {$y[n]$};
+	
+	% Connecting lines with labels (black)
+	\path[line] (input) -- node[above, font=\small] {Input} (system);
+	\path[line] (system) -- node[above, font=\small] {Output} (output);
+\end{tikzpicture}

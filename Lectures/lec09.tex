@@ -1,0 +1,326 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+\renewcommand{\qedsymbol}{}
+
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{9.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 9} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 9: The Discrete-Time Fourier Series (DTFS)}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 3, Sections 3.6--3.7
+	
+\section*{Review of Lecture 8}
+\begin{itemize}[noitemsep]
+	\item CTFS properties and their derivations
+	\item Time shifting and phase relationships
+	\item Parseval's relation for periodic signals
+	\item Differentiation and integration properties
+\end{itemize}
+
+\section*{9.1 Introduction}
+
+Last time, we explored the properties of the Continuous-Time Fourier Series. We saw that operations in the time domain have direct and predictable effects on the frequency-domain coefficients, $a_k$. For example, a time shift results in a linear phase shift of the coefficients, and differentiation in time corresponds to multiplication by $jk\omega_0$ in frequency. We also introduced Parseval's relation, which links the signal's power in the time domain to the power in its frequency components.
+
+Today, we will build the parallel representation for discrete-time periodic signals. This will complete our foundation in Fourier series, preparing us to analyze how LTI systems respond to any periodic input. As we proceed, pay close attention to the strong parallels with the continuous-time case, but also be aware of the crucial differences that arise because time is discrete. The most significant of these is that the discrete-time Fourier series is a finite sum.
+
+\section*{9.2 Discrete-Time Harmonic Exponentials}
+
+For a discrete-time signal $x[n]$ with fundamental period $N$, we want to represent it as a sum of harmonically related complex exponentials. The set of these exponential signals is:
+\[
+\phi_k[n] = e^{jk\omega_0 n} = e^{jk(2\pi/N)n}, \quad k = 0, \pm 1, \pm 2, \dots
+\]
+
+\subsection*{9.2.1 Key Properties of DT Harmonics}
+
+\begin{enumerate}[noitemsep]
+	\item These signals have frequencies that are multiples of $2\pi/N$, and these are harmonically related.
+	\item The signals $\{\phi_k[n]\}$ are all periodic with period $N$.
+	\item \textbf{Crucial Property:} There are only $N$ distinct periodic exponentials in this set.
+\end{enumerate}
+
+To see why property (3) holds, consider:
+\[
+\phi_{k+N}[n] = e^{j(k+N)(2\pi/N)n} = e^{jk(2\pi/N)n} \cdot e^{jN(2\pi/N)n} = e^{jk(2\pi/N)n} \cdot e^{j2\pi n} = e^{jk(2\pi/N)n} \cdot 1 = \phi_k[n]
+\]
+
+
+\subsection*{9.2.2 Orthogonality of Discrete-Time Harmonics}
+
+For two harmonically related complex exponentials $\phi_k[n]$ and $\phi_m[n]$, the inner product is defined as:
+\[
+\langle \phi_k, \phi_m \rangle = \sum_{n=0}^{N-1} \phi_k[n] \phi_m^*[n] = \sum_{n=0}^{N-1} e^{j2\pi (k-m)n/N}
+\]
+
+\begin{theorem}[Orthogonality of DT Harmonics]
+	For discrete-time harmonic exponentials with period $N$:
+	\[
+	\langle \phi_k, \phi_m \rangle = \sum_{n=0}^{N-1} e^{j2\pi (k-m)n/N} = \begin{cases}
+		N & \text{if } k \equiv m \pmod{N} \\
+		0 & \text{otherwise}
+	\end{cases}
+	\]
+\end{theorem}
+
+\begin{proof}
+	If $k \equiv m \pmod{N}$, it means that $k-m = \ell N$ for some integer $\ell$. Substituting this into the exponential gives $e^{j2\pi (\ell N)n/N} = e^{j2\pi \ell n}$. Since $\ell$ and $n$ are integers, this is always equal to 1, and the sum equals $N$.
+	
+	If $k \not\equiv m \pmod{N}$, we have a finite geometric series:
+	\[
+	\sum_{n=0}^{N-1} e^{j2\pi (k-m)n/N} = \frac{1 - e^{j2\pi (k-m)}}{1 - e^{j2\pi (k-m)/N}} = 0
+	\]
+	The numerator equals zero because $e^{j2\pi (k-m)} = 1$ for any integer $(k-m)$, making the numerator $1-1=0$, while the denominator is non-zero since $e^{j2\pi (k-m)/N} \neq 1$ when $k \not\equiv m$
+\end{proof}
+
+This orthogonality property ensures that the harmonic exponentials form a complete orthogonal basis for the space of period-$N$ sequences.
+
+\section*{9.3 The Discrete-Time Fourier Series (DTFS)}
+
+Because there are only $N$ unique harmonic signals, the DTFS representation is a finite sum.
+
+\subsection*{9.3.1 The DTFS Pair}
+
+\begin{definition}
+	For a periodic signal $x[n]$ with fundamental period $N$:
+	
+	\textbf{Synthesis Equation:}
+	\[
+	x[n] = \sum_{k=0}^{N-1} a_k e^{jk(2\pi/N)n}
+	\]
+	
+	\textbf{Analysis Equation:}
+	\[
+	a_k = \frac{1}{N} \sum_{n=0}^{N-1} x[n]e^{-jk(2\pi/N)n}
+	\]
+	
+	The sequence of coefficients $a_k$ is periodic with period $N$, i.e., $a_k = a_{k+N}$.
+\end{definition}
+
+\begin{remark}
+	The notation $\sum_{k=0}^{N-1}$ represents any $N$ consecutive values of $k$. Due to periodicity, we could equally well sum over $k = -N/2$ to $N/2-1$ or any other $N$-length interval.
+\end{remark}
+
+\subsection*{9.3.2 Convergence}
+
+Since the DTFS is a finite sum, there are \textbf{no convergence issues}. The synthesis equation always reconstructs the original signal $x[n]$ perfectly. Because the DTFS is a finite, complete expansion, the full $N$-term synthesis reconstructs $x[n]$ exactly.
+
+\begin{theorem}
+	The DTFS representation is complete: any period-$N$ sequence $x[n]$ can be exactly represented as a finite sum of $N$ harmonic exponentials.
+\end{theorem}
+
+\section*{9.4 Properties of the DTFS}
+
+The DTFS properties are analogous to their continuous-time counterparts, with some important differences.
+
+\subsection*{9.4.1 Basic Properties}
+
+\begin{itemize}[noitemsep]
+	\item \textbf{Linearity:} $Ax_1[n] + Bx_2[n] \stackrel{\mathcal{FS}}{\longleftrightarrow} Aa_k + Bb_k$
+	\item \textbf{Time Shifting:} $x[n-n_0] \stackrel{\mathcal{FS}}{\longleftrightarrow} a_k e^{-jk(2\pi/N)n_0}$
+	\item \textbf{Frequency Shifting:} $x[n]e^{jm(2\pi/N)n} \stackrel{\mathcal{FS}}{\longleftrightarrow} a_{(k-m) \bmod N}$ (circular shift of coefficient sequence)
+	\item \textbf{Symmetry for Real Signals:} $a_k = a_{(-k) \bmod N}^*$ (conjugate symmetry with modulo-$N$ indexing)
+\end{itemize}
+
+\textbf{Derivation of Time Shifting Property:}
+Starting with the synthesis equation for $x[n]$:
+\[
+x[n] = \sum_{k=0}^{N-1} a_k e^{jk(2\pi/N)n}
+\]
+For the shifted signal $x[n-n_0]$:
+\[
+x[n-n_0] = \sum_{k=0}^{N-1} a_k e^{jk(2\pi/N)(n-n_0)} = \sum_{k=0}^{N-1} a_k e^{-jk(2\pi/N)n_0} e^{jk(2\pi/N)n}
+\]
+Therefore, the coefficients for $x[n-n_0]$ are $a_k e^{-jk(2\pi/N)n_0}$.
+
+\textbf{Derivation of Frequency Shifting Property:}
+For the signal $x[n]e^{jm(2\pi/N)n}$:
+\[
+x[n]e^{jm(2\pi/N)n} = \sum_{k=0}^{N-1} a_k e^{jk(2\pi/N)n} e^{jm(2\pi/N)n} = \sum_{k=0}^{N-1} a_k e^{j(k+m)(2\pi/N)n}
+\]
+Let's define a new index $k' = k+m$. The sum can be written as $\sum_{k'} a_{k'-m} e^{jk'(2\pi/N)n}$. This is the synthesis equation for a new set of coefficients, $b_{k'}$, where $b_{k'} = a_{k'-m}$. Therefore, the new coefficient sequence $b_k$ is the original sequence $a_k$ circularly shifted by $m$ positions: $b_k = a_{(k-m) \bmod N}$.
+\newpage
+\subsection*{9.4.2 Parseval's Relation for DTFS}
+
+\begin{theorem}
+	The average power in one period of a discrete-time signal equals the sum of the average powers of its harmonic components:
+	\[
+	\frac{1}{N}\sum_{n=0}^{N-1} |x[n]|^2 = \sum_{k=0}^{N-1} |a_k|^2
+	\]
+\end{theorem}
+
+\begin{proof}
+	\begin{align}
+		\frac{1}{N}\sum_{n=0}^{N-1} |x[n]|^2 &= \frac{1}{N}\sum_{n=0}^{N-1} x[n]x^*[n] \\
+		&= \frac{1}{N}\sum_{n=0}^{N-1} x[n] \left(\sum_{k=0}^{N-1} a_k e^{jk(2\pi/N)n}\right)^* \\
+		&= \frac{1}{N}\sum_{n=0}^{N-1} x[n] \sum_{k=0}^{N-1} a_k^* e^{-jk(2\pi/N)n} \\
+		&= \sum_{k=0}^{N-1} a_k^* \left(\frac{1}{N}\sum_{n=0}^{N-1} x[n]e^{-jk(2\pi/N)n}\right) \\
+		&= \sum_{k=0}^{N-1} a_k^* a_k = \sum_{k=0}^{N-1} |a_k|^2
+	\end{align}
+\end{proof}
+
+\subsection*{9.4.3 Multiplication and Circular Convolution}
+
+A key difference from continuous-time is the behavior of multiplication:
+
+\begin{theorem}[Multiplication Property]
+	The product of two DT signals with period $N$ results in a new signal with period $N$. Its Fourier coefficients are given by the \textbf{periodic convolution} of the individual coefficient sequences:
+	\[
+	x[n]y[n] \stackrel{\mathcal{FS}}{\longleftrightarrow} c_k = \sum_{\ell=0}^{N-1} a_\ell b_{(k-\ell) \bmod N}
+	\]
+\end{theorem}
+
+\begin{remark}
+		
+	Periodic convolution (also called circular convolution) is completely different from linear convolution because of the "wrap-around" effect. This effect happens because, in the Discrete-Time Fourier Series (DTFS), signals are treated as if they repeat forever—so a sequence of length $N$ is just one cycle of an endless pattern.
+	
+	
+	The key is the index in the formula: $(k-\ell) \bmod N$. The \textbf{modulo $N$} operation ensures the index always stays between $0$ and $N-1$. If a calculation gives a negative number, like $-1$, modulo wraps it to the end of the sequence (e.g., $(-1) \bmod 4 = 3$).
+	\newpage
+	\textbf{Example}
+	Suppose you have two sequences of length $N=4$:
+	\begin{itemize}[noitemsep]
+		\item $a = [a_0, a_1, a_2, a_3]$
+		\item $b = [b_0, b_1, b_2, b_3]$
+	\end{itemize}
+	
+	To compute the 2nd element ($k=2$) of their periodic convolution:
+	\[
+	c_2 = \sum_{\ell=0}^{3} a_\ell\, b_{(2-\ell) \bmod 4} = a_0 b_2 + a_1 b_1 + a_2 b_0 + a_3 b_3
+	\]
+	Notice the last term: the formula asks for $a_3 \times b_{(2-3) \bmod 4}$. Since $2-3 = -1$, and $(-1) \bmod 4 = 3$, we use $b_3$. This is the wrap-around: the index calculation went below zero, so it looped back to the end of the sequence. In linear convolution, this term would have been multiplied by zero instead.
+	
+	\begin{itemize}[noitemsep]
+	\item \textbf{Linear convolution} is like sliding one sequence across the other, multiplying overlapping values, and summing. It produces a longer result that captures the full overlap range.
+	
+	\item \textbf{Periodic (circular) convolution}  is like rotating one sequence relative to the other, multiplying aligned values, and summing. to keep the result periodic, just like the original signals in DTFS.
+\end{itemize}
+\end{remark}
+
+\section*{9.5 Examples}
+
+\subsection*{9.5.1 Example 1: DTFS of a Periodic Square Wave}
+
+Determine the DTFS coefficients for the periodic discrete-time square wave:
+\[
+x[n] = \begin{cases}
+1 & \text{if } 0 \leq n \leq 2 \\
+0 & \text{if } 3 \leq n \leq 5
+\end{cases}
+\]
+with period $N = 6$.
+
+\textbf{Solution:}
+Using the analysis equation:
+\[
+a_k = \frac{1}{6} \sum_{n=0}^{5} x[n]e^{-jk(2\pi/6)n}
+\]
+
+Since $x[n] = 1$ for $n = 0, 1, 2$ and $x[n] = 0$ for $n = 3, 4, 5$:
+\[
+a_k = \frac{1}{6} \sum_{n=0}^{2} e^{-jk(2\pi/6)n} = \frac{1}{6} \sum_{n=0}^{2} e^{-jk\pi n/3}
+\]
+
+This is a finite geometric series:
+\[
+a_k = \frac{1}{6} \cdot \frac{1 - e^{-jk\pi}}{1 - e^{-jk\pi/3}} = \frac{1}{6} \cdot \frac{1 - e^{-jk\pi}}{1 - e^{-jk\pi/3}}
+\]
+
+For the special case $k=0$ (and any integer multiple of $N=6$), the terms in the sum are all $e^0 = 1$. The formula is indeterminate, so we calculate it directly:
+\[
+a_0 = \frac{1}{6} \sum_{n=0}^{2} 1 = \frac{1}{6} \cdot 3 = \frac{1}{2}
+\]
+
+For $k \neq 0$:
+\[
+a_k = \frac{1}{6} \cdot \frac{1 - e^{-jk\pi}}{1 - e^{-jk\pi/3}} = \frac{1}{6} \cdot \frac{1 - (-1)^k}{1 - e^{-jk\pi/3}}
+\]
+
+The DTFS coefficients are:
+\[
+a_0 = \frac{1}{2}, \quad a_k = \frac{1}{6} \cdot \frac{1 - (-1)^k}{1 - e^{-jk\pi/3}} \text{ for } k \neq 0
+\]
+
+\subsection*{9.5.2 Example 2:}
+
+Consider the periodic signal $x[n]$ with period $N = 4$:
+\[
+x[n] = [1, 2, 3, 4] \text{ (one period)}
+\]
+
+\textbf{Problem:} Find the DTFS coefficients of the time-shifted signal $y[n] = x[n-1]$.
+
+\textbf{Solution:}
+First, find the DTFS coefficients of $x[n]$:
+\[
+a_k = \frac{1}{4} \sum_{n=0}^{3} x[n]e^{-jk(2\pi/4)n} = \frac{1}{4} \sum_{n=0}^{3} x[n]e^{-jk\pi n/2}
+\]
+
+Calculating each coefficient:
+\begin{align}
+a_0 &= \frac{1}{4}(1 + 2 + 3 + 4) = \frac{10}{4} = 2.5 \\
+a_1 &= \frac{1}{4}(1 \cdot 1 + 2 \cdot (-j) + 3 \cdot (-1) + 4 \cdot j) = \frac{1}{4}(1 - 2j - 3 + 4j) = \frac{1}{4}(-2 + 2j) = -0.5 + 0.5j \\
+a_2 &= \frac{1}{4}(1 \cdot 1 + 2 \cdot (-1) + 3 \cdot 1 + 4 \cdot (-1)) = \frac{1}{4}(1 - 2 + 3 - 4) = \frac{1}{4}(-2) = -0.5 \\
+a_3 &= \frac{1}{4}(1 \cdot 1 + 2 \cdot j + 3 \cdot (-1) + 4 \cdot (-j)) = \frac{1}{4}(1 + 2j - 3 - 4j) = \frac{1}{4}(-2 - 2j) = -0.5 - 0.5j
+\end{align}
+
+Now, using the time-shifting property: $y[n] = x[n-1] \stackrel{\mathcal{FS}}{\longleftrightarrow} b_k = a_k e^{-jk(2\pi/4) \cdot 1} = a_k e^{-jk\pi/2}$
+
+The coefficients of $y[n]$ are:
+\begin{align}
+b_0 &= a_0 = 2.5 \\
+b_1 &= a_1 e^{-j\pi/2} = (-0.5 + 0.5j)(-j) = 0.5j + 0.5 = 0.5 + 0.5j \\
+b_2 &= a_2 e^{-j\pi} = (-0.5)(-1) = 0.5 \\
+b_3 &= a_3 e^{-j3\pi/2} = (-0.5 - 0.5j)(j) = -0.5j + 0.5 = 0.5 - 0.5j
+\end{align}
+
+
+	\section*{9.6 CTFS vs DTFS}
+
+	\begin{table}[H]
+		\centering
+		\caption{Comparative Analysis of Continuous-Time and Discrete-Time Fourier Series}
+		\begin{tabular}{|l|p{6cm}|p{6cm}|}
+			\hline
+			\textbf{Feature} & \textbf{Continuous-Time Fourier Series (CTFS)} & \textbf{Discrete-Time Fourier Series (DTFS)} \\
+			\hline
+			Time Domain Signal & Periodic, continuous-time signal $x(t)$ with period $T_0$ & Periodic, discrete-time sequence $x[n]$ with period $N$ \\
+			\hline
+			Frequency Domain Rep. & Aperiodic, discrete sequence of coefficients $a_k$ & Periodic, discrete sequence of coefficients $a_k$ with period $N$ \\
+			\hline
+			Synthesis Equation & $x(t) = \sum_{k=-\infty}^{\infty} a_k e^{jk\omega_0 t}$ & $x[n] = \sum_{k=0}^{N-1} a_k e^{jk(2\pi/N)n}$ \\
+			\hline
+			Nature of Series & Infinite Sum & Finite Sum ($N$ terms) \\
+			\hline
+			Convergence & Guaranteed only under Dirichlet conditions. Gibbs phenomenon at discontinuities. & Always converges perfectly. The finite sum is an exact representation. \\
+			\hline
+		\end{tabular}
+	\end{table}
+
+	\section*{9.7 Summary and Next Lecture}
+
+	Today we have developed the discrete-time counterpart to the CTFS. We have seen that the \textbf{Discrete-Time Fourier Series} is a finite sum, which makes it conceptually and computationally simpler than its continuous-time analog.
+
+\begin{itemize}[noitemsep]
+	\item A periodic DT signal of period $N$ is composed of only $N$ unique harmonic complex exponentials
+	\item The DTFS is a finite sum and therefore always converges perfectly
+	\item The DTFS coefficients $a_k$ are periodic with period $N$
+	\item Multiplication in time corresponds to periodic convolution in frequency
+	\item \textbf{Next time:} We will combine everything we've learned about LTI systems and Fourier series. We will see how to analyze the response of an LTI system to any periodic input by simply scaling the Fourier coefficients of the input by the system's frequency response. This leads us directly to the powerful application of \textbf{filtering}.
+\end{itemize}
+
+\end{document}

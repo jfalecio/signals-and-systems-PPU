@@ -1,0 +1,22 @@
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{axis}[
+			myaxes,
+			width=8cm, height=5cm,
+			xmin=-2, xmax=2.2,
+			ymin=-0.2, ymax=1.32,
+			ytick={1}, yticklabels={1},
+			xtick={-2,-1,1,2},
+			extra x ticks={0},
+			extra x tick labels={0},
+			extra x tick style={grid=none, ticklabel style={xshift=3pt, fill=white, inner sep=1pt}},
+			axis on top=true,
+			xlabel style={at={(axis description cs:1.06,0)}, anchor=south east}
+			]
+			\draw[blue, line width=2.2pt] (axis cs:0,0) -- (axis cs:0,1);
+			\draw[blue, line width=2.6pt, -{Stealth[length=9pt]}]
+			(axis cs:0,1) -- (axis cs:0,1.05);
+		\end{axis}
+	\end{tikzpicture}
+\end{figure}

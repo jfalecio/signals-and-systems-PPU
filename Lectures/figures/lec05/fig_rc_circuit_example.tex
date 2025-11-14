@@ -1,0 +1,27 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=1 by 3, vertical sep=15pt, xticklabels at=edge bottom},
+		/tikz/font=\small,
+		width=\linewidth, height=4cm, myaxes,
+		xmin=-1, xmax=5,
+		domain=-1:5,
+		samples=200]
+		
+		\nextgroupplot[ylabel={$x(t) = u(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Input: Unit Step}]
+		\addplot[thick, blue] coordinates {
+			(-1,0) (0,0) (0,1) (5,1)
+		};
+		
+		\nextgroupplot[ylabel={$h(t) = \frac{1}{RC}e^{-t/RC}u(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={RC Circuit Impulse Response}]
+		\addplot[thick, red, domain=0:5] {exp(-x)};
+		\node[anchor=west, fill=white, inner sep=2pt] at (axis cs:2,0.8) 
+		{$h(t) = e^{-t}u(t)$ (RC=1)};
+		
+		\nextgroupplot[xlabel={$t$}, ylabel={$y(t)$}, ymin=-0.2, ymax=1.2, ytick={0,0.5,1}, title={Output: $y(t) = (1-e^{-t})u(t)$}]
+		\addplot[thick, purple, domain=0:5] {1 - exp(-x)};
+		\node[anchor=west, fill=white, inner sep=2pt] at (axis cs:2,0.6) 
+		{RC circuit step response};
+		\node[anchor=west, fill=white, inner sep=2pt] at (axis cs:2,0.4) 
+		{$\lim_{t \to \infty} y(t) = 1$};
+	\end{groupplot}
+\end{tikzpicture}

@@ -1,0 +1,43 @@
+\begin{tikzpicture}[
+	node distance = 14mm and 22mm,
+	% Styles
+	block/.style = {draw, rectangle, minimum width=26mm, minimum height=10mm, align=center, thick},
+	sig/.style = {font=\Large}, % Corrected this line
+	end arrow/.style = {->, thick, -{Stealth}},
+	gain arrow/.style args={#1}{thick, postaction={decorate},
+		decoration={markings, mark=at position 0.5 with {
+				\arrow{Stealth}; \node[above, inner sep=3pt] {#1};
+	}}}
+	]
+	
+	% Top row: base response
+	\node[sig] (x) {$x(t)$};
+	\node[block, right=of x] (sys) {System};
+	\node[sig, right=of sys] (y) {$y(t)$};
+	
+	% --- CORRECTED Bottom row positioning ---
+	% Start the row
+	\node[sig, below=of x] (xb) {$x(t)$};
+	% Position the rest of the row relative to the node before it
+	\node[block, right=of xb] (sysb) {System};
+	\node[sig, right=of sysb] (yb) {$y^*(t)$};
+	
+	% Right side: scaled output
+	\node[sig, right=28mm of y] (ay) {$\alpha\,y(t)$};
+	
+	% Comparison question
+	\node[sig, red, right=1mm of yb] (cmp) {$y^*(t)\stackrel{?}{=} \alpha \,y(t)$};
+	
+	% Paths
+	\draw[end arrow] (x) -- (sys);
+	\draw[end arrow] (sys) -- (y);
+	
+	% This arrow will now be perfectly straight
+	\draw[gain arrow={$\times \alpha$}] (xb) -- (sysb);
+	
+	\draw[end arrow] (sysb) -- (yb);
+	
+	\draw[gain arrow={$\times \alpha$}] (y) -- (ay);
+
+	
+\end{tikzpicture}

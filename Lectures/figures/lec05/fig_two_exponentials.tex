@@ -1,0 +1,21 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=1 by 3, vertical sep=15pt, xticklabels at=edge bottom},
+		/tikz/font=\small,
+		width=\linewidth, height=4cm, myaxes,
+		xmin=-0.5, xmax=4,
+		domain=-0.5:4,
+		samples=200]
+		
+		\nextgroupplot[ylabel={$x(t) = e^{-2t}u(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Input: $e^{-2t}u(t)$}]
+		\addplot[thick, blue, domain=0:4] {exp(-2*x)};
+		
+		\nextgroupplot[ylabel={$h(t) = e^{-3t}u(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Impulse Response: $e^{-3t}u(t)$}]
+		\addplot[thick, red, domain=0:4] {exp(-3*x)};
+		
+		\nextgroupplot[xlabel={$t$}, ylabel={$y(t)$}, ymin=-0.2, ymax=1.2, ytick={0,0.5,1}, title={Output: $y(t) = (e^{-2t} - e^{-3t})u(t)$}]
+		\addplot[thick, purple, domain=0:4] {exp(-2*x) - exp(-3*x)};
+		\node[anchor=west, fill=white, inner sep=2pt] at (axis cs:1.5,0.8) 
+		{Difference of exponentials};
+	\end{groupplot}
+\end{tikzpicture}

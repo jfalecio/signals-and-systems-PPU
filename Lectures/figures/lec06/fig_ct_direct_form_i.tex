@@ -1,0 +1,103 @@
+	\begin{tikzpicture}[
+	node distance=8mm and 18mm,
+	block/.style={rectangle, draw, minimum width=14mm, minimum height=8mm, align=center},
+	sum/.style={circle, draw, minimum size=7mm, inner sep=0pt},
+	coeff/.style={font=\small},
+	>={Stealth}
+	]
+	
+	% Main horizontal nodes
+	\coordinate (input) at (0,0);
+	\node[sum] (feedforward_sum) at (3.5,0) {$+$};
+	\node (intermediate_signal) at (5,0) [label=above:{$w(t)$}] {};
+	\node[sum] (feedback_sum) at (6.5,0) {$+$};
+	\coordinate (output) at (10.5,0);
+	
+	% Main path arrows and labels
+	\draw[->] (input) -- node[above,pos=0.35] {$x(t)$} (feedforward_sum);
+	\draw[->] (feedforward_sum) -- (intermediate_signal);
+	\draw[->] (intermediate_signal) -- (feedback_sum);
+	\draw[->] (feedback_sum) -- node[above] {$1/a_0$} (output) node[right=2mm] {$y(t)$};
+	
+	%
+	% Feedforward column (left)
+	%
+	% a vertical bus point where taps branch off
+	\coordinate (feedforward_bus) at (1,0);
+	
+	% integrators stacked below ffbus
+	\node[block] (int_1) at ($(feedforward_bus)+(0,-1.6)$) {$\int$};
+	\node[block] (int_2) at ($(int_1)+(0,-1.2)$) {$\int$};
+	\node (int_dots) at ($(int_2)+(0,-1.1)$) {$\vdots$};
+	\node[block] (int_N_minus_1) at ($(int_dots)+(0,-1.1)$) {$\int$};
+	\node[block] (int_N) at ($(int_N_minus_1)+(0,-1.2)$) {$\int$};
+	
+	% feedforward bus line and branch to ffsum
+	\draw (feedforward_bus) -- ++(0.8,0); % small visual bus
+	\draw[->] (feedforward_bus) -- node[above,pos=0.5,coeff] {$b_0$} (feedforward_sum);
+	
+	% connect the bus to first integrator
+	\draw[->] (feedforward_bus) -- (int_1.north);
+	
+	% chain integrators
+	\draw[->] (int_1) -- (int_2);
+	\draw[->] (int_2) -- (int_dots);
+	\draw[->] (int_dots) -- (int_N_minus_1);
+	\draw[->] (int_N_minus_1) -- (int_N);
+	
+	% summers for each integrated tap
+	\node[sum] (sum_1) at ($(feedforward_sum) + (0,-1.6)$) {$+$};
+	\node[sum] (sum_2) at ($(sum_1) + (0,-1.2)$) {$+$};
+	\node (sum_dots) at ($(sum_2) + (0,-1.1)$) {$\vdots$};
+	\node[sum] (sum_N_minus_1) at ($(sum_dots) + (0,-1.1)$) {$+$};
+	
+	% connections from integrators to the corresponding summers
+	\draw[->] (int_1) -- node[above, pos=0.7] {$b_1$} (sum_1);
+	\draw[->] (int_2) -- node[above, pos=0.7] {$b_2$} (sum_2);
+	\draw[->] (int_N_minus_1) -- node[above, pos=0.7] {$b_{N-1}$} (sum_N_minus_1);
+	\draw[->] (int_N) -| (sum_N_minus_1) node[above, pos=0.25] {$b_N$};
+	
+	% chain the summers into ffsum
+	\draw[->] (sum_1) -- (feedforward_sum);
+	\draw[->] (sum_2) -- (sum_1);
+	\draw[->] (sum_N_minus_1) -- (sum_dots);
+	\draw[->] (sum_dots) -- (sum_2);
+	
+	%
+	% Feedback column (right)
+	%
+	\coordinate (feedback_bus) at (9,0);
+	
+	\node[block] (feedback_int_1) at ($(feedback_bus)+(0,-1.6)$) {$\int$};
+	\node[block] (feedback_int_2) at ($(feedback_int_1)+(0,-1.2)$) {$\int$};
+	\node (feedback_int_dots) at ($(feedback_int_2)+(0,-1.1)$) {$\vdots$};
+	\node[block] (feedback_int_N_minus_1) at ($(feedback_int_dots)+(0,-1.1)$) {$\int$};
+	\node[block] (feedback_int_N) at ($(feedback_int_N_minus_1)+(0,-1.2)$) {$\int$};
+	
+	% bus line and chain
+	\draw (feedback_bus) -- ++(-0.8,0); % small visual bus
+	\draw[->] (feedback_bus) -- (feedback_int_1.north);
+	\draw[->] (feedback_int_1) -- (feedback_int_2);
+	\draw[->] (feedback_int_2) -- (feedback_int_dots);
+	\draw[->] (feedback_int_dots) -- (feedback_int_N_minus_1);
+	\draw[->] (feedback_int_N_minus_1) -- (feedback_int_N);
+	
+	% feedback summers
+	\node[sum] (feedback_sum_1) at ($(feedback_sum) + (0,-1.6)$) {$+$};
+	\node[sum] (feedback_sum_2) at ($(feedback_sum_1) + (0,-1.2)$) {$+$};
+	\node (feedback_sum_dots) at ($(feedback_sum_2) + (0,-1.1)$) {$\vdots$};
+	\node[sum] (feedback_sum_N_minus_1) at ($(feedback_sum_dots) + (0,-1.1)$) {$+$};
+	
+	% connections from feedback integrators to feedback summers (with -a_i)
+	\draw[->] (feedback_int_1) -- node[above, pos=0.7] {$-a_1$} (feedback_sum_1);
+	\draw[->] (feedback_int_2) -- node[above, pos=0.7] {$-a_2$} (feedback_sum_2);
+	\draw[->] (feedback_int_N_minus_1) -- node[above, pos=0.7] {$-a_{N-1}$} (feedback_sum_N_minus_1);
+	\draw[->] (feedback_int_N) -| (feedback_sum_N_minus_1) node[above, pos=0.25] {$-a_N$};
+	
+	% chain feedback summers into main feedback summer
+	\draw[->] (feedback_sum_1) -- (feedback_sum);
+	\draw[->] (feedback_sum_2) -- (feedback_sum_1);
+	\draw[->] (feedback_sum_N_minus_1) -- (feedback_sum_dots);
+	\draw[->] (feedback_sum_dots) -- (feedback_sum_2);
+	
+	\end{tikzpicture}

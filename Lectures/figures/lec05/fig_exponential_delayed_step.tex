@@ -1,0 +1,23 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=1 by 3, vertical sep=15pt, xticklabels at=edge bottom},
+		/tikz/font=\small,
+		width=\linewidth, height=4cm, myaxes,
+		xmin=-1, xmax=5,
+		domain=-1:5,
+		samples=200]
+		
+		\nextgroupplot[ylabel={$x(t) = e^{-t}u(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Input: Exponential decay}]
+		\addplot[thick, blue, domain=0:5] {exp(-x)};
+		
+		\nextgroupplot[ylabel={$h(t) = u(t-1)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Impulse Response: Delayed step}]
+		\addplot[thick, red] coordinates {
+			(-1,0) (1,0) (1,1) (5,1)
+		};
+		
+		\nextgroupplot[xlabel={$t$}, ylabel={$y(t)$}, ymin=-0.2, ymax=1.2, ytick={0,0.5,1}, title={Output: $y(t) = (1-e^{-(t-1)})u(t-1)$}]
+		\addplot[thick, purple, domain=1:5] {1 - exp(-(x-1))};
+		\node[anchor=west, fill=white, inner sep=2pt] at (axis cs:2.5,0.8) 
+		{Delayed exponential growth};
+	\end{groupplot}
+\end{tikzpicture}

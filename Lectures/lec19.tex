@@ -1,0 +1,180 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+\usepgfplotslibrary{fillbetween}
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{19.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 19} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 19: Ideal vs. Non-Ideal Filters \& Time-Domain Behavior}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 6, Sections 6.3-6.4
+	
+	\section*{Review of Lecture 18}
+	\begin{itemize}[noitemsep]
+		\item The magnitude response, $|H(j\omega)|$, acts as the system's gain at each frequency
+		\item The phase response, $\angle H(j\omega)$, introduces a phase shift at each frequency
+		\item A linear phase response is ideal, corresponding to a simple time delay without distortion
+		\item A non-linear phase leads to non-constant group delay, causing phase distortion
+		\item Today: examining consequences of designing filters with "ideal" magnitude characteristics
+	\end{itemize}
+
+\section*{19.1 Ideal Frequency-Selective Filters}
+
+An \textbf{ideal filter} perfectly passes certain frequencies and completely rejects all others, without phase distortion. Two essential characteristics:
+\begin{enumerate}[noitemsep]
+	\item $|H(j\omega)|$ is 1 in the passband and 0 in the stopband
+	\item Linear phase response: $\angle H(j\omega) = -\alpha\omega$
+\end{enumerate}
+
+The impulse response $h(t)$ is obtained by taking the inverse Fourier transform of the frequency response.
+
+For an ideal lowpass filter with cutoff frequency $\omega_c$ and zero phase ($\alpha=0$):
+\[
+H(j\omega) = \begin{cases} 
+1, & |\omega| < \omega_c \\ 
+0, & |\omega| > \omega_c 
+\end{cases}
+\]
+
+\begin{figure}[H]
+	\centering
+	\input{figures/lec19/fig_ideal_vs_practical_filter.tex}
+	\caption{Ideal vs. practical filter characteristics.}
+	\label{fig:ideal_vs_practical_filter}
+\end{figure}
+
+\section*{19.2 Time-Domain Properties of Ideal Filters}
+
+Using the duality property of the Fourier transform, a rectangular spectrum corresponds to a sinc-shaped impulse response:
+\[
+h(t) = \frac{\sin(\omega_c t)}{\pi t}
+\]
+
+This impulse response has two critical problems:
+\begin{enumerate}[noitemsep]
+	\item \textbf{Non-causality:} The sinc function is non-zero for $t<0$, requiring the system to respond before the input is applied. Therefore, \textbf{ideal filters are not physically realizable} for real-time applications.
+	\item \textbf{Infinite Duration:} The impulse response contains oscillations that decay slowly and extend infinitely in time.
+\end{enumerate}
+
+
+\section*{19.3 Non-Ideal, Practical Filters}
+
+Practical filters must approximate ideal behavior.
+
+Non-ideal filters have three frequency regions:
+\begin{itemize}[noitemsep]
+	\item \textbf{Passband:} Frequencies passed with minimal attenuation, typically allowing small ripple (e.g., within 1\%)
+	\item \textbf{Stopband:} Frequencies significantly attenuated, with specified maximum ripple (e.g., less than 0.1\% of passband gain)
+	\item \textbf{Transition Band:} The region between passband and stopband where the filter's gain transitions
+\end{itemize}
+
+\begin{figure}[H]
+	\centering
+	\input{figures/lec19/fig_filter_regions.tex}
+	\caption{Filter frequency regions}
+	\label{fig:filter_regions}
+\end{figure}
+
+\paragraph{The Fundamental Trade-off:}
+A fundamental trade-off exists between frequency-domain and time-domain performance:
+\begin{itemize}[noitemsep]
+	\item \textbf{Sharper frequency cutoffs} (narrower transition bands) produce \textbf{increased overshoot} in the time domain
+	\item \textbf{Wider transition bands} (smoother frequency cutoffs) produce less overshoot in the time domain.
+\end{itemize}
+
+\begin{remark}
+Interactive filter design tools demonstrate how narrowing the transition band increases step response overshoot.
+\end{remark}
+\newpage
+\section*{19.4 Analog vs. Digital Implementation}
+
+\subsection*{19.4.1 Analog Filter Advantages}
+\begin{itemize}[noitemsep]
+	\item \textbf{Zero latency:} No computational delay in processing
+	\item \textbf{High speed:} Operation at MHz frequencies with simple op-amp circuits
+	\item \textbf{Large dynamic range:} Both amplitude (10 million:1) and frequency (seven decades simultaneously)
+	\item \textbf{Real-time operation:} Natural parallel processing of all frequency components
+\end{itemize}
+
+\subsection*{19.4.2 Digital Filter Advantages}
+\begin{itemize}[noitemsep]
+	\item \textbf{Precise specifications:} Exact filter coefficients without component tolerances
+	\item \textbf{Stability:} Performance independent of temperature and aging
+	\item \textbf{Flexibility:} Software-based design enables easy modification
+	\item \textbf{Better frequency response:} Better passband flatness and stopband rejection
+\end{itemize}
+
+Digital filters exhibit inherent latency due to analog-to-digital conversion and processing delays.
+
+\section*{19.5 The Discrete Fourier Transform (DFT)}
+
+While the DTFT provides a complete frequency-domain representation for discrete-time signals, it is defined for signals of infinite duration and produces a continuous function of frequency. For practical computation, we need a finite-length, discrete-frequency representation: the \textbf{Discrete Fourier Transform (DFT)}.
+
+\subsection*{19.5.1 From DTFT to DFT}
+
+Consider a finite-length sequence $x[n]$ of length $N$ (i.e., $x[n] = 0$ for $n < 0$ and $n \geq N$). The DTFT of this sequence is:
+\[
+X(e^{j\omega}) = \sum_{n=0}^{N-1} x[n]e^{-j\omega n}
+\]
+
+The DFT samples this continuous DTFT at $N$ equally spaced frequencies:
+\[
+\omega_k = \frac{2\pi k}{N}, \quad k = 0, 1, 2, \ldots, N-1
+\]
+
+\begin{definition}
+	For a finite-length sequence $x[n]$ of length $N$, the \textbf{Discrete Fourier Transform (DFT)} is:
+	\[
+	X[k] = \sum_{n=0}^{N-1} x[n]e^{-j\frac{2\pi kn}{N}}, \quad k = 0, 1, 2, \ldots, N-1
+	\]
+	The \textbf{Inverse DFT (IDFT)} is:
+	\[
+	x[n] = \frac{1}{N}\sum_{k=0}^{N-1} X[k]e^{j\frac{2\pi kn}{N}}, \quad n = 0, 1, 2, \ldots, N-1
+	\]
+\end{definition}
+
+\subsection*{19.5.2 Key Properties of the DFT}
+
+\begin{itemize}[noitemsep]
+	\item \textbf{Finite Length:} Both time and frequency domains are finite and discrete
+	\item \textbf{Periodicity:} The DFT implicitly treats $x[n]$ as one period of a periodic sequence
+	\item \textbf{Relationship to DTFT:} $X[k] = X(e^{j\omega})|_{\omega = 2\pi k/N}$ - the DFT samples the DTFT
+	\item \textbf{Computational Efficiency:} The Fast Fourier Transform (FFT) algorithm computes the DFT in $O(N \log N)$ operations instead of $O(N^2)$
+\end{itemize}
+
+\subsection*{19.5.3 Relationship to DTFS}
+
+The DFT is essentially the same as the Discrete-Time Fourier Series (DTFS) coefficients for a periodic signal. If we view $x[n]$ as one period of a periodic sequence $\tilde{x}[n]$, then:
+\[
+X[k] = N \cdot a_k
+\]
+where $a_k$ are the DTFS coefficients of $\tilde{x}[n]$.
+
+\begin{remark}
+	The DFT provides a complete, computable representation for finite-length sequences. The FFT algorithm makes DFT computation efficient for large $N$, enabling real-time signal processing applications.
+\end{remark}
+\section*{Summary and Next Lecture}
+	\begin{itemize}[noitemsep]
+		\item Ideal filters are non-causal and unrealizable in real-time
+		\item Sharp frequency cutoffs produce ringing and overshoot in time domain
+		\item Practical filters involve frequency-time domain trade-offs
+		\item Analog and digital implementations have distinct advantages
+		\item DFT samples the DTFT at discrete frequencies; FFT enables efficient computation
+		\item \textbf{Next time:} The sampling theorem and bridging continuous-time and discrete-time signals
+	\end{itemize}
+
+\end{document}

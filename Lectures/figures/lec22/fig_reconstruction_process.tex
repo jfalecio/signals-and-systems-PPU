@@ -1,0 +1,75 @@
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		group size=1 by 3,
+		vertical sep=1cm,
+	},
+	width=12cm,
+	height=3cm,
+	myaxes,
+	xlabel={$\omega$ (rad/s)},
+	grid=major,
+	grid style={gray!15},
+]
+
+% Sampled spectrum
+\nextgroupplot[
+	title={Sampled Spectrum $X_p(j\omega)$},
+	ylabel={$|X_p(j\omega)|$},
+	xmin=-8, xmax=8,
+	ymin=0, ymax=1.2,
+	xtick={-6, -3, 0, 3, 6},
+	xticklabels={$-\omega_s$, $-\omega_M$, $0$, $\omega_M$, $\omega_s$},
+	ytick={0, 0.5, 1},
+]
+% Original spectrum
+\addplot[blue, thick, domain=-3:3, samples=100] {1 - abs(x)/3};
+% Replicated spectra
+\addplot[green, thick, domain={-3-6}:{-3+6}, samples=100] {1 - abs(x+6)/3};
+\addplot[green, thick, domain={3-6}:{3+6}, samples=100] {1 - abs(x-6)/3};
+
+% Ideal lowpass filter
+\nextgroupplot[
+	title={Ideal Lowpass Filter $H(j\omega)$},
+	ylabel={$|H(j\omega)|$},
+	xmin=-8, xmax=8,
+	ymin=0, ymax=1.2,
+	xtick={-6, -3, 0, 3, 6},
+	xticklabels={$-\omega_s$, $-\omega_M$, $0$, $\omega_M$, $\omega_s$},
+	ytick={0, 0.5, 1},
+]
+\addplot[red, thick, domain=-3:3, samples=100] {1};
+\addplot[red, thick, domain=-8:-3, samples=100] {0};
+\addplot[red, thick, domain=3:8, samples=100] {0};
+
+% Reconstructed spectrum
+\nextgroupplot[
+	title={Reconstructed Spectrum $X(j\omega)$},
+	ylabel={$|X(j\omega)|$},
+	xmin=-8, xmax=8,
+	ymin=0, ymax=1.2,
+	xtick={-6, -3, 0, 3, 6},
+	xticklabels={$-\omega_s$, $-\omega_M$, $0$, $\omega_M$, $\omega_s$},
+	ytick={0, 0.5, 1},
+]
+\addplot[blue, thick, domain=-3:3, samples=100] {1 - abs(x)/3};
+\addplot[blue, thick, domain=-8:-3, samples=100] {0};
+\addplot[blue, thick, domain=3:8, samples=100] {0};
+
+% Add filter cutoff annotation
+\draw[dashed, gray] (axis cs:-3,-0.2) -- (axis cs:-3,1.2);
+\draw[dashed, gray] (axis cs:3,-0.2) -- (axis cs:3,1.2);
+\node[anchor=south] at (axis cs:-3,1.2) {$-\omega_c$};
+\node[anchor=south] at (axis cs:3,1.2) {$\omega_c$};
+
+\end{groupplot}
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,33 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=1 by 3, vertical sep=18pt, xticklabels at=edge bottom},
+		/tikz/font=\small,
+		width=\linewidth, height=4.5cm, myaxes,
+		xmin=-1, xmax=6,
+		domain=-1:6,
+		samples=200]
+		
+		\nextgroupplot[ylabel={$x(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Input: $x(t)$ (rectangular pulse)}]
+		\addplot[thick, blue] coordinates {
+			(-1,0) (0,0) (0,1) (1,1) (1,0) (3,0)
+		};
+		\addplot[thick, blue, const plot] coordinates {
+			(-1,0) (0,0) (0,1) (1,1) (1,0) (3,0)
+		};
+		
+		\nextgroupplot[ylabel={$h(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Impulse Response: $h(t)$ (identical rectangular pulse)}]
+		\addplot[thick, red] coordinates {
+			(-1,0) (0,0) (0,1) (1,1) (1,0) (3,0)
+		};
+		\addplot[thick, red, const plot] coordinates {
+			(-1,0) (0,0) (0,1) (1,1) (1,0) (3,0)
+		};
+		
+		\nextgroupplot[xlabel={$t$}, ylabel={$y(t)$}, ymin=-0.2, ymax=1.2, ytick={0,0.5,1}, title={Output: $y(t) = (x \conv h)(t)$ (triangular shape)}]
+		\addplot[thick, purple] coordinates {
+			(-1,0) (0,0) (1,1) (2,0) (3,0)
+		};
+		\node[anchor=west, fill=white, inner sep=2pt] at (axis cs:1.7,0.8) 
+		{Triangular result from identical rectangular pulses};
+	\end{groupplot}
+\end{tikzpicture}

@@ -1,0 +1,15 @@
+\begin{tikzpicture}[node distance=2.5cm, auto]
+    % Nodes
+    \node[draw, rectangle, minimum width=3cm, minimum height=1.2cm, fill=blue!20] (xt) {$x(t)$ (Triangular)};
+    \node[draw, rectangle, minimum width=3cm, minimum height=1.2cm, fill=red!20, below of=xt] (gt) {$g(t)$ (Square)};
+    \node[draw, rectangle, minimum width=2.5cm, minimum height=1cm, fill=blue!10, right=4cm of xt] (ak) {Coefficients $a_k$};
+    \node[draw, rectangle, minimum width=2.5cm, minimum height=1cm, fill=red!10, right=4cm of gt] (bk) {Coefficients $b_k$};
+    % Arrows
+    \draw[->, thick] (xt) -- (gt) node[midway,left] {$\frac{\dd}{\dd t}$};
+    \draw[->, thick, dashed] (xt) -- (ak) node[midway,above] {CTFS};
+    \draw[->, thick, dashed] (gt) -- (bk) node[midway,above] {CTFS};
+    \draw[->, thick, blue] (bk) -- (ak) node[midway,right] {$a_k = \frac{b_k}{jk\omega_0}$};
+    % Labels
+    \node[above=0.3cm of xt] {\textbf{Time Domain}};
+    \node[above=0.3cm of ak] {\textbf{Frequency Domain}};
+\end{tikzpicture}

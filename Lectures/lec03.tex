@@ -1,0 +1,296 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{3.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 3} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 3: Systems and Their Properties}
+	\end{center}
+	\vspace{0.4cm}
+	
+\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 1, Sections 1.5--1.6; MIT OCW lecture notes on LTI systems.
+
+	\section*{Review of Lecture 2}
+	\begin{itemize}[noitemsep]
+		\item Elementary signals toolbox introduced
+		\item Unit impulse sifting property
+		\item Signal representation building blocks
+		\item Today: systems and properties
+	\end{itemize}
+	
+	\section*{3.1 Systems and Interconnections}
+	
+	A \textbf{system} is any process that transforms an input signal into an output signal. It can be modeled by an operator \(\T\{\cdot\}\) mapping an input signal to an output signal:
+	\[
+	\text{Continuous-Time (CT):} \quad y(t) = \T\{x(t)\}, \qquad \text{Discrete-Time (DT):} \quad y[n] = \T\{x[n]\}.
+	\]
+	\begin{figure}[H]
+		\centering
+		\begin{subfigure}[b]{0.48\textwidth}
+			\centering
+			\input{figures/lec03/fig_ct_system_block.tex}
+			\caption{Continuous-Time System}
+			\label{fig:ct_system}
+		\end{subfigure}
+		\hfill
+		\begin{subfigure}[b]{0.48\textwidth}
+			\centering
+			\input{figures/lec03/fig_dt_system_block.tex}
+			\caption{Discrete-Time System}
+			\label{fig:dt_system}
+		\end{subfigure}
+		\caption{Continuous-time and discrete-time system blocks.}
+		\label{fig:system_blocks}
+	\end{figure}
+	
+	Systems are often interconnected to compose complex processing chains. Common interconnections include:
+	\begin{enumerate}[noitemsep]
+		\item \textbf{Series (Cascade):} Output of \(\T_1\) feeds input of \(\T_2\).
+		\item \textbf{Parallel:} Same input fed to multiple systems; outputs summed.
+		\item \textbf{Feedback:} Output fed back to the input and combined with the original input.
+	\end{enumerate}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec03/fig_series_interconnection.tex}
+		\caption{Series cascade interconnection example.}
+		\label{fig:series}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec03/fig_parallel_interconnection.tex}
+		\caption{Parallel interconnection example.}
+		\label{fig:parallel}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec03/fig_feedback_interconnection.tex}
+		\caption{Feedback interconnection example.}
+		\label{fig:feedback}
+	\end{figure}
+	
+	
+	\section*{3.2 Fundamental System Properties}
+	Systems can be characterized by the following six properties:
+	
+	\subsection*{1. Memory}
+	\begin{definition}
+		A system is \textbf{memoryless} if the output at any time depends solely on the input at that time; otherwise, it has \textbf{memory} (is dynamic).
+	\end{definition}
+	
+	\begin{example}
+		\begin{itemize}
+			\vspace{1em}
+			\item[ ]
+			\item \( y[n] = x[-n] \)
+			\item \( y(t) = \frac{d}{dt}x(t) \)
+			\item \( y[n] = \max\{x[n],\,x[n-1]\} \)
+			\item \( y(t) = (3+\sin t)\,x(t) \)
+			\item \( y(t) = \int_{-\infty}^{t} x(\tau)\,d\tau \)
+			\item \( y[n] = \operatorname{sgn}(x[n]) \)
+			\item \( y(t) = x(t-1) \)
+		\end{itemize}
+	\end{example}
+	
+	
+	\subsection*{2. Invertibility}
+	\begin{definition}
+		A system is \textbf{invertible} if distinct inputs produce distinct outputs, and an inverse system \(\T^{-1}\) exists such that \(\T^{-1}\{y\} = x\).
+	\end{definition}
+	
+	\begin{example}
+		\begin{itemize}
+			\item []
+			\item \textbf{Invertible Systems:} The original input \(x\) can be uniquely recovered from the output \(y\).
+			\begin{itemize}[noitemsep]
+				\item \(y(t) = 2x(t)\) (Amplifier): The inverse system is \(x(t) = \frac{1}{2}y(t)\).
+				\item \( y(t) = \int_{-\infty}^{t} x(\tau)\,d\tau \) (Integrator): The inverse is \(x(t) = \frac{d}{dt}y(t)\).
+				\item \( y[n] = \sum_{k=-\infty}^{n} x[k] \) (Accumulator): The inverse is \(x[n] = y[n] - y[n-1]\).
+			\end{itemize}
+			\vspace{0.2cm}
+			\item \textbf{Non-Invertible Systems:} Different inputs can lead to the same output.
+			\begin{itemize}[noitemsep]
+				\item \(y(t) = x^2(t)\) (Squarer): Loses the sign of the input; \(x(t)=2\) and \(x(t)=-2\) both produce \(y(t)=4\).
+				\item \( y[n] = n x[n]\): For \(n=0\), \(y[0]=0\) regardless of the value of \(x[0]\). Information about \(x[0]\) is lost.
+				\item \( y(t) = \frac{d}{dt}x(t) \) (Differentiator): Loses any DC offset in the input, since \(\frac{d}{dt}(x(t)+C) = \frac{d}{dt}x(t)\).
+				\item \( y[n] = x[2n]\) (Downsampler): Loses all odd-indexed samples of the input signal.
+			\end{itemize}
+		\end{itemize}
+	\end{example}
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec03/fig_invertibility.tex}
+		\label{fig:invertibility}
+	\end{figure}
+	
+	\subsection*{3. Causality}
+	\begin{definition}
+		A system is \textbf{causal} if its output at time \(t_0\) depends only on the input at the same or previous time  \(\{x(t): t \le t_0\}\). Otherwise, it is \textbf{non-causal}.
+	\end{definition}
+	
+	\begin{remark}
+		All real-time physical systems must be causal, as they cannot react to future events.
+	\end{remark}
+	
+	\begin{example}
+		
+		\begin{itemize}[noitemsep]
+			\item[]
+			\item \( y(t) = x(t - t_0) \) \quad ( \( t_0 \ge 0 \))
+			\item \( y[n] = x[2n] \)
+			\item \( y(t) = \int_{t}^{t+t_0} x(\tau)\,d\tau \) \quad ( \( t_0 > 0 \))
+			\item \( y(t) = x(-2t) \)
+			\item \( y(t) = \int_{-\infty}^{t} x(\tau)\,d\tau \)
+			\item \( y[n] = \sum_{k=-\infty}^{n} x[k] \)
+			\item \( y[n] = x[n-1] \)
+			\item \( y(t) = x(t+1) \)
+			\item \(
+			y(t) = \begin{cases} 
+				x(3t) & \text{if } t < 0 \\
+				x(t-1) & \text{if } t \geq 0
+			\end{cases}
+			\)
+		\end{itemize}
+	\end{example}
+	
+	
+	\subsection*{4. Stability}
+	\begin{definition}[BIBO Stability]
+		A system is \textbf{Bounded-Input, Bounded-Output (BIBO) stable} if every bounded input produces a bounded output.
+	\end{definition}
+	
+	\begin{example}
+		\begin{itemize}
+			\item[]
+			\item \textbf{Stable Systems:} A bounded input $|x| \le B_x$ produces a bounded output $|y| \le B_y$.
+			\begin{itemize}[noitemsep]
+				\item \textbf{Time Delay:} \( y[n] = x[n-1] \). A simple shift does not alter the amplitude bounds of the signal. Stable.
+				\item \( y(t) = \int_{t}^{t+t_0} x(\tau)\,d\tau \). The output is bounded by \(|y(t)| \le |t_0| \cdot B_x\). Stable.
+				\item \textbf{Moving Average:} \( y[n] = \frac{1}{2M+1}\sum_{k=-M}^{M} x[n-k] \). The output is bounded by \(|y[n]| \le B_x\). Stable.
+				\item  \( y(t) = e^{x(t)} \). If \(|x(t)| \le B_x\), the output is bounded by \(|y(t)| \le e^{B_x}\). Stable.
+			\end{itemize}
+			\vspace{0.2cm}
+			\item \textbf{Unstable Systems:} A bounded input can produce an unbounded output.
+			\begin{itemize}[noitemsep]
+				\item \textbf{Differentiator:} \( y(t) = \frac{d}{dt}x(t) \). A bounded input like \(x(t) = \sin(t^2)\) produces an unbounded output \(y(t) = 2t\cos(t^2)\). Unstable.
+				\item \textbf{Integrator:} \( y(t) = \int_{-\infty}^{t} x(\tau)\,d\tau \). The bounded input \(x(t)=u(t)\) produces the unbounded ramp output \(y(t)=t \cdot u(t)\). Unstable.
+				\item \textbf{Accumulator:} \( y[n] = \sum_{k=-\infty}^{n} x[k] \). The bounded input \(x[n]=u[n]\) produces the unbounded output \(y[n]=(n+1)u[n]\). Unstable.
+			\end{itemize}
+		\end{itemize}
+	\end{example}
+	
+	\subsection*{5. Time-Invariance}
+	\begin{definition}
+		A system is \textbf{time-invariant} if a time shift in the input results in an identical time shift in the output:
+		\[
+		y(t) = \T\{x(t)\} \implies y(t - t_0) = \T \{ x(t - t_0) \} \quad \forall t_0.
+		\]
+	\end{definition}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec03/fig_time_invariance_block.tex}
+		\caption{Time-invariance principle: shifting input shifts output.}
+		\label{fig:time_invariance_block}
+	\end{figure}
+	
+	\begin{remark}
+		Physical systems whose properties do not change over time are time-invariant (e.g., an RC circuit with fixed component values).
+	\end{remark}
+	
+	\begin{example}
+		\vspace{0.5em}
+		\begin{itemize}[noitemsep]
+			\item[]
+			\item \( y(t) = x(t + f(t)) \)
+			\item \( y(t) = \frac{d}{dt}x(t) \)
+			\item \( y(t) = f(x(t)) \)
+			\item \( y(t) = x(f(t)) \)
+			\item \( y(t) = A x(t + \alpha) \)
+			\item \( y(t) = A x(\alpha t) \)
+		\end{itemize}
+	\end{example}
+	
+	
+	\subsection*{6. Linearity}
+	\begin{definition}[Linearity]
+		A system is \textbf{linear} if it satisfies superposition principles. This combines two properties:
+		\begin{enumerate}[noitemsep]
+			\item \textbf{Additivity:} \(\T\{x_1 + x_2\} = \T\{x_1\} + \T\{x_2\}\).
+			\item \textbf{Homogeneity (Scaling):} \(\T\{\alpha x\} = \alpha \T\{x\}\), for any scalar \(\alpha \in \C\).
+		\end{enumerate}
+		The two properties can be combined into a single statement:
+		\[\T\{\alpha x_1 + \beta x_2\} = \alpha \T\{x_1\} + \beta \T\{x_2\}\]
+		for any inputs \(x_1, x_2\) and any scalars \(\alpha, \beta \in \C\).
+	\end{definition}
+	
+	\captionsetup[figure]{labelformat=empty}
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec03/fig_additivity.tex}
+		\caption{Additivity principle for linear systems.}
+		\label{fig:additivity}
+	\end{figure}
+	\captionsetup[figure]{labelformat=default}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec03/fig_homogeneity.tex}
+		\caption*{Homogeneity scaling principle for linearity.}
+		\label{fig:homogeneity}
+	\end{figure}
+	
+	\begin{remark}
+		A necessary (but not sufficient) condition for linearity is that a zero input must produce a zero output: \(\T\{0\}=0\).
+	\end{remark}
+	\newpage
+	\begin{example}
+		\begin{itemize}
+			\item \textbf{Linear Systems:} Obey the superposition principle $\T\{ax_1 + bx_2\} = a\T\{x_1\} + b\T\{x_2\}$.
+			\begin{itemize}[noitemsep]
+				\item \( y(t) = A x(\alpha t + \beta) \): Time scaling, shifting, and amplitude scaling are all linear operations.
+				\item \( y(t) = \frac{d}{dt}x(t) \): Differentiation is a linear operator.
+				\item \( y(t) = \int_{-\infty}^{t} x(\tau)\,d\tau \): Integration is a linear operator.
+				\item \( y[n] = \sum_{k=-\infty}^{n} x[k] \): Summation is a linear operator.
+				\item \( y(t) = x(f(t)) \): \textbf{(Linear)} The transformation is on the time variable, not the signal's amplitude.
+				\item \( y(t) = x(t+f(t)) \): \textbf{(Linear)} Similar to the above, this is a time-varying shift, which is a linear operation.
+			\end{itemize}
+			\vspace{0.2cm}
+			
+			\item \textbf{Non-Linear Systems:} Violate either additivity or homogeneity.
+			\begin{itemize}[noitemsep]
+				\item \( y[n] = x[n-1]x[n] \): Fails homogeneity, as scaling the input by $a$ scales the output by $a^2$.
+				\item \( y[n] = x[n] + C \): Fails the zero-input test; if $x[n]=0$, $y[n]=C \neq 0$.
+				\item \( y(t) = |x(t)| \): Fails homogeneity, since $|-x(t)| = |x(t)| \neq -|x(t)|$.
+				\item \( y(t) = \Re\{x(t)\} \): Fails homogeneity for complex scalars (e.g., $\Re\{j \cdot 1\} = 0$, but $j \cdot \Re\{1\} = j$). It is, however, additive.
+				\item \( y[n] = \Im\{x[n]\} \): Also fails homogeneity for complex scalars.
+				\item \( y(t) = x^*(t) \): The complex conjugate fails homogeneity for complex scalars, since $(ax(t))^* = a^*x^*(t) \neq ax^*(t)$.
+				\item \( y(t) = x(t) + f(t) \): Fails the zero-input test if $f(t) \neq 0$.
+			\end{itemize}
+		\end{itemize}
+	\end{example}
+	
+\section*{3.3 Summary and Next Lecture}
+	\begin{itemize}[noitemsep]
+		\item Defined systems and six fundamental properties: memory, invertibility, causality, stability, time-invariance, and linearity.
+		\item System interconnections: series, parallel, and feedback.
+		\item Linear Time-Invariant (LTI) systems are most important for analysis.
+		\item \textbf{Next time:} LTI system characterization and convolution.
+	\end{itemize}
+	
+\end{document}

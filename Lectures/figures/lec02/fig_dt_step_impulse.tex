@@ -1,0 +1,24 @@
+\begin{figure}[H]
+	\centering
+	\begin{tikzpicture}
+		\begin{groupplot}[
+			group style={group size=1 by 3, vertical sep=10pt, xticklabels at=edge bottom},
+			/tikz/font=\small,
+			width=\linewidth, height=3.8cm, myaxes,
+			xmin=-3.5, xmax=5.5,
+			samples at={-3,...,5},
+			xtick={-3,-2,-1,1,2,3,4,5}]
+			
+			\nextgroupplot[xlabel={$n$}, ylabel={$u[n]$}, ymin=-0.2, ymax=1.2, ytick={0,1}]
+			\addplot[ycomb, mark=*, thick, blue] {(x>=0) ? 1 : 0};
+			
+			\nextgroupplot[xlabel={$n$}, ylabel={$-u[n-1]$}, ymin=-1.2, ymax=0.2, ytick={-1,0}]
+			\addplot[ycomb, mark=*, thick, red] { -((x>=1) ? 1 : 0) };
+			
+			\nextgroupplot[xlabel={$n$}, ylabel={\(\delta[n]\)}, ymin=-0.2, ymax=1.2, ytick={0,1},
+			extra x ticks={0}, extra x tick labels={0}]
+			\addplot[ycomb, mark=*, thick, purple, mark size=2.5pt]
+			{ ((x>=0) ? 1 : 0) - ((x>=1) ? 1 : 0) };
+		\end{groupplot}
+	\end{tikzpicture}
+\end{figure}

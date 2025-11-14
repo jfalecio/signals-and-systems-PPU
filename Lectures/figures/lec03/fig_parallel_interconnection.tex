@@ -1,0 +1,34 @@
+
+\usetikzlibrary{positioning}
+
+\begin{tikzpicture}[
+	% Set the default distance between nodes.
+	node distance=1.5cm and 2cm
+	]
+	% Define custom styles to make the code cleaner and more reusable.
+	\tikzset{
+		block/.style={draw, rectangle, minimum height=1.2cm, minimum width=2.6cm, align=center, thick},
+		sum/.style={draw, circle, inner sep=0pt, minimum size=7mm, thick},
+		line/.style={-latex, thick} % Use -latex for a nicer arrowhead
+	}
+	
+	% === NODES ===
+	% Place the nodes for the diagram, starting from the left.
+	
+	\node (input) {\(x(t)\)};
+	\node[coordinate, right=of input] (split) {};
+	\node[block, right=of split, yshift=1.2cm] (sys1) {System \(\mathcal{T}_1\)};
+	\node[block, right=of split, yshift=-1.2cm] (sys2) {System \(\mathcal{T}_2\)};
+	\node[sum, right=5cm of split] (summer) {\(+\)};
+	\node[right=of summer] (output) {\(y(t)\)};
+	
+	% === CONNECTIONS ===
+	% Draw the lines and arrows connecting the nodes.
+	
+	\draw[line] (input) -- (split);
+	\draw[line] (split) |- (sys1.west);
+	\draw[line] (split) |- (sys2.west);
+	\draw[line] (sys1.east) -| (summer.north);
+	\draw[line] (sys2.east) -| (summer.south);
+	\draw[line] (summer) -- (output);
+\end{tikzpicture}

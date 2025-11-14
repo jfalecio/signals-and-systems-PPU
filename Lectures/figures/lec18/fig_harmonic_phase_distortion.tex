@@ -1,0 +1,59 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=1 by 3, vertical sep=8mm},
+		width=\linewidth,          % unified width for all three plots
+		height=0.28\textheight,      % choose a proportional height
+		grid=major,
+		grid style={line width=.1pt, draw=gray!30},
+		axis lines=middle,
+		no marks
+		]
+		
+		% 1) Harmonic Signal
+		\nextgroupplot[
+		title={Harmonic Signal: $x(t) = \sin(2\pi t) + 0.5\sin(6\pi t)$},
+		xlabel={$t$}, ylabel={$x(t)$},
+		xmin=0, xmax=2, ymin=-1.5, ymax=2,
+		xtick={0,0.5,1,1.5,2},
+		ytick={-1.5,-1,-0.5,0.5,1,1.5}
+		]
+		\addplot[blue, very thick, domain=0:2, samples=200] {sin(deg(2*pi*x)) + 0.5*sin(deg(6*pi*x))};
+		\node[anchor=west, text width=7cm] at (axis cs:0.7, 1.4)
+		{Fundamental: $\omega_0 = 2\pi$ rad/s \ 3rd Harmonic: $3\omega_0 = 6\pi$ rad/s};
+		
+		% 2) Phase Response (FIXED xmax and linear function)
+		\nextgroupplot[
+		title={Phase Response Comparison},
+		xlabel={$\omega$}, ylabel={$\angle H(j\omega)$},
+		xmin=0, xmax=20, % <-- FIXED: Was 7, now 20 (must be > 6*pi)
+		ymin=-20, ymax=2,
+		xtick={2*pi,6*pi}, xticklabels={$\omega_0$,$3\omega_0$},
+		legend pos=north east
+		]
+		% FIXED: Changed from -0.2*x to -0.4*x to match the t_0=0.4 delay in Plot 3
+		\addplot[green!50!black, thick, domain=0:20] {-0.4*x}; 
+		\addlegendentry{Linear Phase ($\phi = -0.4\omega$)};
+		\addplot[red, thick, domain=0:20, samples=200] {-0.1*x - 0.05*x^2};
+		\addlegendentry{Nonlinear Phase};
+		\draw[dashed, gray] (axis cs:{2*pi},-3) -- (axis cs:{2*pi},2);
+		\draw[dashed, gray] (axis cs:{6*pi},-3) -- (axis cs:{6*pi},2);
+		
+		% 3) Output Comparison (FIXED syntax and nonlinear example)
+		\nextgroupplot[
+		title={Output Comparison},
+		xlabel={$t$}, ylabel={$y(t)$},
+		xmin=0, xmax=3, ymin=-3, ymax=2,
+		xtick={1,2,3}, ytick={-1.5,-1,-0.5,0.5,1,1.5},
+		legend pos=south west
+		]
+		% This plot now correctly corresponds to the green line in Plot 2
+		\addplot[green!50!black, thick, domain=0:3, samples=200] {sin(deg(2*pi*(x-0.4))) + 0.5*sin(deg(6*pi*(x-0.4)))};
+		\addlegendentry{Linear Phase Output (Delayed by $t_0=0.4$)};
+		
+		% FIXED: Corrected sin(deg(...)) syntax
+		% FIXED: Changed -135 to -200 to be TRULY nonlinear (3*(-45) != -200)
+		\addplot[red, thick, domain=0:3, samples=200] {sin(deg(2*pi*x) - 45) + 0.5*sin(deg(6*pi*x) - 200)};
+		\addlegendentry{Nonlinear Phase Output (Distorted)};
+		
+	\end{groupplot}
+\end{tikzpicture}

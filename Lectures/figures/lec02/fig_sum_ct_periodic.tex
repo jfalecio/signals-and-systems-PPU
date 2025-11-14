@@ -1,0 +1,55 @@
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=\linewidth, height=4cm,
+				myaxes,
+				title={$x_1(t)=\cos(\pi t)$ with period $T_1=2$},
+				xlabel={$t$}, xmin=0, xmax=12.4,
+				ymin=-1.2, ymax=1.2,
+				samples=1201,
+				smooth
+				]
+				\addplot[blue, very thick, domain=0:12] {cos(deg(pi*x))};
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=\linewidth, height=4cm,
+				myaxes,
+				title={$x_2(t)$ is a triangular wave with period $T_2=3$},
+				xlabel={$t$}, xmin=0, xmax=12.4,
+				ymin=-1.2, ymax=1.2,
+				samples=1201,
+				smooth
+				]
+				\addplot[red, very thick, domain=0:12] {tri(x,3)};
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+	\\
+	\begin{subfigure}[b]{\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[
+				width=\linewidth, height=5cm,
+				myaxes,
+				title={Sum: $x(t)=x_1(t)+x_2(t)$, with period $T_0=\mathrm{lcm}(2,3)=6$},
+				xlabel={$t$}, xmin=0, xmax=12.4,
+				ymin=-2.2, ymax=2.2,
+				samples=1801,
+				smooth
+				]
+				\addplot[purple, very thick, domain=0:12] {cos(deg(pi*x)) + tri(x,3)};
+				% Period annotation
+				\draw[<->, red, thick] (axis cs:0,-1.6) -- node[below] {$T_0=6$} (axis cs:6,-1.6);
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+\end{figure}

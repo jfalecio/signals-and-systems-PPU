@@ -1,0 +1,314 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{11.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 11} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 11: The Continuous-Time Fourier Transform (CTFT)}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 4, Sections 4.0--4.1
+	
+	\section*{Review of Lecture 10}
+	\begin{itemize}[noitemsep]
+		\item LTI systems as frequency-domain multipliers
+		\item Complex exponentials as eigenfunctions
+		\item Filtering concept and filter types
+	\end{itemize}
+	
+	\section*{11.1 Introduction}
+	
+	The Fourier Series provides a powerful tool for analyzing periodic signals, but many important signals are \textbf{aperiodic}. Today, we extend our frequency-domain analysis to include these signals through the \textbf{Continuous-Time Fourier Transform (CTFT)}.
+	
+	We can think of an aperiodic signal $x(t)$ as the limit of a periodic signal $\tilde{x}(t)$ as the period $T_0$ goes to infinity.
+
+	Consider a periodic signal $\tilde{x}(t)$ with Fourier series representation:
+	\[
+	\tilde{x}(t) = \sum_{k=-\infty}^{\infty} a_k e^{jk\omega_0 t}
+	\]
+	where $\omega_0 = \frac{2\pi}{T_0}$ and the Fourier coefficients are:
+	\[
+	a_k = \frac{1}{T_0} \int_{-T_0/2}^{T_0/2} \tilde{x}(t)e^{-jk\omega_0 t} \dt
+	\]
+	
+\subsection*{11.1.1 The Envelope Function:}
+	
+	Each $a_k$ tells us "how much" of frequency $k\omega_0$ is in our signal. As the period gets longer, these frequencies become more and more closely spaced.
+	
+	Let's define an \textbf{envelope function} $X(j\omega)$ by scaling the Fourier coefficients by $T_0$:
+	\[
+	X(jk\omega_0) = T_0 a_k = \int_{-T_0/2}^{T_0/2} \tilde{x}(t)e^{-jk\omega_0 t} \dt
+	\]
+	
+	This envelope function is like a smooth curve that connects all our discrete frequencies. It represents the continuous frequency content of our signal.
+	
+	Rewriting the synthesis equation in terms of this envelope:
+	\[
+	\tilde{x}(t) = \sum_{k=-\infty}^{\infty} \frac{1}{T_0} X(jk\omega_0) e^{jk\omega_0 t} = \frac{1}{2\pi} \sum_{k=-\infty}^{\infty} X(jk\omega_0) e^{jk\omega_0 t} \omega_0
+	\]
+	
+\subsection*{11.1.2 Taking the Limit:}
+	
+	As $T_0 \to \infty$:
+	\begin{itemize}[noitemsep]
+		\item $\tilde{x}(t) \to x(t)$, as the repetition is eliminated
+		\item $\omega_0 = \frac{2\pi}{T_0} \to 0$  - the frequency spacing shrinks
+		\item $k\omega_0$ becomes a continuous variable $\omega$ - discrete impulses become a smooth curve
+		\item The sum becomes an integral
+	\end{itemize}
+	
+
+	This leads to the \textbf{Fourier Transform pair}:
+	
+	\section*{11.2 The Continuous-Time Fourier Transform (CTFT)}
+	
+	\begin{definition}
+		For a signal $x(t)$, the \textbf{analysis equation} (Fourier Transform) is:
+		\[
+		X(j\omega) = \int_{-\infty}^{\infty} x(t)e^{-j\omega t} \dt
+		\]
+		The \textbf{synthesis equation} (Inverse Fourier Transform) is:
+		\[
+		x(t) = \frac{1}{2\pi} \int_{-\infty}^{\infty} X(j\omega)e^{j\omega t} \dd\omega
+		\]
+	\end{definition}
+	
+	\textbf{Intuitive Interpretation:} The analysis equation can be understood as measuring the similarity or correlation between the signal $x(t)$ and the complex exponential $e^{j\omega t}$ for each frequency $\omega$. When $x(t)$ has strong components at frequency $\omega$, the integral produces a large value for $X(j\omega)$; when there are no such components, the integral is small or zero.
+	
+	\subsection*{11.2.1 Convergence Conditions}
+	
+	The Fourier transform exists if the \textbf{Dirichlet conditions} are satisfied:
+	
+	\begin{enumerate}[noitemsep]
+		\item \textbf{Absolute integrability:} $\int_{-\infty}^{\infty} |x(t)| \dt < \infty$
+		\item $x(t)$ has a finite number of maxima, minima, and discontinuities in any finite interval
+	\end{enumerate}
+	
+	\begin{remark}
+		These are \textbf{sufficient} but not \textbf{necessary} conditions. Many signals that violate these conditions still have Fourier transforms (e.g., periodic signals, impulses).
+	\end{remark}
+	
+	\section*{11.3 Examples of the CTFT}
+	
+	\subsection*{11.3.1 Decaying Exponential}
+	
+	Let $x(t) = e^{-at}u(t)$ for $a > 0$.
+	
+	\begin{align}
+		X(j\omega) &= \int_{0}^{\infty} e^{-at}e^{-j\omega t} \dt \\
+		&= \int_{0}^{\infty} e^{-(a+j\omega)t} \dt \\
+		&= \left[ -\frac{1}{a+j\omega}e^{-(a+j\omega)t} \right]_0^\infty \\
+		&= \frac{1}{a+j\omega}
+	\end{align}
+	
+	\subsection*{11.3.2 Rectangular Pulse}
+	
+	Let $x(t) = \begin{cases} 1, & |t| < T_1 \\ 0, & |t| > T_1 \end{cases}$.
+	
+	\begin{align}
+		X(j\omega) &= \int_{-T_1}^{T_1} e^{-j\omega t} \dt \\
+		&= \left[ -\frac{1}{j\omega}e^{-j\omega t} \right]_{-T_1}^{T_1} \\
+		&= \frac{e^{j\omega T_1} - e^{-j\omega T_1}}{j\omega} \\
+		&= \frac{2\sin(\omega T_1)}{\omega} = 2T_1 \sinc{\frac{\omega T_1}{\pi}}
+	\end{align}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec11/fig_rectangular_pulse.tex}
+		\caption{Rectangular pulse and its Fourier transform (sinc function)}
+		\label{fig:rectangular_pulse}
+	\end{figure}
+	
+	\subsection*{11.3.3 Unit Impulse}
+	
+	Let $x(t) = \delta(t)$.
+	
+	Using the sifting property:
+	\[
+	X(j\omega) = \int_{-\infty}^{\infty} \delta(t)e^{-j\omega t} \dt = e^{-j\omega \cdot 0} = 1
+	\]
+	
+	\newpage
+	\subsection*{11.3.4 Constant Signal}
+	
+	Let $x(t) = 1$ for all $t$.
+	
+	This signal is not absolutely integrable, so its Fourier transform cannot be found by direct evaluation of the analysis integral. Instead, we can find the transform by working backward from the synthesis equation (the inverse Fourier transform).
+	
+	Let's propose that the transform of $x(t) = 1$ is a scaled Dirac delta function, $X(j\omega) = c\delta(\omega)$, and find the constant $c$. 
+	\[
+	x(t) = \frac{1}{2\pi} \int_{-\infty}^{\infty} c\delta(\omega)e^{j\omega t} \dd\omega
+	\]
+	
+	Using the sifting property we get:
+	\[
+	x(t) = \frac{c}{2\pi} e^{j(0)t} = \frac{c}{2\pi}
+	\]
+	
+	We want this result to be equal to our original signal, $x(t) = 1$. Therefore, we must have:
+	\[
+	\frac{c}{2\pi} = 1 \implies c = 2\pi
+	\]
+	
+	 This gives us the transform pair:
+	\[
+	1 \stackrel{\mathcal{F}}{\longleftrightarrow} 2\pi\delta(\omega)
+	\]
+	
+	\textbf{Physical interpretation:} The Fourier transform, $X(j\omega)$, tells you what frequencies are present in the time-domain signal, $x(t)$. The signal $x(t) = 1$ is a constant, or DC (Direct Current), signal. It does not oscillate at all. A lack of oscillation means its one and only frequency component is at zero frequency ($\omega = 0$). We need a function in the frequency domain that is zero everywhere except at $\omega = 0$, and at that single point, it contains the entire "Energy" of the signal. The Dirac delta function, $\delta(\omega)$, is the perfect mathematical tool for this.
+	
+	\subsection*{11.3.5 Gaussian Pulse}
+	
+	Let $x(t) = e^{-at^2}$ for $a > 0$.
+	
+	\begin{align}
+		X(j\omega) &= \int_{-\infty}^{\infty} e^{-at^2}e^{-j\omega t} \dt \\
+		&= \int_{-\infty}^{\infty} e^{-a(t^2 + j\omega t/a)} \dt \\
+		&= e^{-\omega^2/(4a)} \int_{-\infty}^{\infty} e^{-a(t + j\omega/(2a))^2} \dt \\
+		&= \sqrt{\frac{\pi}{a}} e^{-\omega^2/(4a)}
+	\end{align}
+	
+	\textbf{Remarkable property:} A Gaussian pulse has a Gaussian spectrum! This is the only function that is its own Fourier transform (up to scaling).
+	\newpage
+	\subsection*{11.3.6 Exponentially Decaying Sinusoid}
+	
+	Let $x(t) = e^{-at}\sin(\omega_0 t)u(t)$ for $a > 0$.
+	
+	Using the fact that $\sin(\omega_0 t) = \frac{1}{2j}(e^{j\omega_0 t} - e^{-j\omega_0 t})$:
+	\[
+	X(j\omega) = \frac{\omega_0}{(a+j\omega)^2 + \omega_0^2}
+	\]
+	
+	This represents a damped oscillation with natural frequency $\omega_0$ and damping factor $a$.
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec11/fig_additional_examples.tex}
+		\caption{Additional CTFT examples: (a) Gaussian pulse, (b) Exponentially decaying sinusoid}
+		\label{fig:additional_examples}
+	\end{figure}
+	\newpage
+	\section*{11.4 The Fourier Transform of Periodic Signals}
+	
+	For periodic signals, the Fourier transform consists of impulses at harmonic frequencies.
+	
+	\subsection*{11.4.1 Complex Exponential}
+	
+	You can find the Fourier transform of a complex exponential signal, $x(t) = e^{j\omega_0 t}$, using the same method as for a constant signal: by working backward from the inverse Fourier transform integral. This approach relies on proposing a solution and then proving it works.
+	
+	
+	Let's start by guessing that the Fourier transform, $X(j\omega)$, is a shifted Dirac delta function. The original signal is a "pure" complex sinusoid oscillating at a single frequency, $\omega_0$. Therefore, it's logical to assume that all of its frequency content is concentrated entirely at $\omega = \omega_0$.
+	
+	Our proposed transform is $X(j\omega) = c \cdot \delta(\omega - \omega_0)$, where $c$ is a constant we need to find.
+	
+	
+	Now, by substituting $X(j\omega) = c \cdot \delta(\omega - \omega_0)$ into the IFT equation:
+	\[
+	x(t) = \frac{1}{2\pi} \int_{-\infty}^{\infty} [c \cdot \delta(\omega - \omega_0)] e^{j\omega t} \dd\omega
+	\]
+	 Applying the sifting property, we get:
+	\[
+	x(t) = \frac{c}{2\pi} e^{j\omega_0 t}
+	\]
+	
+	We want our result to be equal to our original signal, $x(t) = e^{j\omega_0 t}$. By comparing the two, we can see that:
+	\[
+	\frac{c}{2\pi} = 1 \implies c = 2\pi
+	\]
+	
+ Therefore,
+	\[
+	e^{j\omega_0 t} \stackrel{\mathcal{F}}{\longleftrightarrow} 2\pi\delta(\omega - \omega_0)
+	\]
+	
+	\subsection*{11.4.2 Sinusoidal Signals}
+	
+	For $x(t) = \sin(\omega_0 t)$:
+	\[
+	\sin(\omega_0 t) \stackrel{\mathcal{F}}{\longleftrightarrow} j\pi[\delta(\omega + \omega_0) - \delta(\omega - \omega_0)]
+	\]
+	
+	For $x(t) = \cos(\omega_0 t)$:
+	\[
+	\cos(\omega_0 t) \stackrel{\mathcal{F}}{\longleftrightarrow} \pi[\delta(\omega + \omega_0) + \delta(\omega - \omega_0)]
+	\]
+	
+	\newpage
+	\section*{11.5 Spectrum and Frequency Content}
+	
+	
+	The Fourier transform $X(j\omega)$ represents the \textbf{spectrum} of the signal $x(t)$, showing how the signal's energy is distributed across different frequencies.
+	
+	\begin{itemize}[noitemsep]
+		\item \textbf{Magnitude spectrum} $|X(j\omega)|$: Shows the strength of each frequency component
+		\item \textbf{Phase spectrum} $\angle X(j\omega)$: Shows the phase relationship of each frequency component
+	\end{itemize}
+	
+	\section*{11.6 Parseval's Theorem and Energy Conservation}
+	
+	\begin{theorem}[Parseval's Theorem]
+		For a signal $x(t)$ with Fourier transform $X(j\omega)$:
+		\[
+		\int_{-\infty}^{\infty} |x(t)|^2 \dt = \frac{1}{2\pi} \int_{-\infty}^{\infty} |X(j\omega)|^2 \dd\omega
+		\]
+	\end{theorem}
+	
+	This result states that the total energy in a signal is the same whether calculated in the time domain or frequency domain. The quantity $|X(j\omega)|^2$ is called the \textbf{energy spectral density}.
+	
+	
+	
+	
+	
+	\section*{11.7 Examples}
+	
+	\subsection*{11.7.1 Solved Example}
+	
+	\begin{example}
+		Find the Fourier transform of $x(t) = te^{-a|t|}$ for $a > 0$.
+		
+		\textbf{Hint:} Write $x(t) = te^{-at}u(t) + te^{at}u(-t)$.
+		\[
+		X(j\omega) = \frac{1}{(a+j\omega)^2} - \frac{1}{(a-j\omega)^2} = \frac{-4aj\omega}{(a^2 + \omega^2)^2}
+		\]
+		This result is purely imaginary and odd in $\omega$, because $x(t)$ is real and odd.
+	\end{example}
+	
+	\subsection*{11.7.2 Practice Exercises}
+	
+	\begin{enumerate}[noitemsep]
+		\item Find the CTFT of $x(t) = e^{-|t|}$.
+		\item Find the CTFT of $x(t) = \text{rect}(t/T)$ where $\text{rect}(t) = 1$ for $|t| < 1/2$ and $0$ otherwise.
+		\item Using Parseval's theorem, find the energy of $x(t) = e^{-at}u(t)$.
+		\item Find the CTFT of $x(t) = t^2e^{-at}u(t)$.
+		\item Show that if $x(t)$ is real, then $X(-j\omega) = X^*(j\omega)$.
+	\end{enumerate}
+	
+\section*{11.8 Summary and Next Lecture}
+	
+	The Continuous-Time Fourier Transform extends our frequency-domain analysis to aperiodic signals:
+	
+	\textbf{Key Takeaways:}
+	\begin{itemize}[noitemsep]
+		\item \textbf{The CTFT emerges naturally from the CTFS as the period approaches infinity}
+		\item \textbf{The analysis equation $X(j\omega) = \int_{-\infty}^{\infty} x(t)e^{-j\omega t} \dt$ extracts frequency content}
+		\item \textbf{The synthesis equation $x(t) = \frac{1}{2\pi} \int_{-\infty}^{\infty} X(j\omega)e^{j\omega t} \dd\omega$ reconstructs the signal}
+		\item \textbf{The spectrum $X(j\omega)$ provides complete frequency-domain characterization}
+		\item \textbf{Convergence is guaranteed by the Dirichlet conditions for most practical signals}
+		\item \textbf{Next time:} Properties of the Fourier Transform (linearity, shifting, scaling, duality, convolution)
+	\end{itemize}
+	
+\end{document}

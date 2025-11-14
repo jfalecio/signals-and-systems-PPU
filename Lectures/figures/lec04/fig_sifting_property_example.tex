@@ -1,0 +1,39 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=1 by 5, vertical sep=12pt, xticklabels at=edge bottom},
+		/tikz/font=\small,
+		width=\linewidth, height=3cm, myaxes,
+		xmin=-2.5, xmax=3.5,
+		samples at={-2,...,3},
+		xtick={-2,-1,0,1,2,3}]
+		
+		\nextgroupplot[ylabel={$x[n]$}, ymin=-0.2, ymax=2.2, ytick={0,1,2}, title={Original Signal $x[n]$}]
+		\addplot[ycomb, mark=*, thick, blue] coordinates {
+			(-2,0) (-1,1) (0,2) (1,1) (2,0) (3,0)
+		};
+		
+		\nextgroupplot[ylabel={$x[-1]\delta[n+1]$}, ymin=-0.2, ymax=2.2, ytick={0,1,2}]
+		\addplot[ycomb, mark=*, thick, red] coordinates {
+			(-2,0) (-1,1) (0,0) (1,0) (2,0) (3,0)
+		};
+		\node[anchor=west, fill=white, inner sep=1pt] at (axis cs:0.5,1.5) {$x[-1]=1$};
+		
+		\nextgroupplot[ylabel={$x[0]\delta[n]$}, ymin=-0.2, ymax=2.2, ytick={0,1,2}]
+		\addplot[ycomb, mark=*, thick, red] coordinates {
+			(-2,0) (-1,0) (0,2) (1,0) (2,0) (3,0)
+		};
+		\node[anchor=west, fill=white, inner sep=1pt] at (axis cs:0.5,1.5) {$x[0]=2$};
+		
+		\nextgroupplot[ylabel={$x[1]\delta[n-1]$}, ymin=-0.2, ymax=2.2, ytick={0,1,2}]
+		\addplot[ycomb, mark=*, thick, red] coordinates {
+			(-2,0) (-1,0) (0,0) (1,1) (2,0) (3,0)
+		};
+		\node[anchor=west, fill=white, inner sep=1pt] at (axis cs:0.5,1.5) {$x[1]=1$};
+		
+		\nextgroupplot[xlabel={$n$}, ylabel={Sum}, ymin=-0.2, ymax=2.2, ytick={0,1,2}]
+		\addplot[ycomb, mark=*, thick, purple] coordinates {
+			(-2,0) (-1,1) (0,2) (1,1) (2,0) (3,0)
+		};
+
+	\end{groupplot}
+\end{tikzpicture}

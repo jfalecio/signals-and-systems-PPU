@@ -1,0 +1,54 @@
+\begin{tikzpicture}
+	% Define omega_0 for consistency
+	\pgfmathsetmacro{\wO}{pi/3}
+	
+	\begin{groupplot}[
+		group style={
+			group size=2 by 1,
+			horizontal sep=2cm,
+		},
+		myaxes, % Assumes this style is defined in your preamble
+		width=7cm,
+		height=6cm,
+		xlabel={$\omega$},
+		xmin=-pi, xmax=pi,
+		ymin=-4, ymax=4,
+		xtick={-pi, -\wO, 0, \wO, pi},
+		xticklabels={$-\pi$, $-\omega_0$, $0$, $\omega_0$, $\pi$},
+		ytick={-pi, 0, pi},
+		yticklabels={$-\pi$, 0, $\pi$},
+		]
+		
+		% Subplot 1: DTFT of sin(ω₀n) -> PLOTS IMAGINARY PART
+		\nextgroupplot[
+		title={DTFT of $\sin(\omega_0 n)$},
+		]
+		
+		% Impulse at -ω₀ has amplitude +jπ
+		\addplot[blue, thick, ycomb, mark=*, mark options={fill=blue}] coordinates {(-\wO, pi)};
+		% Impulse at +ω₀ has amplitude -jπ
+		\addplot[blue, thick, ycomb, mark=*, mark options={fill=blue}] coordinates {(\wO, -pi)};
+		
+		% Add labels
+		\node[anchor=south, blue] at (axis cs: -\wO, pi) {$j\pi$};
+		\node[anchor=north, blue] at (axis cs: \wO, -pi) {$-j\pi$};
+		\node[anchor=north east, fill=white, inner sep=2pt, font=\small] at (axis description cs: 1, 0.95) {$\omega_0 = \pi/3$};
+		
+		
+		% Subplot 2: DTFT of cos(ω₀n) -> PLOTS REAL PART
+		\nextgroupplot[
+		title={DTFT of $\cos(\omega_0 n)$},
+		]
+		
+		% Impulse at -ω₀ has amplitude +π
+		\addplot[red, thick, ycomb, mark=*, mark options={fill=red}] coordinates {(-\wO, pi)};
+		% Impulse at +ω₀ has amplitude +π
+		\addplot[red, thick, ycomb, mark=*, mark options={fill=red}] coordinates {(\wO, pi)};
+		
+		% Add labels
+		\node[anchor=south, red] at (axis cs: -\wO, pi) {$\pi$};
+		\node[anchor=south, red] at (axis cs: \wO, pi) {$\pi$};
+		\node[anchor=north east, fill=white, inner sep=2pt, font=\small] at (axis description cs: 1, 0.95) {$\omega_0 = \pi/3$};
+		
+	\end{groupplot}
+\end{tikzpicture}

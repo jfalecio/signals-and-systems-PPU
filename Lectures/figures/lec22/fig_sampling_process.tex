@@ -1,0 +1,69 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={
+			group size=1 by 3,
+			vertical sep=1.2cm,
+		},
+		% --- Common style for all axes ---
+		width=12cm,
+		height=3.5cm,
+		axis lines=middle,
+		xlabel={$t$},
+		xmin=-1, xmax=9,
+		xtick={0, 2, 4, 6, 8},
+		grid=major,
+		grid style={line width=.1pt, draw=gray!30},
+		no marks,
+		]
+		
+		%--- Plot 1: Original Continuous Signal (New Waveform) ---
+		\nextgroupplot[
+		title={1. Continuous Signal $x(t)$},
+		ylabel={$x(t)$},
+		ymin=-1.7, ymax=1.7,
+		ytick={-1.5, -0.5, 0.5, 1.5},
+		]
+		% Using a sum of cosines for a more general shape
+		\addplot[blue, thick, domain=-1:9, samples=200] {cos(deg(pi*x/4)) + 0.5*cos(deg(pi*x/2))};
+		% Add vertical lines to show sampling instants
+		\draw[dashed, gray] (axis cs:0,-1.7) -- (axis cs:0,1.7);
+		\draw[dashed, gray] (axis cs:2,-1.7) -- (axis cs:2,1.7);
+		\draw[dashed, gray] (axis cs:4,-1.7) -- (axis cs:4,1.7);
+		\draw[dashed, gray] (axis cs:6,-1.7) -- (axis cs:6,1.7);
+		\draw[dashed, gray] (axis cs:8,-1.7) -- (axis cs:8,1.7);
+		
+		%--- Plot 2: Ideal Impulse Train ---
+		\nextgroupplot[
+		title={2. Ideal Sampling Function (Impulse Train) $p(t)$},
+		ylabel={$p(t)$},
+		ymin=0, ymax=1.2,
+		ytick={1},
+		]
+		\addplot[ycomb, red, thick, mark=*] coordinates {(0,1) (2,1) (4,1) (6,1) (8,1)};
+		\draw[<->, thick] (axis cs:2, -0.3) -- (axis cs:4, -0.3) node[midway, below] {Sampling Period $T_s=2$};
+		
+		%--- Plot 3: Resulting Sampled Signal (New Samples) ---
+		\nextgroupplot[
+		title={3. Sampled Signal $x_p(t) = x(t) \cdot p(t)$},
+		ylabel={$x_p(t)$},
+		ymin=-1.7, ymax=1.7,
+		ytick={-1.5, -0.5, 0.5, 1.5},
+		]
+		% Corrected y-values to match samples of the new x(t)
+		% Plot positive points with labels above
+		\addplot[ycomb, green!50!black, thick, mark=*,
+		nodes near coords={1.5}, every node near coord/.style={anchor=south, font=\small},
+		] coordinates {(0,1.5) (8,1.5)};
+		
+		% Plot negative points with labels below
+		\addplot[ycomb, green!50!black, thick, mark=*,
+		nodes near coords={-0.5}, every node near coord/.style={anchor=north, font=\small},
+		] coordinates {(2,-0.5) (4,-0.5) (6,-0.5)};
+		
+	\end{groupplot}
+\end{tikzpicture}
+
+
+
+
+

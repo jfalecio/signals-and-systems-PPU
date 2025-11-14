@@ -1,0 +1,38 @@
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[width=\linewidth, height=4cm, myaxes,
+				title={Original Signal: \(x(t)=e^{-t}u(t)\)},
+				xlabel={$t$}, xmin=-2, xmax=4, ymin=-0.2, ymax=1.2]
+				\addplot[domain=-2:4, samples=600, purple, very thick]
+				{(x>=0) ? exp(-x) : 0};
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+	\vspace{0.3cm}
+	\begin{subfigure}{\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[width=\linewidth, height=4cm, myaxes,
+				title={Even Part: \(x_e(t)=\tfrac{1}{2}\big(x(t)+x(-t)\big)=\tfrac{1}{2}e^{-|t|}\)},
+				xlabel={$t$}, xmin=-4, xmax=4, ymin=-0.1, ymax=0.7,
+				ytick distance=0.5]
+				\addplot[domain=-4:4, samples=400, blue, very thick] {0.5*exp(-abs(x))};
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+	\vspace{0.3cm}
+	\begin{subfigure}{\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[width=\linewidth, height=4cm, myaxes,
+				title={Odd Part: \(x_o(t)=\tfrac{1}{2}\big(x(t)-x(-t)\big)=\tfrac{1}{2}\operatorname{sgn}(t)\,e^{-|t|}\)},
+				xlabel={$t$}, xmin=-4, xmax=4, ymin=-0.6, ymax=0.6]
+				\addplot[domain=-4:4, samples=800, red, very thick]
+				{0.5*((x>=0 ? exp(-x) : 0) - (x<=0 ? exp(x) : 0))};
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+\end{figure}

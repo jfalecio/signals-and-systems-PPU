@@ -1,0 +1,26 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=1 by 3, vertical sep=15pt, xticklabels at=edge bottom},
+		/tikz/font=\small,
+		width=\linewidth, height=4cm, myaxes,
+		xmin=-0.5, xmax=4,
+		domain=-0.5:4,
+		samples=200]
+		
+		\nextgroupplot[ylabel={$x(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Input: Impulse train $\sum_{n=0}^{2}\delta(t-n)$}]
+		\draw[blue, line width=2.2pt] (axis cs:0,0) -- (axis cs:0,1);
+		\draw[blue, line width=2.6pt, -{Stealth[length=9pt]}] (axis cs:0,1) -- (axis cs:0,1.05);
+		\draw[blue, line width=2.2pt] (axis cs:1,0) -- (axis cs:1,1);
+		\draw[blue, line width=2.6pt, -{Stealth[length=9pt]}] (axis cs:1,1) -- (axis cs:1,1.05);
+		\draw[blue, line width=2.2pt] (axis cs:2,0) -- (axis cs:2,1);
+		\draw[blue, line width=2.6pt, -{Stealth[length=9pt]}] (axis cs:2,1) -- (axis cs:2,1.05);
+		
+		\nextgroupplot[ylabel={$h(t) = e^{-t}u(t)$}, ymin=-0.2, ymax=1.2, ytick={0,1}, title={Impulse Response: Exponential decay}]
+		\addplot[thick, red, domain=0:4] {exp(-x)};
+		
+		\nextgroupplot[xlabel={$t$}, ylabel={$y(t)$}, ymin=-0.2, ymax=3.2, ytick={0,1,2,3}, title={Output: Sum of shifted exponentials}]
+		\addplot[thick, purple, domain=0:4] {exp(-x) + (x >= 1) * exp(-(x-1)) + (x >= 2) * exp(-(x-2))};
+		\node[anchor=west, fill=white, inner sep=2pt] at (axis cs:1.5,2.5) 
+		{Staircase of exponentials};
+	\end{groupplot}
+\end{tikzpicture}

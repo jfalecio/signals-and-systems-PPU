@@ -1,0 +1,58 @@
+\begin{tikzpicture}
+\begin{axis}[
+	myaxes,
+	width=12cm,
+	height=6cm,
+	title={CD Audio Sampling: 44.1 kHz Sampling Rate},
+	xlabel={Frequency (Hz)},
+	ylabel={Magnitude (dB)},
+	xmin=0, xmax=50000,
+	ymin=-60, ymax=10,
+	xtick={0, 10000, 20000, 22050, 30000, 40000, 44100},
+	xticklabels={$0$, $10k$, $20k$, $22.05k$, $30k$, $40k$, $44.1k$},
+	ytick={-60, -40, -20, -3, 0},
+	yticklabels={$-60$, $-40$, $-20$, $-3$, $0$},
+	grid=major,
+	grid style={gray!15},
+	legend pos=north east,
+]
+
+% Audio spectrum (band-limited to 20 kHz)
+\addplot[blue, thick, domain=0:20000, samples=200] {0};
+\addplot[blue, thick, domain=0:20000, samples=200] {-3*log10(1 + (x/20000)^2)};
+
+% Sampling frequency markers
+\draw[dashed, red] (axis cs:22050,-60) -- (axis cs:22050,10);
+\draw[dashed, red] (axis cs:44100,-60) -- (axis cs:44100,10);
+
+% Nyquist frequency line
+\draw[dashed, green] (axis cs:22050,-60) -- (axis cs:22050,10);
+\node[anchor=south, green] at (axis cs:22050,10) {Nyquist Frequency};
+
+% Sampling frequency line
+\draw[dashed, red] (axis cs:44100,-60) -- (axis cs:44100,10);
+\node[anchor=south, red] at (axis cs:44100,10) {Sampling Frequency};
+
+% Audio bandwidth annotation
+\draw[<->, thick, blue] (axis cs:0,5) -- (axis cs:20000,5);
+\node[anchor=south, blue] at (axis cs:10000,5) {Audio Bandwidth: 20 Hz - 20 kHz};
+
+% Oversampling annotation
+\draw[<->, thick, purple] (axis cs:20000,2) -- (axis cs:22050,2);
+\node[anchor=south, purple] at (axis cs:21025,2) {Oversampling};
+
+% Add legend
+\addlegendentry{Audio Spectrum}
+\addlegendentry{Anti-aliasing Filter}
+
+\end{axis}
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+

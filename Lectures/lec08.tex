@@ -1,0 +1,303 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+\renewcommand{\qedsymbol}{}
+
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{8.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 8} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 8: Properties of the Continuous-Time Fourier Series}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 3, Section 3.5
+	
+\section*{Review of Lecture 7}
+\begin{itemize}[noitemsep]
+	\item Complex exponentials as LTI eigenfunctions
+	\item Continuous-Time Fourier Series (CTFS)
+	\item Synthesis and analysis equations
+	\item Orthogonality and convergence conditions
+\end{itemize}
+	
+\section*{8.1 Introduction}
+
+Last time, we established that complex exponentials are \textbf{eigenfunctions} of LTI systems, meaning that an input $e^{j\omega t}$ produces the output $H(j\omega)e^{j\omega t}$. This motivated the \textbf{Continuous-Time Fourier Series}, which represents a periodic signal $x(t)$ as a sum of harmonically related complex exponentials.
+
+Today, we will examine the properties of this representation. We will explore how operations in the time domain (like shifting or differentiating a signal) affect its frequency-domain representation (the coefficients $a_k$). These properties are not just mathematical curiosities; they are powerful tools that provide deep insight and serve as computational shortcuts.
+
+\section*{8.2 CTFS Properties}
+	
+	For convenience, we will use the notation $x(t) \stackrel{\mathcal{FS}}{\longleftrightarrow} a_k$ to denote the pairing of a periodic signal with its Fourier series coefficients.
+	
+	\subsection*{8.2.1 Linearity}
+	
+	If $x(t) \stackrel{\mathcal{FS}}{\longleftrightarrow} a_k$ and $y(t) \stackrel{\mathcal{FS}}{\longleftrightarrow} b_k$, then:
+	\[
+	Ax(t) + By(t) \stackrel{\mathcal{FS}}{\longleftrightarrow} Aa_k + Bb_k
+	\]
+
+	\subsection*{8.2.2 Time Shifting}
+	
+	\[
+	x(t - t_0) \stackrel{\mathcal{FS}}{\longleftrightarrow} a_k e^{-jk\omega_0 t_0}
+	\]
+	
+	\textbf{Note:} Shifting a signal in time does \textbf{not} change the magnitude of its frequency components, $|a_k|$. It only introduces a \textbf{phase shift}, $-k\omega_0 t_0$, to each coefficient. This phase shift is linear with the harmonic number $k$.
+	
+	\begin{proof}
+		Starting with the synthesis equation for $x(t)$:
+		\[
+		x(t) = \sum_{k=-\infty}^{\infty} a_k e^{jk\omega_0 t}
+		\]
+		For the shifted signal $x(t - t_0)$:
+		\[
+		x(t - t_0) = \sum_{k=-\infty}^{\infty} a_k e^{jk\omega_0 (t - t_0)} = \sum_{k=-\infty}^{\infty} a_k e^{-jk\omega_0 t_0} e^{jk\omega_0 t}
+		\]
+		Therefore, the coefficients for $x(t - t_0)$ are $a_k e^{-jk\omega_0 t_0}$.
+		
+	\end{proof}
+	
+	\subsection*{8.2.3 Time Reversal}
+	
+	\[
+	x(-t) \stackrel{\mathcal{FS}}{\longleftrightarrow} a_{-k}
+	\]
+	
+	\textbf{Note:} Reversing a signal in time also reverses its frequency spectrum.
+	
+	\textbf{Consequence:}
+	\begin{itemize}[noitemsep]
+		\item If $x(t)$ is \textbf{even}, then $a_k$ are \textbf{even} ($a_k = a_{-k}$).
+		\item If $x(t)$ is \textbf{odd}, then $a_k$ are \textbf{odd} ($a_k = -a_{-k}$).
+	\end{itemize}
+	
+	\subsection*{8.2.4 Conjugation and Symmetry for Real Signals}
+	
+	For any \textbf{real} signal $x(t)$, the Fourier coefficients are \textbf{conjugate symmetric}:
+	\[
+	a_k = a_{-k}^*
+	\]
+	
+	\begin{proof}
+		For a real signal $x(t)$, we have $x(t) = x^*(t)$. Starting with the definition of $a_k^*$:
+		\[
+		a_k^* = \left( \frac{1}{T_0} \int_{T_0} x(t)e^{-jk\omega_0 t} \dd t \right)^* = \frac{1}{T_0} \int_{T_0} x^*(t)e^{jk\omega_0 t} \dd t
+		\]
+		Since $x(t)$ is real, $x^*(t) = x(t)$, so:
+		\[
+		a_k^* = \frac{1}{T_0} \int_{T_0} x(t)e^{jk\omega_0 t} \dd t = \frac{1}{T_0} \int_{T_0} x(t)e^{-j(-k)\omega_0 t} \dd t = a_{-k}
+		\]
+		Therefore, $a_k = a_{-k}^*$ for real signals.
+	\end{proof}
+	
+	\textbf{Consequences:}
+	\begin{itemize}[noitemsep]
+		\item The magnitude is an \textbf{even} function: $|a_k| = |a_{-k}|$.
+		\item The phase is an \textbf{odd} function: $\angle a_k = -\angle a_{-k}$.
+		\item The DC component $a_0$ is real.
+		\item If $x(t)$ is real and even, the coefficients $a_k$ are \textbf{real and even}.
+		\item If $x(t)$ is real and odd, the coefficients $a_k$ are \textbf{purely imaginary and odd}.
+	\end{itemize}
+	
+	\begin{remark}
+		These are extremely useful. If you are given a real and even signal, you immediately know that you only need to compute the real-valued coefficients $a_k$ for $k \geq 0$, as the rest are determined by symmetry. This can cut the work in half.
+	\end{remark}
+	
+	\subsection*{8.2.5 Parseval's Theorem for Periodic Signals}
+	
+	This property relates the average power in the time domain to the power in the frequency domain as follows:
+	\[
+	\frac{1}{T_0} \int_{T_0} |x(t)|^2 \dd t = \sum_{k=-\infty}^{\infty} |a_k|^2
+	\]
+	The total average power of a signal is the sum of the average powers of all its harmonic components. This shows that the \textbf{average power} is conserved between the time and frequency domains.
+	
+	The term $|a_k|^2$ is the average power in the $k^{th}$ harmonic. A plot of $|a_k|^2$ versus frequency is called the signal's \textbf{power spectrum}.
+	
+	\begin{proof}
+		Starting with the integral for power:
+		\[
+		\frac{1}{T_0}\int_{T_0} x(t)x^*(t)\dd t = \frac{1}{T_0}\int_{T_0} x(t) \left( \sum_{k=-\infty}^{\infty} a_k^* e^{-jk\omega_0 t} \right) \dd t
+		\]
+		Swapping the sum and integral (assuming convergence):
+		\[
+		= \sum_{k=-\infty}^{\infty} a_k^* \left( \frac{1}{T_0}\int_{T_0} x(t)e^{-jk\omega_0 t} \dd t \right) = \sum_{k=-\infty}^{\infty} a_k^* a_k = \sum_{k=-\infty}^{\infty} |a_k|^2
+		\]
+		 
+	\end{proof}
+	
+	\subsection*{8.2.6 The Differentiation Property}
+	
+	\[
+	\frac{\dd x(t)}{\dd t} \stackrel{\mathcal{FS}}{\longleftrightarrow} jk\omega_0 a_k
+	\]
+	
+	\textbf{Note:} Differentiation is a \textbf{high-pass} operation. The $jk\omega_0$ factor amplifies the coefficients at higher frequencies (larger $k$) more than those at lower frequencies.
+	
+	\textbf{Physical Interpretation:} Derivatives measure the rate of change of a signal. Rapid changes (high frequencies) are emphasized, while slow changes (low frequencies) are attenuated. This is why differentiation acts as a high-pass filter - it naturally emphasizes the high-frequency content of signals.
+	
+	\begin{proof}
+		Differentiating the synthesis equation:
+		\[
+		\frac{\dd x(t)}{\dd t} = \frac{\dd}{\dd t} \sum_{k=-\infty}^{\infty} a_k e^{jk\omega_0 t} = \sum_{k=-\infty}^{\infty} a_k \frac{\dd}{\dd t} e^{jk\omega_0 t} = \sum_{k=-\infty}^{\infty} jk\omega_0 a_k e^{jk\omega_0 t}
+		\]
+	\end{proof}
+	
+	\subsection*{8.2.7 Integration Property}
+	
+	If $x(t) \stackrel{\mathcal{FS}}{\longleftrightarrow} a_k$ and $a_0 = 0$, then:
+	\[
+	\int_{-\infty}^t x(\tau) \dd\tau \stackrel{\mathcal{FS}}{\longleftrightarrow} \frac{a_k}{jk\omega_0}
+	\]
+	
+	\textbf{Note:} Integration is a \textbf{low-pass} (smoothing) operation. The $\frac{1}{jk\omega_0}$ factor attenuates higher frequencies more than lower frequencies.
+	
+	\textbf{Condition Explanation:} The condition $a_0 = 0$ (zero average value) is necessary because if it were non-zero, the integral $\int_{-\infty}^t x(\tau) \dd\tau$ would contain a term $a_0 t$, which grows with time and is not periodic. The Fourier Series can only represent periodic signals.
+	
+	\subsection*{8.2.8 Frequency Shifting (Modulation)}
+	
+	\[
+	x(t) e^{jm\omega_0 t} \stackrel{\mathcal{FS}}{\longleftrightarrow} a_{k-m}
+	\]
+	
+	\textbf{Note:} Multiplying a signal by a complex exponential shifts its entire frequency spectrum. This is the fundamental principle behind radio modulation, where a low-frequency signal (like voice) is shifted to a high-frequency band for transmission.
+	
+	\section*{8.3 Additional Properties and Relationships}
+	
+	\subsection*{8.3.1 Multiplication Property}
+	
+	The multiplication of two periodic signals in the time domain corresponds to convolution of their Fourier series coefficients in the frequency domain:
+	\[
+	x(t)y(t) \stackrel{\mathcal{FS}}{\longleftrightarrow} (a * b)_k = \sum_{\ell=-\infty}^{\infty} a_\ell b_{k-\ell}
+	\]
+	
+	This property is particularly useful for modulation and mixing operations in communications systems.
+	
+	\subsection*{8.3.2 Conjugation Property}
+	
+	For any signal $x(t)$:
+	\[
+	x^*(t) \stackrel{\mathcal{FS}}{\longleftrightarrow} a_{-k}^*
+	\]
+	
+	This property is useful for analyzing the frequency content of complex signals and for understanding the relationship between positive and negative frequency components.
+	
+	\subsection*{8.3.3 Time Scaling}
+	
+	For a time-scaled signal $x(at)$ where $a > 0$:
+	\[
+	x(at) \stackrel{\mathcal{FS}}{\longleftrightarrow} a_k \text{ with fundamental frequency } a\omega_0
+	\]
+	
+	Time scaling compresses or expands the signal in time, which corresponds to expanding or compressing the frequency spectrum.
+	\newpage
+	\section*{8.4 Practical Applications of Properties}
+	
+	\subsection*{8.4.1 Finding the CTFS of a Triangular Wave}
+	
+	We can use the differentiation property to find the coefficients for a periodic triangular wave, $x(t)$, from the coefficients of a square wave, $g(t)$.
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec08/fig_triangular_square_wave.tex}
+		\caption{Triangular wave and its derivative (square wave)}
+		\label{fig:triangular_square_wave}
+	\end{figure}
+	
+	Let $x(t)$ be a triangular wave with period $T_0$ and amplitude $A$. The derivative $g(t) = \frac{\dd x(t)}{\dd t}$ is a square wave with amplitude equal to the slope of the triangular wave (e.g., $4A/T_0$ for a symmetric wave) and coefficients:
+	\[
+	b_k = \frac{4A}{T_0} D \cdot \text{sinc}(Dk)
+	\]
+	where $D$ is the duty cycle and $\text{sinc}(x) = \frac{\sin(\pi x)}{\pi x}$.
+	
+
+	From the differentiation property: $b_k = jk\omega_0 a_k$
+	
+	For $k \neq 0$:
+	\[
+	a_k = \frac{b_k}{jk\omega_0} = \frac{\frac{4A}{T_0} D \cdot \text{sinc}(Dk)}{jk\omega_0} = \frac{4A D}{j2\pi k} \text{sinc}(Dk)
+	\]
+	
+	The DC component $a_0$ is found by inspection (the average value of the triangular wave).
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec08/fig_differentiation_property_relationship.tex}
+		\caption{The differentiation property relationship showing how time-domain differentiation corresponds to frequency-domain multiplication by $jk\omega_0$.}
+		\label{fig:differentiation_property_relationship}
+	\end{figure}
+	
+	\begin{remark}
+		\textbf{The smoother a signal is, the faster its Fourier series coefficients decay to zero.}
+		
+		\begin{itemize}[noitemsep]
+			\item \textbf{Square Wave (Discontinuous):} The coefficients $b_k$ decay proportionally to $\frac{1}{k}$.
+			\item \textbf{Triangular Wave (Continuous):} The coefficients $a_k$ contain an extra factor of $1/k$ from the integration, so they decay much faster, proportionally to $\frac{1}{k^2}$.
+		\end{itemize}
+		
+		This faster decay means that a smooth signal like a triangular wave can be accurately approximated with fewer sinusoidal harmonics compared to a sharp, discontinuous signal like a square wave.
+	\end{remark}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec08/fig_coefficient_decay_comparison.tex}
+		\caption{Comparison of Fourier coefficient decay rates}
+		\label{fig:coefficient_decay_comparison}
+	\end{figure}
+	
+	\subsection*{8.4.2 Summary of CTFS Properties}
+	
+	\begin{table}[H]
+		\centering
+		\begin{tabular}{|l|c|c|}
+			\hline
+			\textbf{Property} & \textbf{Time Domain} $x(t)$ & \textbf{Frequency Domain} $a_k$ \\
+			\hline
+			Linearity & $Ax(t) + By(t)$ & $Aa_k + Bb_k$ \\
+			\hline
+			Time Shifting & $x(t - t_0)$ & $a_k e^{-jk\omega_0 t_0}$ \\
+			\hline
+			Time Reversal & $x(-t)$ & $a_{-k}$ \\
+			\hline
+			Conjugation (Real Signals) & $x(t)$ real & $a_k = a_{-k}^*$ \\
+			\hline
+			Differentiation & $\frac{\dd x(t)}{\dd t}$ & $jk\omega_0 a_k$ \\
+			\hline
+			Integration & $\int_{-\infty}^t x(\tau) \dd\tau$ & $\frac{a_k}{jk\omega_0}$ (if $a_0 = 0$) \\
+			\hline
+			Frequency Shifting & $x(t) e^{jm\omega_0 t}$ & $a_{k-m}$ \\
+			\hline
+			Parseval's Theorem & $\frac{1}{T_0} \int_{T_0} |x(t)|^2 \dd t$ & $\sum_{k=-\infty}^{\infty} |a_k|^2$ \\
+			\hline
+		\end{tabular}
+		\caption{Summary of Continuous-Time Fourier Series Properties}
+		\label{tab:ctfs_properties}
+	\end{table}
+	
+	\section*{8.5 Summary and Next Lecture}
+	
+	As we have demonstrated, the properties of the CTFS form a powerful 'dictionary' for translating operations between the time and frequency domains. These properties provide both computational shortcuts and deep physical insights into how signals behave.
+	
+	\begin{itemize}[noitemsep]
+		\item Time shifting introduces linear phase shifts proportional to frequency
+		\item Differentiation acts as a high-pass filter, integration as a low-pass filter
+		\item Real signals have conjugate-symmetric coefficients, reducing computation by half
+		\item Parseval's relation shows energy conservation between time and frequency domains
+		\item Properties provide powerful shortcuts for finding Fourier series coefficients
+		\item \textbf{Next time:} We will develop the parallel representation for discrete-time periodic signals: the \textbf{Discrete-Time Fourier Series (DTFS)}. We will see many similarities, but also some critical differences that arise from the discrete nature of time.
+	\end{itemize}
+	
+\end{document}

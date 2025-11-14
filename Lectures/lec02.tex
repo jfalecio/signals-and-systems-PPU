@@ -1,0 +1,448 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+\usetikzlibrary{angles,quotes,arrows.meta}
+\pgfmathdeclarefunction{tri}{2}{%
+	\pgfmathparse{2*abs(mod(#1, #2)/(0.5*#2) - 1) - 1}%
+}
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{2.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 2} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 2: Elementary Signals and Signal Properties}
+	\end{center}
+	\vspace{0.4cm}
+	
+\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 1, Sections 1.2.2 -- 1.4
+
+	\section*{Review of Lecture 1}
+	\begin{itemize}[noitemsep]
+		\item CT and DT signals defined
+		\item Time-domain transformations learned
+		\item Audio signal examples
+		\item Energy and power concepts
+	\end{itemize}
+	
+	\section*{2.1 Periodic Signals}
+	\subsection*{Continuous-Time (CT) Periodic Signals}
+	\begin{definition}
+		A CT signal $x(t)$ is \textbf{periodic} if there exists a constant $T > 0$ such that
+		\[
+		x(t) = x(t + T), \quad \forall t \in \R.
+		\]
+	\end{definition}
+	
+	\begin{itemize}[noitemsep]
+		\item The \textbf{fundamental period} $T_0$ is the smallest such positive value of $T$.
+		\item If $T_0$ is the fundamental period, then $mT_0$ is also a period for any integer $m$.
+		\item The \textbf{fundamental frequency} is given by:
+		\[
+		f_0 = \frac{1}{T_0} \text{ (in Hz)}, \quad \omega_0 = 2\pi f_0 = \frac{2\pi}{T_0} \text{ (in rad/s)}.
+		\]
+	\end{itemize}
+	
+	% --- PLOT: Periodic CT Triangular Wave ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_ct_periodic_triangular.tex}
+		\caption{Periodic continuous-time triangular wave.}
+		\label{fig:ct_periodic_triangular}
+	\end{figure}
+	
+	\begin{example}
+		Show that \(x(t) = A\cos(\omega_0 t + \theta)\) has a fundamental period of 
+		\[
+		T_0 = \frac{2\pi}{|\omega_0|}.
+		\]
+	\end{example}
+	
+	\paragraph{Sum of Periodic CT Signals:} A sum of two periodic signals, \(x(t) = x_1(t) + x_2(t)\) with fundamental periods \(T_1\) and \(T_2\), is periodic if and only if the ratio of their periods is a rational number:
+	\[
+	\frac{T_1}{T_2} = \frac{m}{n}, \quad \text{where } m, n \in \Z^+.
+	\]
+	The fundamental period is then 
+	\[
+	T_0 = nT_1 = mT_2,
+	\]
+	where \(m,n\) are the smallest such integers. This means \(T_0\) is the smallest time when the first signal has completed \(m\) full cycles and the second signal has completed \(n\) full cycles simultaneously, marking the moment they "align" perfectly and the combined signal repeats.
+	
+	% --- PLOT: Sum of two periodic CT signals ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_sum_ct_periodic.tex}
+		\caption{Sum of two periodic continuous-time signals.}
+		\label{fig:sum_ct_periodic}
+	\end{figure}
+	% --- PLOT: Sum of two signals resulting in an aperiodic one ---
+	\vspace*{\fill}
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_sum_ct_aperiodic.tex}
+		\caption{Sum of periodic signals creating aperiodic result.}
+		\label{fig:sum_ct_aperiodic}
+	\end{figure}
+	\vspace*{\fill}
+	\newpage
+	\subsection*{Discrete-Time (DT) Periodic Signals}
+	\begin{definition}
+		A DT signal $x[n]$ is \textbf{periodic} if there exists an integer $N > 0$ such that
+		\[
+		x[n] = x[n+N], \quad \forall n \in \Z.
+		\]
+	\end{definition}
+	
+	\begin{itemize}[noitemsep]
+		\item The \textbf{fundamental period} $N_0$ is the smallest such positive integer.
+		\item If $N_0$ is a period, then $mN_0$ is also a period for any integer $m$.
+		\item The fundamental angular frequency is \(\omega_0 = \frac{2\pi}{N_0}\) (in rad/sample).
+	\end{itemize}
+	
+	% --- PLOT: Periodic DT Triangular Wave ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_dt_periodic_triangular.tex}
+		\caption{Periodic discrete-time triangular wave.}
+		\label{fig:dt_periodic_triangular}
+	\end{figure}
+	
+	\paragraph{Sum of Periodic DT Signals:}
+	If \(x_1[n]\) has period \(N_1\) and \(x_2[n]\) has period \(N_2\), their sum \(x[n] = x_1[n] + x_2[n]\) is periodic with period \(N_0\) given by 
+	\[
+	N_0 = \operatorname{lcm}(N_1, N_2) = \frac{N_1 N_2}{\operatorname{gcd}(N_1, N_2)}.
+	\]
+	For \(x[n]\) to be periodic, both \(x_1[n]\) and \(x_2[n]\) must complete an integer number of their respective periods simultaneously. The smallest such interval is the fundamental period \(N_0\) of the sum. 
+	\newpage
+	\begin{example}
+		\begin{itemize}[noitemsep]
+			\item \(N_1=6, N_2=9 \implies N_0 = \operatorname{lcm}(6,9) = 18.\)
+			\item \(N_1=8, N_2=12 \implies N_0 = \operatorname{lcm}(8,12) = 24.\)
+		\end{itemize}
+	\end{example}
+	
+	% --- PLOT: Sum of two periodic DT signals ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_sum_dt_periodic.tex}
+		\caption{Sum of two periodic discrete-time signals.}
+		\label{fig:sum_dt_periodic}
+	\end{figure}
+	
+	\hrulefill
+	
+	\subsection*{Average Power of Periodic Signals}
+	Periodic signals are classified as \textbf{power signals}. Their average power can be computed over one fundamental period (\(T_0\) or \(N_0\)) as follows:
+	\begin{itemize}[noitemsep]
+		\item CT average power:
+		\[
+		P_{\text{ave}} = \frac{1}{T_0} \int_{t_0} |x(t)|^2 \, \dt.
+		\]
+		\item DT average power:
+		\[
+		P_{\text{ave}} = \frac{1}{N_0} \sum_{n=\langle N_0\rangle} |x[n]|^2.
+		\]
+	\end{itemize}
+	
+	\pagebreak
+	
+	\section*{2.2 Even and Odd Signals}
+	A signal can be classified based on its symmetry with respect to the time origin.
+	
+	\begin{definition}
+		\textbf{Even signal:} Symmetric about the vertical axis.
+		\[
+		x(-t) = x(t) \quad \text{(CT)}, \quad x[-n] = x[n] \quad \text{(DT)}.
+		\]
+	\end{definition}
+	
+	% --- PLOT: Even Signals ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_even_signals.tex}
+		\caption{Even signal symmetry examples.}
+		\label{fig:even_signals}
+	\end{figure}
+	
+	\begin{definition}
+		\textbf{Odd signal:} Symmetric about the origin.
+		\[
+		x(-t) = -x(t) \quad \text{(CT)}, \quad x[-n] = -x[n] \quad \text{(DT)}.
+		\]
+	\end{definition}
+	
+	% --- PLOT: Odd Signals ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_odd_signals.tex}
+		\caption{Odd signal symmetry examples.}
+		\label{fig:odd_signals}
+	\end{figure}
+	
+	\begin{proposition}
+		Any signal can be decomposed into the sum of an even part and an odd part:
+		\[
+		x(t) = x_e(t) + x_o(t),
+		\]
+		where the even and odd components are given by:
+		\[
+		x_e(t) = \frac{1}{2} \left( x(t) + x(-t) \right), \quad x_o(t) = \frac{1}{2} \left( x(t) - x(-t) \right).
+		\]
+		The same decomposition applies to DT signals by replacing \(t\) by \(n\).
+	\end{proposition}
+	
+	% --- PLOT: Even and Odd Decomposition ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_even_odd_decomposition.tex}
+		\caption{Signal decomposition into even and odd parts.}
+		\label{fig:even_odd_decomposition}
+	\end{figure}
+	
+	\paragraph{Energy of Even/Odd Parts:} Because the even and odd components of a signal are orthogonal, the total energy of a signal is the sum of the energies of its even and odd parts:
+	\[
+	\int_{-\infty}^\infty |x(t)|^2 \dt = \int_{-\infty}^\infty |x_e(t)|^2 \dt + \int_{-\infty}^\infty |x_o(t)|^2 \dt.
+	\]
+	The same applies for DT signals by replacing integration with summation and t with n.
+	
+	\pagebreak
+	
+	\section*{2.3 Exponential and Sinusoidal Signals}
+	\subsection*{Continuous-Time (CT) Exponentials}
+	The general form is:
+	\[
+	x(t) = C e^{a t}, \quad \text{where } a, C \in \C.
+	\]
+	
+	% --- PLOT: Real and Complex Exponentials ---
+\begin{figure}[H]
+	\centering
+	\resizebox{0.8\textwidth}{!}{\input{figures/lec02/fig_ct_exponentials.tex}}
+	\caption{Visualization of real and complex exponential signals.}
+	\label{fig:ct_exponentials}
+\end{figure}
+	
+	\begin{itemize}[noitemsep]
+		\item \textbf{Real Exponent ($a, C \in \R$):}
+		\begin{itemize}[noitemsep]
+			\item If \(a > 0\), the signal grows exponentially.
+			\item If \(a < 0\), the signal decays exponentially.
+		\end{itemize}
+		\item \textbf{Complex Exponent ($a = j \omega_0$):} The signal \(x(t) = e^{j \omega_0 t}\) is periodic. Using Euler's relation:
+		\[
+		x(t) = e^{j \omega_0 t} = \cos(\omega_0 t) + j \sin(\omega_0 t).
+		\]
+		It represents a vector of unit length rotating in the complex plane at angular frequency \(\omega_0\). Its fundamental period is
+		\[
+		T_0 = \frac{2\pi}{|\omega_0|}.
+		\]
+		\item The higher \(|\omega_0|\), the faster the vector spins, resulting in faster oscillations in the real and imaginary parts.
+	\end{itemize}
+	
+	\subsection*{Continuous-Time (CT) Sinusoids}
+	\[
+	x(t) = A \cos(\omega_0 t + \theta) = \Re \left\{ A e^{j(\omega_0 t + \theta)} \right\}.
+	\]
+	This shows that sinusoids are projections of rotating complex exponentials onto the real axis.
+	
+	The fundamental frequency \(f_0\) in Hertz (cycles per second) and the fundamental period \(T_0\) are related to \(\omega_0\) as:
+	\[
+	f_0 = \frac{\omega_0}{2\pi}, \quad T_0 = \frac{1}{f_0} = \frac{2\pi}{\omega_0}.
+	\]
+	
+	\subsection*{Discrete-Time (DT) Exponentials}
+	The general form is:
+	\[
+	x[n] = C \alpha^n.
+	\]
+	
+	% --- PLOT: DT Exponentials ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_dt_exponentials.tex}
+		\caption{Discrete-time exponential signal examples.}
+		\label{fig:dt_exponentials}
+	\end{figure}
+	
+	\begin{itemize}[noitemsep]
+		\item \textbf{Real Base \((\alpha \in \R)\):}
+		\begin{itemize}[noitemsep]
+			\item If \(|\alpha| > 1\), the sequence grows.
+			\item If \(|\alpha| < 1\), the sequence decays.
+		\end{itemize}
+		\item \textbf{Complex Base \(\alpha = e^{j \omega_0}\):} The signal \(x[n] = e^{j \omega_0 n}\) has unique properties compared to its CT counterpart.
+	\end{itemize}
+	\newpage
+	\paragraph{Key Differences of DT Complex Exponentials from CT:}
+	\begin{itemize}[noitemsep]
+		\item For \(x[n] = e^{j \omega_0 n}\) to be periodic with period \(N\), it must satisfy:
+		\[
+		\omega_0 N = 2 \pi m
+		\]
+		for some integers \(m\) and \(N\). This implies that periodicity requires \(\frac{\omega_0}{2\pi}\) to be a rational number.
+		\item \textbf{Frequency Aliasing:} Frequencies separated by integer multiples of \(2\pi\) produce identical signals:
+		\[
+		e^{j (\omega_0 + 2\pi k) n} = e^{j \omega_0 n} e^{j 2\pi k n} = e^{j \omega_0 n}, \quad \text{for any integer } k.
+		\]
+		In contrast, for CT signals, distinct values of \(\omega_0\) always produce distinct signals.
+		
+		\textbf{Key insight:} Because frequencies alias every \(2\pi\), all unique frequency content is captured in an interval like \([- \pi, \pi)\). This fundamental property of discrete-time signals means we only need to consider a frequency interval of length \(2\pi\).
+		
+		\item \textbf{Rate of oscillation is not monotonic with \(\omega_0\):}
+		\begin{itemize}[noitemsep]
+			\item Low frequencies (slow oscillation) occur when \(\omega_0\) is near an even multiple of \(\pi\) (e.g., \(0, \pm 2\pi, \dots\)).
+			\item High frequencies (fast oscillation) occur when \(\omega_0\) is near an odd multiple of \(\pi\) (e.g., \(\pm \pi, \pm 3\pi, \dots\)).
+			\item The fastest possible oscillation corresponds to \(\omega_0 = \pi\), which gives:
+			\[
+			x[n] = e^{j \pi n} = (-1)^n.
+			\]
+		\end{itemize}
+	\end{itemize}
+	
+	\pagebreak
+	
+	\section*{2.4 Unit Impulse and Unit Step Functions}
+	\subsection*{Discrete-Time (DT) Signals}
+	
+	\paragraph{Unit Impulse \(\imp[n]\):} Represents a single instantaneous pulse at \(n=0\):
+	\[
+	\imp[n] = \begin{cases}
+		1, & n=0 \\
+		0, & n \neq 0
+	\end{cases}
+	\]
+	
+	\paragraph{Unit Step \(u[n]\):} Represents a signal that switches on at \(n=0\) and stays on:
+	\[
+	u[n] = \begin{cases}
+		1, & n \geq 0 \\
+		0, & n < 0
+	\end{cases}
+	\]
+	
+	% --- PLOT: DT Impulse and Step ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_dt_impulse_and_step.tex}
+	\caption{Fundamental discrete-time signals}
+		\label{fig:dt_impulse_and_step}
+	\end{figure}
+\newpage	
+	\paragraph{Properties:}
+	\begin{itemize}[noitemsep]
+		\item The impulse is the first difference of the step:
+		\[
+		\imp[n] = u[n] - u[n-1].
+		\]
+	\end{itemize}
+	
+	% --- PLOT: Relation between DT step and impulse ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_dt_step_impulse.tex}
+		\caption{Relation between discrete-time step and impulse.}
+		\label{fig:dt_step_impulse}
+	\end{figure}
+	
+	\begin{itemize}[noitemsep]
+		\item The step is the running sum of the impulse:
+		\[
+		u[n] = \sum_{k=-\infty}^n \imp[k] = \sum_{k=0}^\infty \imp[n-k].
+		\]
+		\item For any \(x[n]\): \(x[n] \imp[n - n_0] = x[n_0] \imp[n - n_0]\).
+		\item The impulse is even:
+		\[
+		\imp[-n] = \imp[n].
+		\]
+	\end{itemize}
+	\newpage
+	\subsection*{Continuous-Time (CT) Signals}
+	
+	\paragraph{Unit Step \(u(t)\):}
+	\[
+	u(t) = \begin{cases}
+		1, & t \geq 0 \\
+		0, & t < 0
+	\end{cases}
+	\]
+	
+	% --- PLOT: CT Unit Step ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_ct_unit_step.tex}
+		\caption{Continuous-time unit step function.}
+		\label{fig:ct_unit_step}
+	\end{figure}
+	
+	\paragraph{Unit Impulse \(\imp(t)\) (Dirac Delta Function):}
+	The CT unit impulse is an idealized function defined by its properties under integration rather than its value. Conceptually, it is an infinitely tall, infinitely narrow pulse at \(t=0\) with a total area of 1.
+	
+	Formally, it can be viewed as the limit of a pulse \(g_T(t)\) shrinking in width but maintaining unit area:
+	\[
+	\imp(t) = \lim_{T \to 0} g_T(t).
+	\]
+	
+	% --- PLOT: CT Impulse Approximation ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_ct_impulse_approx.tex}
+		\caption{Continuous-time unit impulse approximation.}
+		\label{fig:ct_impulse_approx}
+	\end{figure}
+	
+	% --- PLOT: CT Impulse Representation ---
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec02/fig_ct_impulse.tex}
+		\caption{Continuous-time unit impulse representation.}
+		\label{fig:ct_impulse}
+	\end{figure}
+	
+	\paragraph{Properties:}
+	\begin{itemize}[noitemsep]
+		\item Sifting property: The impulse "sifts out" the value of a function at a single point:
+		\[
+		\int_{-\infty}^\infty x(t) \imp(t - t_0) \, \dt = x(t_0).
+		\]
+		\item The total area is unity:
+		\[
+		\int_{-\infty}^\infty \imp(t) \, \dt = 1.
+		\]
+		\item The impulse is the derivative of the step:
+		\[
+		\imp(t) = \frac{\dd}{\dd t} u(t),
+		\]
+		and the step is the integral of the impulse:
+		\[
+		u(t) = \int_{-\infty}^t \imp(\tau) \, \dd\tau.
+		\]
+		\item Scaling property:
+		\[
+		\imp(a t + b) = \frac{1}{|a|} \imp \left(t + \frac{b}{a} \right).
+		\]
+		\item The impulse is even:
+		\[
+		\imp(-t) = \imp(t).
+		\]
+	\end{itemize}
+	
+	\section*{Summary and Next Lecture}
+	\begin{itemize}[noitemsep]
+		\item Defined periodicity for CT and DT signals.
+		\item Explored signal symmetries: even and odd decomposition.
+		\item Introduced fundamental exponential and sinusoidal signals.
+		\item Defined the unit impulse and unit step functions.
+		\item \textbf{Next time:} System properties and classifications.
+	\end{itemize}
+	
+\end{document}

@@ -1,0 +1,44 @@
+\begin{tikzpicture}[
+	% --- STYLES (Unified for a consistent look) ---
+	node distance=1.2cm and 1.5cm,
+	% A single, modern block style for both parts of the diagram
+	block/.style={
+		draw, 
+		thick,
+		minimum height=1.1cm, 
+		minimum width=2.4cm, 
+		align=center,
+		font=\sf
+	},
+	% The original, reliable line style for arrows
+	line/.style={
+		-latex, 
+		thick
+	},
+	% Style for plain text nodes to ensure font consistency
+	io/.style={
+		font=\sf
+	}
+	]
+	
+
+	
+	% --- Nodes (using original placement) ---
+	\node[io] (in_a) {\(x(t)\)};
+	\node[block, right=of in_a] (sys_a) {System \(\mathcal{T}\)};
+	\node[io, right=of sys_a] (mid_a) {\(y(t)\)};
+	\node[block, right=of mid_a] (inv_a) {Inverse \(\mathcal{T}^{-1}\)};
+	\node[io, right=of inv_a] (out_a) {\(x(t)\)};
+	
+	% --- Connections ---
+	\draw[line] (in_a) -- (sys_a);
+	\draw[line] (sys_a) -- (mid_a);
+	\draw[line] (mid_a) -- (inv_a);
+	\draw[line] (inv_a) -- (out_a);
+	
+	% --- Title ---
+	\node[above=0.6cm of sys_a, xshift=1.5cm, font=\sf\bfseries] {Invertible System};
+	
+	
+	
+\end{tikzpicture}

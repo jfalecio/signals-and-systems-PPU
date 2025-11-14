@@ -1,0 +1,52 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={
+			group size=2 by 1,
+			horizontal sep=2cm,
+		},
+		myaxes, % Assumes this style is defined elsewhere
+		width=7cm,
+		height=6cm,
+		title style={yshift=1ex},
+		]
+		
+		% Subplot 1: Time Domain (Hardcoded for N=5)
+		\nextgroupplot[
+		title={Time Domain: $x[n]$},
+		xlabel={$n$},
+		ylabel={$x[n]$},
+		xmin=-1, xmax=6,
+		ymin=-0.2, ymax=1.2,
+		xtick={0, 1, 2, 3, 4},
+		ytick={0, 1},
+		]
+		\addplot[
+		blue, thick, ycomb, mark=*, mark options={fill=blue},
+		domain=0:4,
+		samples=5,
+		] {1};
+		\node[anchor=north west, fill=white, inner sep=2pt, font=\small] at (axis cs: 4.2, 1.1) {$N = 5$};
+		
+		
+		% Subplot 2: Frequency Domain (FIXED)
+		\nextgroupplot[
+		title={Frequency Domain: $|X(e^{j\omega})|$},
+		xlabel={$\omega$},
+		ylabel={$|X(e^{j\omega})|$},
+		xmin=-pi, xmax=pi,
+		ymin=0, ymax=5.5,
+		xtick={-pi, -pi/2, 0, pi/2, pi},
+		xticklabels={$-\pi$, $-\frac{\pi}{2}$, $0$, $\frac{\pi}{2}$, $\pi$},
+		ytick={0, 1, 2, 3, 4, 5},
+		yticklabels={0, 1, 2, 3, 4, {$N=5$}},
+		domain=-pi:pi,
+		samples=201,
+		]
+		% --- THIS IS THE CORRECTED LINE ---
+		\addplot[red, thick, smooth] {
+			% Use a ternary operator to handle the case at x=0
+			abs(x) < 0.001 ? 5 : abs(sin(deg(5*x/2))/sin(deg(x/2)))
+		};
+		
+	\end{groupplot}
+\end{tikzpicture}

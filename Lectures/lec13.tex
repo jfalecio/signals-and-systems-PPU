@@ -1,0 +1,185 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{13.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 13} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 13: The Convolution Property and LTI System Analysis}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 4, Sections 4.4, 4.5, 4.7
+	
+	\section*{Review of Lecture 12}
+	\begin{itemize}[noitemsep]
+		\item Properties of the CTFT: linearity, time shifting, frequency shifting
+		\item Time scaling and duality properties
+		\item Differentiation and integration in the frequency domain
+		\item Symmetry properties for real signals
+		\item Periodic signals and impulse trains in frequency domain
+		\item Convolution and multiplication properties (introduced)
+	\end{itemize}
+	
+	\section*{13.1 Introduction}
+	
+	Building on our introduction to the convolution property in Lecture 12, this lecture focuses on its application to LTI system analysis. The convolution property transforms convolution operations in the time domain to multiplication in the frequency domain, providing a powerful method for analyzing systems described by differential equations.
+	
+\section*{13.2 Recall: Convolution and Multiplication (from Lecture 12)}
+	
+	\begin{itemize}[noitemsep]
+		\item Convolution property (12.7.1): $x_1(t)\conv x_2(t) \leftrightarrow X_1(j\omega)X_2(j\omega)$
+		\item Multiplication property (12.7.2): $x_1(t)x_2(t) \leftrightarrow \frac{1}{2\pi}\,X_1(j\omega)\conv X_2(j\omega)$
+	\end{itemize}
+	We will use these properties without re-derivation to analyze LTI systems efficiently.
+	
+\section*{13.3 Using the Properties}
+	
+	\textbf{Intuition:} Time-domain convolution corresponds to spectral shaping; time-domain multiplication corresponds to spectral blending. We will apply these directly to system equations.
+	\newpage
+	\section*{13.4 Analysis of Differential Equations}
+	
+	The convolution and differentiation properties enable analysis of LTI systems described by linear constant-coefficient differential equations. The Fourier transform converts differential equations into algebraic equations.
+	
+	\textbf{Procedure:}
+	\begin{enumerate}[noitemsep]
+		\item Start with the system's differential equation:
+		\[
+		\sum_{k=0}^{N} a_k \frac{d^k y(t)}{dt^k} = \sum_{k=0}^{M} b_k \frac{d^k x(t)}{dt^k}
+		\]
+		\item Take the Fourier transform of both sides
+		\item Apply the \textbf{Linearity} property to transform each term individually
+		\item Apply the \textbf{Differentiation} property: $\mathcal{F}\left\{\frac{d^k y(t)}{dt^k}\right\} = (j\omega)^k Y(j\omega)$
+		\item This transforms the differential equation into an algebraic equation:
+		\[
+		\left(\sum_{k=0}^{N} a_k (j\omega)^k\right) Y(j\omega) = \left(\sum_{k=0}^{M} b_k (j\omega)^k\right) X(j\omega)
+		\]
+		\item Solve for the frequency response:
+		\[
+		H(j\omega) = \frac{Y(j\omega)}{X(j\omega)} = \frac{\sum_{k=0}^{M} b_k (j\omega)^k}{\sum_{k=0}^{N} a_k (j\omega)^k}
+		\]
+	\end{enumerate}
+	
+	\begin{example}
+		Consider the first-order RC low-pass governed by the differential equation
+		\[
+		RC\,\frac{dy(t)}{dt} + y(t) = x(t).
+		\]
+		Taking Fourier transforms gives $H(j\omega)=\frac{Y}{X}=\frac{1}{1+j\omega RC}$. The inverse Fourier transform yields the impulse response
+		\[
+		h(t)=\mathcal{F}^{-1}\{H(j\omega)\}=\frac{1}{RC}\,e^{-t/(RC)}u(t).
+		\]
+		\textbf{Building intuition:} Because $y=x*h$, the output is a weighted average of past input values with exponentially decaying weights over a window of size $\approx RC$. Thus:
+		\begin{itemize}[noitemsep]
+			\item \textbf{Step input:} $y(t)$ rises toward the input level with time constant $RC$.
+			\item \textbf{Slow variations (low frequency):} Averaging preserves them $\Rightarrow$ passed.
+			\item \textbf{Rapid variations (high frequency):} Averaging smooths them out $\Rightarrow$ attenuated.
+		\end{itemize}
+	\end{example}
+	
+	\begin{example}
+		Find the frequency response of a second-order system:
+		\[
+		\frac{d^2y(t)}{dt^2} + 2\zeta\omega_n\frac{dy(t)}{dt} + \omega_n^2 y(t) = \omega_n^2 x(t)
+		\]
+		
+		\textbf{Solution:} Taking the Fourier transform:
+		\[
+		(j\omega)^2 Y(j\omega) + 2\zeta\omega_n(j\omega) Y(j\omega) + \omega_n^2 Y(j\omega) = \omega_n^2 X(j\omega)
+		\]
+		\[
+		(-\omega^2 + 2\zeta\omega_n j\omega + \omega_n^2) Y(j\omega) = \omega_n^2 X(j\omega)
+		\]
+		Therefore:
+		\[
+		H(j\omega) = \frac{\omega_n^2}{-\omega^2 + 2\zeta\omega_n j\omega + \omega_n^2}
+		\]
+	\end{example}
+	
+	\section*{13.5 Frequency-Domain System Analysis}
+	
+	For any LTI system with known differential equation:
+	\begin{enumerate}[noitemsep]
+		\item Find $H(j\omega)$ using the method above
+		\item For a given input $x(t)$:
+		\begin{itemize}[noitemsep]
+			\item Compute $X(j\omega) = \mathcal{F}\{x(t)\}$
+			\item Compute $Y(j\omega) = H(j\omega)X(j\omega)$
+			\item Compute $y(t) = \mathcal{F}^{-1}\{Y(j\omega)\}$
+		\end{itemize}
+	\end{enumerate}
+	
+	\textbf{Advantages:}
+	\begin{itemize}[noitemsep]
+		\item \textbf{Algebraic simplicity:} No need for direct integration or solving ODEs
+		\item \textbf{System design:} Easy to design filters and systems in frequency domain
+		\item \textbf{Physical insight:} Clear understanding of how different frequencies are affected
+	\end{itemize}
+	
+	
+	
+	\section*{13.6 Examples}
+	
+	\begin{example}
+		Consider an LTI system with impulse response $h(t) = e^{-at}u(t)$ and input $x(t) = e^{-bt}u(t)$ where $a, b > 0$. Find the output using both time-domain and frequency-domain methods.
+		
+		\textbf{Solution:}
+		
+		\textbf{Time-Domain Method:}
+		\[
+		y(t) = x(t) \conv h(t) = \int_{0}^{t} e^{-b\tau}e^{-a(t-\tau)} \dd\tau = e^{-at}\int_{0}^{t} e^{-(b-a)\tau} \dd\tau
+		\]
+		\[
+		y(t) = \frac{e^{-at} - e^{-bt}}{b-a}u(t)
+		\]
+		
+		\textbf{Frequency-Domain Method:}
+		\[
+		X(j\omega) = \frac{1}{b+j\omega}, \quad H(j\omega) = \frac{1}{a+j\omega}
+		\]
+		\[
+		Y(j\omega) = H(j\omega)X(j\omega) = \frac{1}{(a+j\omega)(b+j\omega)} = \frac{1}{b-a}\left(\frac{1}{a+j\omega} - \frac{1}{b+j\omega}\right)
+		\]
+		Taking the inverse transform:
+		\[
+		y(t) = \frac{1}{b-a}(e^{-at} - e^{-bt})u(t)
+		\]
+	\end{example}
+		
+	\section*{13.7 Exercises}
+	
+	\begin{enumerate}[noitemsep]
+		\item Find the output of an LTI system with $h(t) = \text{rect}(t)$ and input $x(t) = e^{-|t|}$.
+		\item Derive the frequency response of a system described by $\frac{dy(t)}{dt} + 3y(t) = 2x(t)$.
+		\item Show that the convolution of two rectangular pulses of width $T$ is a triangular pulse of width $2T$.
+		\item Find the frequency response of a system with differential equation $\frac{d^2y(t)}{dt^2} + 4\frac{dy(t)}{dt} + 3y(t) = x(t)$.
+		\item Use the multiplication property to find the spectrum of $x(t) = \cos(\omega_0 t) \cdot \text{rect}(t/T)$.
+	\end{enumerate}
+	
+\section*{13.8 Summary and Next Lecture}
+	
+	The convolution property represents the ultimate payoff of Fourier analysis for LTI systems:
+	
+	\textbf{Key Results:}
+	\begin{itemize}[noitemsep]
+		\item \textbf{Convolution Property:} $x_1(t) \conv x_2(t) \leftrightarrow X_1(j\omega)X_2(j\omega)$
+		\item \textbf{Multiplication Property:} $x_1(t)x_2(t) \leftrightarrow \frac{1}{2\pi}X_1(j\omega) \conv X_2(j\omega)$
+		\item \textbf{System Analysis:} $Y(j\omega) = H(j\omega)X(j\omega)$
+		\item \textbf{Differential Equations:} Calculus becomes algebra in the frequency domain
+		\item \textbf{Next time:} Discrete-time aperiodic signals and the DTFT framework
+	\end{itemize}
+	
+\end{document}

@@ -1,0 +1,174 @@
+\documentclass[11pt]{article}
+
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{tikz,float}
+\usepackage{subcaption}
+\usepackage{amsthm}
+\usepackage{hyperref}
+
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, decorations.markings}
+\tikzset{
+	block/.style={rectangle, draw, text width=6em, text centered, rounded corners, minimum height=10mm},
+	sum/.style={circle, draw, node distance=1.5cm},
+	line/.style={draw, -{Stealth[length=2.5mm, width=1.5mm]}}
+}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+\pgfplotsset{
+	myaxes/.style={
+		axis lines=middle,
+		grid=both,
+		minor grid style={gray!15},
+		major grid style={gray!35},
+		tick align=outside,
+		tick style={black},
+		xlabel style={yshift=3pt, anchor=north},
+		ylabel style={yshift=-3pt, anchor=south},
+		clip=false
+	},
+	myplotstyle/.style={
+		width=14cm,
+		height=7cm,
+		axis lines=middle,
+		axis line style={-Stealth},
+		grid=both,
+		minor tick num=1,
+		major grid style={draw=gray!30},
+		minor grid style={draw=gray!15},
+		tick label style={font=\small, fill=white, inner sep=1.5pt},
+		xlabel={$t$},
+		ylabel={$x(t)$},
+		xlabel style={anchor=north east, font=\small},
+		ylabel style={anchor=south east, font=\small},
+		samples=401,
+	}
+}
+
+\newtheoremstyle{mynote}
+{6pt}      % Space above
+{6pt}      % Space below
+{}         % Body font (normal, not italic)
+{}         % Indent amount
+{\bfseries}  % Theorem head font
+{.}        % Punctuation after theorem head
+{.5em}     % Space after theorem head
+{}         % Theorem head spec
+\theoremstyle{mynote}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\conv}{\ast}
+\newcommand{\dt}{\mathrm{d}t}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\imp}{\delta}
+\newcommand{\sinc}[1]{\frac{\sin(\pi #1)}{\pi #1}}
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{X.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture X} \\
+		\textit{Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture X: [Lecture Title]}
+	\end{center}
+	\vspace{0.4cm}
+	
+\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter X, Sections X.X--X.X
+
+\section*{Review of Lecture X-1}
+	\begin{itemize}[noitemsep]
+		\item [Previous lecture key points]
+		\item [Previous lecture key points]
+		\item [Previous lecture key points]
+		\item [Previous lecture key points]
+	\end{itemize}
+
+\section*{X.1 [Main Section Title]}
+	[Section content]
+
+\subsection*{X.1.1 [Subsection Title]}
+	[Subsection content]
+
+\paragraph{[Paragraph Title]:} [Paragraph content]
+
+\begin{definition}
+	[Definition content]
+\end{definition}
+
+\begin{proposition}
+	[Proposition content]
+\end{proposition}
+
+\begin{theorem}
+	[Theorem content]
+\end{theorem}
+
+\begin{example}
+	[Example content]
+\end{example}
+
+\begin{remark}
+	[Remark content]
+\end{remark}
+
+\begin{figure}[H]
+	\centering
+	\input{figures/lecXX/fig_[figure_name].tex}
+	\caption{[Figure caption]}
+	\label{fig:[figure_label]}
+\end{figure}
+
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\input{figures/lecXX/fig_[subfigure1_name].tex}
+		\caption{[Subfigure 1 caption]}
+		\label{fig:[subfigure1_label]}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}[b]{0.48\textwidth}
+		\centering
+		\input{figures/lecXX/fig_[subfigure2_name].tex}
+		\caption{[Subfigure 2 caption]}
+		\label{fig:[subfigure2_label]}
+	\end{subfigure}
+	\caption{[Overall figure caption]}
+	\label{fig:[overall_figure_label]}
+\end{figure}
+
+\section*{Summary and Next Lecture}
+	\begin{itemize}[noitemsep]
+		\item [Key takeaway 1]
+		\item [Key takeaway 2]
+		\item [Key takeaway 3]
+		\item [Key takeaway 4]
+		\item \textbf{Next time:} [Next lecture preview]
+	\end{itemize}
+
+\end{document}

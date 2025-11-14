@@ -1,0 +1,48 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={group size=2 by 2, horizontal sep=20pt, vertical sep=25pt},
+		/tikz/font=\small,
+		width=0.48\linewidth, height=4cm,
+		myaxes, % A custom style for axes, define it in your preamble
+		ymin=-0.2, xmin=-0.5, xmax=4.5,
+		samples at={-1,...,5}
+		]
+		
+		% Plot 1: Input signal x[n]
+		\nextgroupplot[
+		title={Input Signal: $x[n]$},
+		ylabel={$x[n]$}, ymax=1.2, ytick={0,1}
+		]
+		\addplot[ycomb, mark=*, thick, blue] coordinates {
+			(0,1) (1,1) (2,1)
+		};
+		
+		% Plot 2: Impulse response h[n]
+		\nextgroupplot[
+		title={Impulse Response: $h[n]$},
+		ylabel={$h[n]$}, ymax=2.2, ytick={0,1,2}
+		]
+		\addplot[ycomb, mark=*, thick, orange] coordinates {
+			(0,2) (1,1)
+		};
+		
+		% Plot 3: Convolution y[n] = x[n] * h[n]
+		\nextgroupplot[
+		ylabel={ $y_1[n] = x[n] * h[n]$}, ymax=4.2, ytick={0,1,2,3},
+		xlabel={$n$}
+		]
+		\addplot[ycomb, mark=*, thick, red] coordinates {
+			(0,2) (1,3) (2,3) (3,1)
+		};
+		
+		% Plot 4: Convolution y[n] = h[n] * x[n]
+		\nextgroupplot[
+		ylabel={$y_2[n] = h[n] * x[n]$}, ymax=4.2, ytick={0,1,2,3},
+		xlabel={$n$}
+		]
+		\addplot[ycomb, mark=*, thick, red] coordinates {
+			(0,2) (1,3) (2,3) (3,1)
+		};
+		
+	\end{groupplot}
+\end{tikzpicture}

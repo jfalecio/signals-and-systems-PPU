@@ -1,0 +1,27 @@
+\begin{tikzpicture}[scale=1.2]
+	% Triangular wave x(t)
+	\begin{scope}[yshift=4cm]
+		\draw[->] (-0.3,0) -- (4.5,0) node[right] {$t$};
+		\draw[->] (0,-1.3) -- (0,1.5) node[above] {$x(t)$};
+		\draw[thick, blue] (0,0) -- (0.5,1) -- (1.5,-1) -- (2.5,1) -- (3.5,-1) -- (4,0);
+		\node[blue] at (4.5,0.5) {Triangular Wave};
+		\draw[dashed] (0,1) -- (4,1);
+		\draw[dashed] (0,-1) -- (4,-1);
+		\node[left] at (0,1) {$A$};
+		\node[left] at (0,-1) {$-A$};
+		\draw[<->] (0.5,-1.5) -- (2.5,-1.5) node[midway,below] {$T_0$};
+	\end{scope}
+	
+	% Square wave g(t) = dx/dt
+	\begin{scope}
+		\draw[->] (-0.3,0) -- (4.5,0) node[right] {$t$};
+		\draw[->] (0,-1.3) -- (0,1.5) node[above] {$g(t) = \frac{\mathrm{d} x}{\mathrm{d} t}$};
+		\draw[thick, red] (0,1) -- (0.5,1) -- (0.5,-1) -- (1.5,-1) -- (1.5,1) -- (2.5,1) -- (2.5,-1) -- (3.5,-1) -- (3.5,1) -- (4,1);
+		\node[red] at (4.5,0.5) {Square Wave};
+		\draw[dashed] (0,1) -- (4,1);
+		\draw[dashed] (0,-1) -- (4,-1);
+		\node[left] at (0,1) {$A_s$};
+		\node[left] at (0,-1) {$-A_s$};
+		\draw[<->] (1.5,-1.5) -- (2.5,-1.5) node[midway,below] {$\tau = DT_0$};
+	\end{scope}
+\end{tikzpicture}

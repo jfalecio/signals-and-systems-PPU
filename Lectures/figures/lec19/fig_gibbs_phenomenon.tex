@@ -1,0 +1,92 @@
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		group size=2 by 2,
+		vertical sep=1.5cm,
+		horizontal sep=1.5cm,
+	},
+	myaxes,
+	width=6cm,
+	height=4cm,
+]
+
+% Ideal Lowpass Filter - Frequency Response
+\nextgroupplot[
+	title={Ideal Lowpass Filter},
+	xlabel={$\omega$},
+	ylabel={$|H(j\omega)|$},
+	xmin=-3, xmax=3,
+	ymin=0, ymax=1.2,
+	xtick={-2, -1, 0, 1, 2},
+	xticklabels={$-\omega_c$, $-\omega_c/2$, $0$, $\omega_c/2$, $\omega_c$},
+	ytick={0, 0.5, 1},
+	yticklabels={$0$, $0.5$, $1$},
+]
+
+\addplot[blue, thick, mark=none] coordinates {(-3,0) (-1,0) (-1,1) (1,1) (1,0) (3,0)};
+
+% Ideal Lowpass Filter - Impulse Response
+\nextgroupplot[
+	title={Impulse Response (Sinc Function)},
+	xlabel={$t$},
+	ylabel={$h(t)$},
+	xmin=-4, xmax=4,
+	ymin=-0.3, ymax=0.8,
+	xtick={-3, -1, 0, 1, 3},
+	ytick={0, 0.3, 0.6},
+	yticklabels={$0$, $0.3$, $0.6$},
+]
+
+\addplot[blue, thick, mark=none, domain=-4:4, samples=200] {sin(deg(x))/x};
+\addplot[red, thick, mark=*, mark size=1.5pt] coordinates {(0,1)};
+
+% Step Response - Gibbs Phenomenon
+\nextgroupplot[
+	title={Step Response (Gibbs Phenomenon)},
+	xlabel={$t$},
+	ylabel={$y(t)$},
+	xmin=-2, xmax=6,
+	ymin=-0.1, ymax=1.2,
+	xtick={0, 1, 2, 3, 4, 5},
+	ytick={0, 0.5, 1},
+	yticklabels={$0$, $0.5$, $1$},
+]
+
+% Approximate step response with overshoot and ringing
+\addplot[blue, thick, mark=none, domain=-2:6, samples=200] {
+	0.5 + 0.5 * (1 + 0.09 * sin(deg(3*x)) * exp(-0.3*x)) * (x > 0)
+};
+
+% Practical Filter - Frequency Response
+\nextgroupplot[
+	title={Practical Filter},
+	xlabel={$\omega$},
+	ylabel={$|H(j\omega)|$},
+	xmin=-3, xmax=3,
+	ymin=0, ymax=1.2,
+	xtick={-2, -1, 0, 1, 2},
+	xticklabels={$-\omega_c$, $-\omega_c/2$, $0$, $\omega_c/2$, $\omega_c$},
+	ytick={0, 0.5, 1},
+	yticklabels={$0$, $0.5$, $1$},
+]
+
+\addplot[blue, thick, mark=none, domain=-3:3, samples=200] {1/sqrt(1 + (x/1)^4)};
+
+\end{groupplot}
+
+% Add annotations
+\node[anchor=west, fill=white, inner sep=2pt] at (group c1r1.east) {Sharp cutoff};
+\node[anchor=west, fill=white, inner sep=2pt] at (group c1r2.east) {Non-causal};
+\node[anchor=west, fill=white, inner sep=2pt] at (group c2r1.east) {Overshoot \& Ringing};
+\node[anchor=west, fill=white, inner sep=2pt] at (group c2r2.east) {Smooth transition};
+
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+

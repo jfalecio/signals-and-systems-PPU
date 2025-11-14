@@ -1,0 +1,69 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={
+			group size=2 by 2,
+			horizontal sep=2cm,
+			vertical sep=2.2cm, % Slightly increased vertical separation for title space
+			group name=my plots,
+		},
+		width=6.5cm,
+		height=4.5cm,
+		axis lines=middle,
+		enlargelimits=true,
+		clip=false,
+		xlabel={$\omega$},
+		xlabel style={at={(axis description cs:0.5,0)},anchor=north},
+		grid=major,
+		grid style={dashed, gray!30},
+		samples=200,
+		domain=-5:5,
+		]
+		
+		% --- PLOT 1: Magnitude Spectrum (Even) ---
+		\nextgroupplot[
+		title={Magnitude Spectrum (Even)},
+		ylabel={$|X(j\omega)|$},
+		ytick={0, 0.5, 1},
+		ymin=-0.2, ymax=1.2
+		]
+		\addplot[blue, ultra thick] {1/sqrt(1+x^2)};
+
+		
+		% --- PLOT 2: Phase Spectrum (Odd) ---
+		\nextgroupplot[
+		title={Phase Spectrum (Odd)},
+		ylabel={$\angle X(j\omega)$ [rad]},
+		ytick={-pi/2, 0, pi/2},
+		yticklabels={$-\frac{\pi}{2}$, $0$, $\frac{\pi}{2}$},
+		ymin=-2, ymax=2
+		]
+		% atan returns degrees, convert to radians using rad()
+		\addplot[red, ultra thick] {-rad(atan(x))};
+
+		
+		% --- PLOT 3: Real Part (Even) ---
+		\nextgroupplot[
+		title={Real Part (Even)},
+		ylabel={$\Re\{X(j\omega)\}$},
+		ytick={0, 0.5, 1},
+		ymin=-0.2, ymax=1.2
+		]
+		\addplot[purple, ultra thick] {1/(1+x^2)};
+
+		% --- PLOT 4: Imaginary Part (Odd) ---
+		\nextgroupplot[
+		title={Imaginary Part (Odd)},
+		ylabel={$\Im\{X(j\omega)\}$},
+		ytick={-0.5, 0, 0.5},
+		ymin=-0.7, ymax=0.7
+		]
+		\addplot[orange, ultra thick] {-x/(1+x^2)};
+	
+	\end{groupplot}
+	
+	% Position the main title centrally above the entire groupplot
+	\path (my plots c1r1.north) -- (my plots c2r1.north) 
+	node[midway, above=0.7cm, font=\large\bfseries] 
+	{Fourier Transform Symmetry for a Real Signal ($x(t) = e^{-t}u(t)$)};
+	
+\end{tikzpicture}

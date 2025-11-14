@@ -1,0 +1,24 @@
+\begin{figure}[H]
+	\centering
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[myaxes, title={Even: \(x(-t)=x(t)\)},
+				xlabel={$t$}, ylabel={},
+				xmin=-4, xmax=4, ymin=-1.2, ymax=1.2]
+				\addplot[domain=-4:4, samples=400, blue, very thick] {cos(90*x)};
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+	\hfill
+	\begin{subfigure}{0.48\textwidth}
+		\centering
+		\begin{tikzpicture}
+			\begin{axis}[myaxes, title={Even: \(x(-t)=x(t)\)},
+				xlabel={$t$}, ylabel={},
+				xmin=-4, xmax=4, ymin=-0.05, ymax=1.1]
+				\addplot[domain=-4:4, samples=400, red, very thick] {exp(-x^2)};
+			\end{axis}
+		\end{tikzpicture}
+	\end{subfigure}
+\end{figure}

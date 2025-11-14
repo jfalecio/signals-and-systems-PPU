@@ -1,0 +1,111 @@
+\begin{tikzpicture}
+	\begin{groupplot}[
+		group style={
+			group size=2 by 2,
+			horizontal sep=2.5cm,
+			vertical sep=2.5cm,
+			group name=plots,
+		},
+		% Common styles for all plots
+		width=7cm,
+		height=5.5cm,
+		grid=major,
+		title style={font=\bfseries, yshift=-1ex},
+		label style={font=\small},
+		tick label style={font=\small},
+		]
+		
+		% TOP LEFT: Video frames - Temporal sampling
+		\nextgroupplot[
+		title={Video: Temporal Sampling},
+		xlabel={Time (\si{\milli\second})},
+		ylabel={Signal Amplitude},
+		xmin=0, xmax=180,
+		ymin=0, ymax=7,
+		xtick={0, 33.3, 66.7, 100, 133.3, 166.7},
+		ytick={1,...,6},
+		legend style={at={(0.03,0.97)}, anchor=north west, font=\tiny},
+		]
+		% Continuous analog signal
+		\addplot[blue, smooth, thick, domain=0:180, samples=200, name path=signal] {3.5 + 2.5*sin(360*x/150)};
+		\addlegendentry{Analog Signal}
+		
+		% Sampled points which become the video frames
+		\addplot[only marks, red, mark=*, mark size=2.5pt, samples at={33.3, 66.7, 100, 133.3, 166.7}] {3.5 + 2.5*sin(360*x/150)};
+		\addlegendentry{Sampled Frames (30 fps)}
+		
+		% Annotation
+		\node[anchor=south, font=\tiny, text width=4cm, align=center] at (axis cs:90,0.1) {Each sample ($\bullet$) is captured as one discrete video frame.};
+		
+		% TOP RIGHT: Digital image - Spatial sampling
+		\nextgroupplot[
+		title={Image: Spatial Sampling},
+		xlabel={Pixel Column (x)},
+		ylabel={Pixel Row (y)},
+		xmin=0, xmax=16,
+		ymin=0, ymax=9,
+		xtick={0,4,8,12,16},
+		ytick={0,3,6,9},
+		enlargelimits=false,
+		view={0}{90}, % Top-down 2D view
+		colormap/gray, % Grayscale colormap
+		]
+		% Efficiently create a pixel grid using a surf plot
+		\addplot3[surf, shader=flat, domain=0:15, domain y=0:8, samples=16, samples y=9] 
+		{0.5 + 0.5*sin(180*x/15) * cos(180*y/8)};
+		
+		% Annotation
+		\node[anchor=south, font=\tiny, fill=white, fill opacity=0.7, text opacity=1, rounded corners=2pt, inner sep=1pt] at (axis cs:8,0.5) {Each shaded square represents one pixel.};
+		
+		% BOTTOM LEFT: Heart rate - Physiological sampling
+		\nextgroupplot[
+		title={Heart Rate: Physiological Sampling},
+		xlabel={Time (\si{\second})},
+		ylabel={Heart Rate (BPM)},
+		xmin=0, xmax=60,
+		ymin=55, ymax=90,
+		xtick={0,10,20,30,40,50,60},
+		ytick={60,70,80,90},
+		legend style={at={(0.03,0.97)}, anchor=north west, font=\tiny},
+		]
+		% Continuous signal (e.g., from an ECG)
+		\addplot[blue, smooth, thick, domain=0:60, samples=200] {75 + 8*sin(deg(2*pi*x/20)) + 4*sin(deg(2*pi*x/7))};
+		\addlegendentry{Continuous (ECG)}
+		
+		% CORRECTED sampled points that lie on the curve (e.g., from a wearable)
+		\addplot[only marks, red, mark=*, mark size=2.5pt, samples at={0,5,...,60}] {75 + 8*sin(deg(2*pi*x/20)) + 4*sin(deg(2*pi*x/7))};
+		\addlegendentry{Sampled (Wearable)}
+		
+		% BOTTOM RIGHT: Audio - Nyquist Principle
+		\nextgroupplot[
+		title={Audio: Nyquist Principle (CD Quality)},
+		xlabel={Frequency (\si{\kilo\hertz})},
+		ylabel={Amplitude (\si{dB})},
+		xmin=0, xmax=25,
+		ymin=-70, ymax=5,
+		xtick={0, 10, 20, 22.05},
+		xticklabels={$0$, $10$, $20$, $f_s/2=22.05$},
+		ytick={-60, -40, -20, 0},
+		legend style={at={(0.97,0.03)}, anchor=south east, font=\tiny},
+		]
+		% Shade the range of human hearing
+		\path[name path=bottom, fill=green!20] (axis cs:0,-70) rectangle (axis cs:20,5);
+		\addlegendentry{Human Hearing Range}
+		\node[green!50!black, font=\tiny, anchor=south, rotate=90] at (axis cs:19.5, -35) {Audible Frequencies};
+		
+		% Anti-aliasing filter for 44.1 kHz sampling rate
+		\addplot[blue, thick, smooth, domain=0:25, name path=filter] { -3 - 20*log10(1+(x/21.5)^12) };
+		\addlegendentry{Anti-Aliasing Filter}
+		
+		% Nyquist frequency line
+		\draw[dashed, red, thick] (axis cs:22.05,-70) -- (axis cs:22.05,5) node[above, sloped, pos=0.8, font=\tiny, black] {Nyquist Frequency};
+		
+	\end{groupplot}
+	
+	% --- Main Title and Footnote ---
+	\node[font=\large\bfseries] at (plots c1r1.north) [above=1cm] {The Principle of Sampling: From Analog to Digital};
+	
+	\node[font=\small, text width=15cm, align=center, fill=gray!10, rounded corners, inner sep=2mm] at (plots c1r2.south) [below=1.5cm] {
+		\textbf{The Nyquist-Shannon Sampling Theorem:} To perfectly reconstruct an analog signal from its samples, \\ the sampling frequency ($f_s$) must be strictly greater than twice the maximum frequency in the signal ($f_{\text{max}}$). \quad $\boldsymbol{f_s > 2f_{\text{max}}}$
+	};
+\end{tikzpicture}

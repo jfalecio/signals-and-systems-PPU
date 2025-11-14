@@ -1,0 +1,156 @@
+\begin{tikzpicture}[
+	scale=1.2,
+	>=Stealth,
+	% --- Style Definitions ---
+	transform shape,
+	axis/.style={->, thick, black!80},
+	signal/.style={line width=1.5pt},
+	grid/.style={step=0.5, gray!15, very thin},
+	tick/.style={thick, black!60},
+	title/.style={font=\small\bfseries, fill=white, inner sep=2pt},
+	annotation/.style={font=\tiny, fill=white, inner sep=1pt},
+	dimline/.style={<->, thin, gray!70},
+	]
+	
+	% --- Common Parameters ---
+	\def\period{2}        % Period T_0
+	\def\amplitude{1}     % Signal amplitude
+	\def\xmin{-4}         % Show 2 periods on each side
+	\def\xmax{4}
+	\def\ymin{-0.2}
+	\def\ymax{1.8}
+	
+	% --- Plot 1: D = 1/4 (Top) ---
+	\begin{scope}[xshift=0cm, yshift=12cm]
+		% Grid & Axes
+		\draw[grid] (\xmin,\ymin) grid (\xmax,\ymax);
+		\draw[axis] (\xmin, 0) -- (\xmax, 0) node[right, font=\small] {$t$};
+		\draw[axis] (0, \ymin) -- (0, \ymax) node[above, font=\small] {$x(t)$};
+		
+		% Signal: D=1/4 means pulse width = 0.5, show multiple periods
+		\draw[signal, blue!70!black] (\xmin, 0) -- (-3.25, 0) -- (-3.25, \amplitude) -- (-2.75, \amplitude) -- (-2.75, 0) -- (-1.25, 0) -- (-1.25, \amplitude) -- (-0.75, \amplitude) -- (-0.75, 0) -- (0.75, 0) -- (0.75, \amplitude) -- (1.25, \amplitude) -- (1.25, 0) -- (2.75, 0) -- (2.75, \amplitude) -- (3.25, \amplitude) -- (3.25, 0) -- (\xmax, 0);
+		
+		% Ticks and labels
+		\foreach \x in {-4,-3,-2,-1,0,1,2,3,4} {
+			\draw[tick] (\x, -0.05) -- (\x, 0.05);
+			\node[below, font=\tiny] at (\x, -0.05) {$\x$};
+		}
+		\foreach \y in {0,0.5,1} {
+			\draw[tick] (-0.05, \y) -- (0.05, \y);
+			\node[left, font=\tiny] at (-0.05, \y) {$\y$};
+		}
+		
+		% Period markers
+		\draw[dashed, gray!50] (-4, 0) -- (-4, \amplitude);
+		\draw[dashed, gray!50] (-2, 0) -- (-2, \amplitude);
+		\draw[dashed, gray!50] (0, 0) -- (0, \amplitude);
+		\draw[dashed, gray!50] (2, 0) -- (2, \amplitude);
+		\draw[dashed, gray!50] (4, 0) -- (4, \amplitude);
+		
+		% Duty cycle annotation - positioned below the period from -1 to 1
+		\draw[dimline] (0.75, -0.3) -- (1.25, -0.3);
+		\node[below, annotation] at (1, -0.4) {$\tau = 0.5$};
+		
+		% Title
+		\node[title, above] at (0, \ymax) {Duty Cycle $D = \frac{1}{4}$};
+		\node[annotation, below] at (0, \ymin-0.4) {Pulse width $\tau = \frac{T_0}{4}$, Period $T_0 = 2$};
+	\end{scope}
+	
+	% --- Plot 2: D = 1/2 (Second) ---
+	\begin{scope}[xshift=0cm, yshift=8cm]
+		% Grid & Axes
+		\draw[grid] (\xmin,\ymin) grid (\xmax,\ymax);
+		\draw[axis] (\xmin, 0) -- (\xmax, 0) node[right, font=\small] {$t$};
+		\draw[axis] (0, \ymin) -- (0, \ymax) node[above, font=\small] {$x(t)$};
+		
+		% Signal: D=1/2 means pulse width = 1, show multiple periods
+		\draw[signal, red!70!black] (\xmin, 0) -- (-3.5, 0) -- (-3.5, \amplitude) -- (-2.5, \amplitude) -- (-2.5, 0) -- (-1.5, 0) -- (-1.5, \amplitude) -- (-0.5, \amplitude) -- (-0.5, 0) -- (0.5, 0) -- (0.5, \amplitude) -- (1.5, \amplitude) -- (1.5, 0) -- (2.5, 0) -- (2.5, \amplitude) -- (3.5, \amplitude) -- (3.5, 0) -- (\xmax, 0);
+		
+		% Ticks and labels
+		\foreach \x in {-4,-3,-2,-1,0,1,2,3,4} {
+			\draw[tick] (\x, -0.05) -- (\x, 0.05);
+			\node[below, font=\tiny] at (\x, -0.05) {$\x$};
+		}
+		\foreach \y in {0,0.5,1} {
+			\draw[tick] (-0.05, \y) -- (0.05, \y);
+			\node[left, font=\tiny] at (-0.05, \y) {$\y$};
+		}
+		
+		% Period markers
+		\draw[dashed, gray!50] (-4, 0) -- (-4, \amplitude);
+		\draw[dashed, gray!50] (-2, 0) -- (-2, \amplitude);
+		\draw[dashed, gray!50] (0, 0) -- (0, \amplitude);
+		\draw[dashed, gray!50] (2, 0) -- (2, \amplitude);
+		\draw[dashed, gray!50] (4, 0) -- (4, \amplitude);
+		
+		% Duty cycle annotation - positioned below the period from -1 to 1
+		\draw[dimline] (0.5, -0.3) -- (1.5, -0.3);
+		\node[below, annotation] at (1, -0.3) {$\tau = 1.0$};
+		
+		% Title
+		\node[title, above] at (0, \ymax) {Duty Cycle $D = \frac{1}{2}$ (Square Wave)};
+		\node[annotation, below] at (0, \ymin-0.4) {Pulse width $\tau = \frac{T_0}{2}$, Period $T_0 = 2$};
+	\end{scope}
+	
+	% --- Plot 3: D = 3/4 (Third) ---
+	\begin{scope}[xshift=0cm, yshift=4cm]
+		% Grid & Axes
+		\draw[grid] (\xmin,\ymin) grid (\xmax,\ymax);
+		\draw[axis] (\xmin, 0) -- (\xmax, 0) node[right, font=\small] {$t$};
+		\draw[axis] (0, \ymin) -- (0, \ymax) node[above, font=\small] {$x(t)$};
+		
+		% Signal: D=3/4 means pulse width = 1.5, show multiple periods
+		\draw[signal, green!70!black] (\xmin, 0) -- (-3.75, 0) -- (-3.75, \amplitude) -- (-2.25, \amplitude) -- (-2.25, 0) -- (-1.75, 0) -- (-1.75, \amplitude) -- (-0.25, \amplitude) -- (-0.25, 0) -- (0.25, 0) -- (0.25, \amplitude) -- (1.75, \amplitude) -- (1.75, 0) -- (2.25, 0) -- (2.25, \amplitude) -- (3.75, \amplitude) -- (3.75, 0) -- (\xmax, 0);
+		
+		% Ticks and labels
+		\foreach \x in {-4,-3,-2,-1,0,1,2,3,4} {
+			\draw[tick] (\x, -0.05) -- (\x, 0.05);
+			\node[below, font=\tiny] at (\x, -0.05) {$\x$};
+		}
+		\foreach \y in {0,0.5,1} {
+			\draw[tick] (-0.05, \y) -- (0.05, \y);
+			\node[left, font=\tiny] at (-0.05, \y) {$\y$};
+		}
+		
+		% Period markers
+		\draw[dashed, gray!50] (-4, 0) -- (-4, \amplitude);
+		\draw[dashed, gray!50] (-2, 0) -- (-2, \amplitude);
+		\draw[dashed, gray!50] (0, 0) -- (0, \amplitude);
+		\draw[dashed, gray!50] (2, 0) -- (2, \amplitude);
+		\draw[dashed, gray!50] (4, 0) -- (4, \amplitude);
+		
+		% Duty cycle annotation - positioned below the period from -1 to 1
+		\draw[dimline] (0.25, -0.3) -- (1.75, -0.3);
+		\node[below, annotation] at (1, -0.3) {$\tau = 1.5$};
+		
+		% Title
+		\node[title, above] at (0, \ymax) {Duty Cycle $D = \frac{3}{4}$};
+		\node[annotation, below] at (0, \ymin-0.4) {Pulse width $\tau = \frac{3T_0}{4}$, Period $T_0 = 2$};
+	\end{scope}
+	
+	% --- Plot 4: D = 1 (Bottom) ---
+	\begin{scope}[xshift=0cm, yshift=0cm]
+		% Grid & Axes
+		\draw[grid] (\xmin,\ymin) grid (\xmax,\ymax);
+		\draw[axis] (\xmin, 0) -- (\xmax, 0) node[right, font=\small] {$t$};
+		\draw[axis] (0, \ymin) -- (0, \ymax) node[above, font=\small] {$x(t)$};
+		
+		% Signal: D=1 means constant signal (DC)
+		\draw[signal, purple!70!black] (\xmin, \amplitude) -- (\xmax, \amplitude);
+		
+		% Ticks and labels
+		\foreach \x in {-4,-3,-2,-1,0,1,2,3,4} {
+			\draw[tick] (\x, -0.05) -- (\x, 0.05);
+			\node[below, font=\tiny] at (\x, -0.05) {$\x$};
+		}
+		\foreach \y in {0,0.5,1} {
+			\draw[tick] (-0.05, \y) -- (0.05, \y);
+			\node[left, font=\tiny] at (-0.05, \y) {$\y$};
+		}
+		
+		% Title
+		\node[title, above] at (0, \ymax) {Duty Cycle $D = 1$ (DC Signal)};
+		\node[annotation, below] at (0, \ymin-0.4) {Constant signal: $\tau = T_0$, Period $T_0 = 2$};
+	\end{scope}
+	
+\end{tikzpicture}

@@ -1,0 +1,35 @@
+
+\begin{tikzpicture}[
+	node distance=1.5cm and 1.8cm, % Adjust distances as needed
+	block/.style={draw, rectangle, minimum width=2.8cm, minimum height=1cm, align=center, thick},
+	label_style/.style={font=\Large},
+	arrow/.style={-latex, thick}
+	]
+	
+	% --- Top Row: Establishes the baseline system response ---
+	\node[label_style] (input_x) {$x(t)$};
+	\node[block, right=of input_x] (system_top) {System};
+	\node[label_style, right=of system_top] (output_y) {$y(t)$};
+	
+	% Arrows for top row
+	\draw[arrow] (input_x) -- (system_top);
+	\draw[arrow] (system_top) -- (output_y);
+	
+	
+	% --- Bottom Row: Poses the time-invariance question ---
+	% Position this row below the top one
+	\node[label_style, below=1cm of input_x] (input_x_shifted) {$x(t-t_0)$};
+% Align the bottom system block vertically with the top one
+\node[block] (system_bottom) at (system_top |- input_x_shifted) {System};
+	\node[label_style, right=of system_bottom] (output_y_prime) {$y^*(t)$};
+	
+	% --- The key illustrative question ---
+	\node[label_style, right=0.5cm of output_y_prime, text=red] (question) {$\boldsymbol{\stackrel{?}{=}}$};
+	\node[label_style, right=0.5cm of question] (final_output) {$y(t-t_0)$};
+	
+	
+	% Arrows for bottom row
+	\draw[arrow] (input_x_shifted) -- (system_bottom);
+	\draw[arrow] (system_bottom) -- (output_y_prime);
+	
+\end{tikzpicture}

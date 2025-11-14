@@ -1,0 +1,36 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.synctex.gz
+*.fdb_latexmk
+*.fls
+*.toc
+*.lof
+*.lot
+*.bbl
+*.blg
+*.idx
+*.ind
+*.ilg
+*.nav
+*.snm
+*.vrb
+
+# Compiled PDFs (optional - remove if you want to track PDFs)
+*.pdf
+
+# Editor-specific files
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# LaTeX backup files
+*.bak
+*.backup
+
+# Temporary files
+*.tmp
+

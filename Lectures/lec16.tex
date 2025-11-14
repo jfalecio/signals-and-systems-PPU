@@ -1,0 +1,581 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{16.\arabic{figure}}
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 16} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 16: Duality and Fourier Transform Tables}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 4, Sections 4.3.6, 4.6; Chapter 5, Sections 5.6, 5.7
+	
+	\section*{Review of Lecture 15}
+	\begin{itemize}[noitemsep]
+		\item Complete toolkit of DTFT properties with mathematical proofs and physical interpretations
+		\item Convolution property: $x[n] * h[n] \leftrightarrow X(e^{j\omega})H(e^{j\omega})$
+		\item System analysis: DTFT converts difference equations into algebraic equations
+		\item Practical implementation examples and problem-solving skills
+		\item Periodicity awareness: $2\pi$ periodicity affects all DTFT properties
+	\end{itemize}
+	
+\section*{16.1 Introduction}
+	
+	We will explore one of the most important properties of Fourier analysis: \textbf{duality}. We then focus on the practical skill of using tables of transform pairs and properties to solve problems efficiently.
+	\\
+	The duality property shows that the roles of time and frequency can be interchanged in Fourier transform pairs.
+	
+\subsection*{16.1.1 Key Function Definitions}
+	
+	Before we begin, let's establish clear definitions for the fundamental functions we'll encounter:
+	
+	\begin{definition}[Normalized Sinc Function]
+		The normalized sinc function is defined as:
+		\[
+		\sinc{x} = \frac{\sin(\pi x)}{\pi x}
+		\]
+		with the special case $\sinc{0} = 1$.
+	\end{definition}
+	
+	\begin{definition}[Rectangular Function]
+		The rectangular function is defined as:
+		\[
+		\rect(t) = \begin{cases} 1, & |t| < \frac{1}{2} \\ 0, & |t| > \frac{1}{2} \end{cases}
+		\]
+	\end{definition}
+\newpage	
+\section*{16.2 The Duality Property of the CTFT}
+	
+	The duality property arises from the remarkable similarity in the structure of the forward and inverse Fourier transform integrals. 
+		
+	\subsection*{16.2.1 The Duality Property}
+	
+	\begin{theorem}[Duality Property]
+		If $x(t) \stackrel{\mathcal{F}}{\longleftrightarrow} X(j\omega)$, then:
+		\[
+		X(t) \stackrel{\mathcal{F}}{\longleftrightarrow} 2\pi x(-\omega)
+		\]
+	\end{theorem}
+	
+	\textbf{Intuition:} If a time-domain signal $x(t)$ has a Fourier transform $X(j\omega)$, then a new time-domain signal that has the \textit{same functional form} as the spectrum $X(j\omega)$ will have a spectrum that has the \textit{same functional form} as the original time-domain signal $x(t)$, with a scaling factor and a time reversal.
+	
+	\subsection*{16.2.2 Rectangular Pulse and Sinc Function}
+	
+	\begin{example}
+		\textbf{Step 1:} Start with a known pair
+		
+		Consider a rectangular pulse in time:
+		\[
+		x(t) = \rect\left(\frac{t}{2T_1}\right) = \begin{cases} 1, & |t| < T_1 \\ 0, & |t| > T_1 \end{cases}
+		\]
+		
+		Its Fourier transform is:
+		\[
+		X(j\omega) = \frac{2\sin(\omega T_1)}{\omega} = 2T_1 \sinc{\frac{\omega T_1}{\pi}}
+		\]
+		
+		\textbf{Step 2:} Apply Duality
+		
+		Now consider a time-domain signal that is shaped like a sinc function:
+		\[
+		y(t) = \frac{\sin(Wt)}{\pi t} = \frac{W}{\pi} \sinc{\frac{Wt}{\pi}}
+		\]
+		
+		\textbf{Step 3:} Recognize the shapes
+		
+		We can see that $y(t)$ has the same functional form as $X(j\omega)$. Duality tells us that its spectrum, $Y(j\omega)$, must have the same functional form as the original rectangular pulse, $x(t)$.
+		
+		\textbf{Step 4:} Result
+		\[
+		\frac{\sin(Wt)}{\pi t} \stackrel{\mathcal{F}}{\longleftrightarrow} Y(j\omega) = \rect\left(\frac{\omega}{2W}\right) = \begin{cases} 1, & |\omega| < W \\ 0, & |\omega| > W \end{cases}
+		\]
+		
+		This shows that the impulse response of an ideal lowpass filter is a sinc function.
+	\end{example}
+	
+	\begin{remark}
+		Duality can be a confusing concept initially. The key is to think about the \textit{shapes} of the functions. If shape A in time gives shape B in frequency, then shape B in time gives shape A in frequency (with some scaling and reflection).
+	\end{remark}
+	
+	\begin{example}[Find the Fourier transform of $x(t) = \frac{1}{1 + t^2}$]
+		We can use duality to solve this problem efficiently.
+		
+		\textbf{Step 1:} We know that $e^{-a|t|} \stackrel{\mathcal{F}}{\longleftrightarrow} \frac{2a}{a^2 + \omega^2}$ for $a > 0$.
+		
+		\textbf{Step 2:} Apply duality. If $e^{-a|t|} \leftrightarrow \frac{2a}{a^2 + \omega^2}$, then:
+		\[
+		\frac{2a}{a^2 + t^2} \stackrel{\mathcal{F}}{\longleftrightarrow} 2\pi e^{-a|\omega|}
+		\]
+		
+		\textbf{Step 3:} For $a = 1$:
+		\[
+		\frac{2}{1 + t^2} \stackrel{\mathcal{F}}{\longleftrightarrow} 2\pi e^{-|\omega|}
+		\]
+		
+		\textbf{Step 4:} Therefore:
+		\[
+		\frac{1}{1 + t^2} \stackrel{\mathcal{F}}{\longleftrightarrow} \pi e^{-|\omega|}
+		\]
+	\end{example}
+
+	\begin{example}[Find the Fourier transform of $x(t) = e^{-|t|}$ using duality]
+		We know from the previous example that $\frac{1}{1 + t^2} \leftrightarrow \pi e^{-|\omega|}$.
+		
+		By duality: If $x(t) = \frac{1}{1 + t^2}$ and $X(j\omega) = \pi e^{-|\omega|}$, then the transform of $X(t) = \pi e^{-|t|}$ is $2\pi x(-\omega) = 2\pi \frac{1}{1 + (-\omega)^2} = \frac{2\pi}{1 + \omega^2}$.
+		
+		Therefore: $\pi e^{-|t|} \leftrightarrow \frac{2\pi}{1 + \omega^2}$
+		
+		By linearity (dividing by $\pi$): $e^{-|t|} \leftrightarrow \frac{2}{1 + \omega^2}$
+	\end{example}
+
+\section*{16.3 Using CTFT Properties and Pairs}
+	
+	Now we will see how to solve problems by combining properties and pairs from tables. This systematic approach allows us to find Fourier transforms efficiently without resorting to integration.
+	
+	\subsection*{16.3.1 CTFT Properties Table}
+	
+	\begin{table}[H]
+		\centering
+		\caption{Properties of the Continuous-Time Fourier Transform}
+		\small
+		\renewcommand{\arraystretch}{1.3}
+		\resizebox{1\textwidth}{!}{%
+		\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{6cm}|}
+			\hline
+			\textbf{Property} & \textbf{Aperiodic Signal} & \textbf{Fourier Transform} \\
+			\hline
+			& $x(t)$ & $X(j\omega)$ \\
+			& $y(t)$ & $Y(j\omega)$ \\
+			\hline
+			Linearity & $ax(t)+by(t)$ & $aX(j\omega) + bY(j\omega)$ \\
+			\hline
+			Time Shifting & $x(t-t_0)$ & $e^{-j\omega t_0}X(j\omega)$ \\
+			\hline
+			Frequency Shifting & $e^{j\omega_0 t}x(t)$ & $X(j(\omega-\omega_0))$ \\
+			\hline
+			Conjugation & $x^*(t)$ & $X^*(-j\omega)$ \\
+			\hline
+			Time Reversal & $x(-t)$ & $X(-j\omega)$ \\
+			\hline
+			Time and Frequency Scaling & $x(at)$ & $\frac{1}{|a|}X(\frac{j\omega}{a})$ \\
+			\hline
+			Convolution & $x(t) * y(t)$ & $X(j\omega)Y(j\omega)$ \\
+			\hline
+			Multiplication & $x(t)y(t)$ & $\frac{1}{2\pi}\int_{-\infty}^{+\infty} X(j\theta)Y(j(\omega-\theta))\,\dd\theta$ \\
+			\hline
+			Differentiation in Time & $\frac{\dd}{\dd t}x(t)$ & $j\omega X(j\omega)$ \\
+			\hline
+			Integration & $\int_{-\infty}^t x(\tau)\,\dd\tau$ & $\frac{1}{j\omega}X(j\omega) + \pi X(0)\delta(\omega)$ \\
+			\hline
+			Differentiation in Frequency & $tx(t)$ & $j\frac{\dd}{\dd\omega}X(j\omega)$ \\
+			\hline
+			Conjugate Symmetry & $x(t)$ real & $X(j\omega) = X^*(-j\omega)$ \\
+			for Real Signals & & $\text{Re}\{X(j\omega)\} = \text{Re}\{X(-j\omega)\}$ \\
+			& & $\text{Im}\{X(j\omega)\} = -\text{Im}\{X(-j\omega)\}$ \\
+			& & $|X(j\omega)| = |X(-j\omega)|$ \\
+			& & $\angle X(j\omega) = -\angle X(-j\omega)$ \\
+			\hline
+			Symmetry for Real and Even Signals & $x(t)$ real and even & $X(j\omega)$ real and even \\
+			\hline
+			Symmetry for Real and Odd Signals & $x(t)$ real and odd & $X(j\omega)$ purely imaginary and odd \\
+			\hline
+			Even-Odd Decomposition & $x_e(t) = \Ev\{x(t)\}$ & $\text{Re}\{X(j\omega)\}$ \\
+			of Real Signals & $x_o(t) = \Od\{x(t)\}$ & $j\text{Im}\{X(j\omega)\}$ \\
+			\hline
+			\multicolumn{3}{|c|}{\textbf{Parseval's Relation for Aperiodic Signals}} \\
+			\hline
+			\multicolumn{3}{|c|}{$\int_{-\infty}^{+\infty} |x(t)|^2 \,\dd t = \frac{1}{2\pi}\int_{-\infty}^{+\infty} |X(j\omega)|^2 \,\dd\omega$} \\
+			\hline
+		\end{tabular}%
+		}
+		\label{tab:ctft_properties}
+	\end{table}
+	
+	\subsection*{16.3.2 CTFT Basic Transform Pairs}
+	
+	\begin{table}[H]
+		\centering
+		\caption{Basic Continuous-Time Fourier Transform Pairs}
+		\small
+		\renewcommand{\arraystretch}{1.3}
+		\resizebox{1\textwidth}{!}{%
+		\begin{tabular}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{5cm}|}
+			\hline
+			\textbf{Signal} & \textbf{Fourier Transform} & \textbf{Fourier Series Coefficients (if periodic)} \\
+			\hline
+			$\sum_{k=-\infty}^{+\infty} a_k e^{jk\omega_0 t}$ & $2\pi\sum_{k=-\infty}^{+\infty} a_k \delta(\omega-k\omega_0)$ & $a_k$ \\
+			\hline
+			$e^{j\omega_0 t}$ & $2\pi\delta(\omega-\omega_0)$ & $a_1=1$, $a_k=0$, otherwise \\
+			\hline
+			$\cos(\omega_0 t)$ & $\pi[\delta(\omega-\omega_0) + \delta(\omega+\omega_0)]$ & $a_1=a_{-1}=\frac{1}{2}$, $a_k=0$, otherwise \\
+			\hline
+			$\sin(\omega_0 t)$ & $\frac{\pi}{j}[\delta(\omega-\omega_0) - \delta(\omega+\omega_0)]$ & $a_1=-a_{-1}=\frac{1}{2j}$, $a_k=0$, otherwise \\
+			\hline
+			$x(t)=1$ & $2\pi\delta(\omega)$ & $a_0=1$, $a_k=0, k \ne 0$ \\
+			\hline
+			Periodic square wave & $\sum_{k=-\infty}^{+\infty} \frac{2\sin(k\omega_0 T_1)}{k} \delta(\omega-k\omega_0)$ & $\frac{\sin(k\omega_0 T_1)}{k\pi} = \frac{2T_1}{T} \sinc{\frac{2kT_1}{T}}$ \\
+			$x(t)=\begin{cases} 1, & |t|<T_1 \\ 0, & T_1<|t|\le T/2 \end{cases}$ & & \\
+			and $x(t+T)=x(t)$ & & \\
+			\hline
+			$\sum_{n=-\infty}^{+\infty} \delta(t-nT)$ & $\frac{2\pi}{T}\sum_{k=-\infty}^{+\infty} \delta(\omega - \frac{2\pi k}{T})$ & $a_k=\frac{1}{T}$ for all k \\
+			\hline
+			$x(t)=\begin{cases} 1, & |t|<T_1 \\ 0, & |t|>T_1 \end{cases}$ & $\frac{2\sin(\omega T_1)}{\omega}$ & \\
+			\hline
+			$\frac{\sin(Wt)}{\pi t}$ & $X(j\omega)=\begin{cases} 1, & |\omega|<W \\ 0, & |\omega|>W \end{cases}$ & \\
+			\hline
+			$\delta(t)$ & 1 & \\
+			\hline
+			$u(t)$ & $\frac{1}{j\omega} + \pi\delta(\omega)$ & \\
+			\hline
+			$\delta(t-t_0)$ & $e^{-j\omega t_0}$ & \\
+			\hline
+			$e^{-at}u(t), \text{Re}\{a\}>0$ & $\frac{1}{a+j\omega}$ & \\
+			\hline
+			$te^{-at}u(t), \text{Re}\{a\}>0$ & $\frac{1}{(a+j\omega)^2}$ & \\
+			\hline
+			$\frac{t^{n-1}}{(n-1)!}e^{-at}u(t), \text{Re}\{a\}>0$ & $\frac{1}{(a+j\omega)^n}$ & \\
+			\hline
+		\end{tabular}%
+		}
+		\label{tab:ctft_pairs_comprehensive}
+	\end{table}
+	
+	\subsection*{16.3.3 Examples Using Properties and Pairs}
+	
+	\begin{example}[Find the Fourier transform of $x(t) = 3\cos(2t - \pi/4)$]
+		We'll use the systematic approach with tables.
+		
+		\textbf{Step 1:} Decompose the signal
+		\[
+		x(t) = 3\cos(2t - \pi/4) = 3\cos(2(t - \pi/8))
+		\]
+		
+		\textbf{Step 2:} Identify basic form
+		From the table: $\cos(\omega_0 t) \leftrightarrow \pi[\delta(\omega - \omega_0) + \delta(\omega + \omega_0)]$
+		
+		\textbf{Step 3:} Apply scaling
+		\[
+		3\cos(2t) \leftrightarrow 3\pi[\delta(\omega - 2) + \delta(\omega + 2)]
+		\]
+		
+		\textbf{Step 4:} Apply time shifting
+		\[
+		3\cos(2(t - \pi/8)) \leftrightarrow 3\pi[\delta(\omega - 2) + \delta(\omega + 2)]e^{-j\omega\pi/8}
+		\]
+		
+		\[
+		X(j\omega) = 3\pi[\delta(\omega - 2) + \delta(\omega + 2)]e^{-j\omega\pi/8}
+		\]
+	\end{example}
+
+	\begin{example}[Find the Fourier transform of $x(t) = \frac{d}{dt}\left(e^{-(t-2)}u(t-2)\right)$]
+		We'll break this down systematically, combining time shifting, differentiation, and basic transform pairs.
+		
+		\textbf{Step 1:} Identify basic shape
+		From the table: $e^{-at}u(t) \leftrightarrow \frac{1}{a + j\omega}$
+		
+		For $a = 1$: $e^{-t}u(t) \leftrightarrow \frac{1}{1 + j\omega}$
+		
+		\textbf{Step 2:} Apply time shifting
+		\[
+		e^{-(t-2)}u(t-2) \leftrightarrow \frac{e^{-j2\omega}}{1 + j\omega}
+		\]
+		
+		\textbf{Step 3:} Apply differentiation property
+		\[
+		\frac{d}{dt}\left(e^{-(t-2)}u(t-2)\right) \leftrightarrow j\omega \cdot \frac{e^{-j2\omega}}{1 + j\omega}
+		\]
+		
+		\[
+		X(j\omega) = \frac{j\omega e^{-j2\omega}}{1 + j\omega}
+		\]
+	\end{example}
+
+	\begin{example}[Use the convolution property to find the Fourier transform of $x(t) = \rect(t) * \rect(t)$]
+		We know that $\rect\left(\frac{t}{2T_1}\right) \leftrightarrow 2T_1 \sinc{\frac{\omega T_1}{\pi}}$. For $\rect(t)$, we set $2T_1 = 1$, so $T_1 = 1/2$. Therefore:
+		\[
+		\rect(t) \leftrightarrow 2(1/2)\sinc{\frac{\omega(1/2)}{\pi}} = \sinc{\frac{\omega}{2\pi}}
+		\]
+		By convolution property: $\rect(t) * \rect(t) \leftrightarrow \left(\sinc{\frac{\omega}{2\pi}}\right)^2$
+	\end{example}
+
+	\begin{example}[Find the Fourier transform of $x(t) = t e^{-t}u(t)$ using the frequency differentiation property]
+		We know that $e^{-t}u(t) \leftrightarrow \frac{1}{1 + j\omega}$.
+		
+		By frequency differentiation: $t e^{-t}u(t) \leftrightarrow j\frac{\dd}{\dd\omega}\left(\frac{1}{1 + j\omega}\right) = \frac{1}{(1 + j\omega)^2}$
+	\end{example}
+
+	\begin{example}[Find the Fourier transform of $x(t) = \rect(t/2)$ using tables]
+		From our known transform pair, $\rect\left(\frac{t}{2T_1}\right) \leftrightarrow 2T_1 \sinc{\frac{\omega T_1}{\pi}}$. For the signal $x(t) = \rect(t/2)$, we set $2T_1 = 2$, which means $T_1 = 1$. Substituting this into the transform gives:
+		\[
+		\mathcal{F}\{\rect(t/2)\} = 2(1)\sinc{\frac{\omega(1)}{\pi}} = 2\sinc{\frac{\omega}{\pi}}
+		\]
+	\end{example}
+
+	\begin{example}[Find the Fourier transform of $x(t) = \frac{\sin(t)}{t}$]
+		We can start from the known Fourier transform pair for an ideal low-pass filter's impulse response:
+		\[
+		\frac{\sin(Wt)}{\pi t} \stackrel{\mathcal{F}}{\longleftrightarrow} \rect\left(\frac{\omega}{2W}\right) = \begin{cases} 1, & |\omega| < W \\ 0, & |\omega| > W \end{cases}
+		\]
+		Let $W=1$. The pair becomes:
+		\[
+		\frac{\sin(t)}{\pi t} \stackrel{\mathcal{F}}{\longleftrightarrow} \rect\left(\frac{\omega}{2}\right) = \begin{cases} 1, & |\omega| < 1 \\ 0, & |\omega| > 1 \end{cases}
+		\]
+		To find the transform of just $\frac{\sin(t)}{t}$, we simply multiply by $\pi$:
+		\[
+		\mathcal{F}\left\{\frac{\sin(t)}{t}\right\} = \pi \cdot \rect\left(\frac{\omega}{2}\right) = \begin{cases} \pi, & |\omega| < 1 \\ 0, & |\omega| > 1 \end{cases}
+		\]
+	\end{example}
+
+\section*{16.6 Reference Tables}
+	
+	Just as we used the CTFT tables, corresponding tables exist for all Fourier representations. They are included here for your reference.
+	
+	\subsection*{16.6.1 Fourier Series Properties Tables}
+	
+	\begin{table}[H]
+		\centering
+		\caption{Properties of Continuous-Time Fourier Series}
+		\small
+		\renewcommand{\arraystretch}{1.3}
+		\resizebox{1\textwidth}{!}{%
+		\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{6cm}|}
+			\hline
+			\textbf{Property} & \textbf{Periodic Signal} & \textbf{Fourier Series Coefficients} \\
+			\hline
+			& $x(t)$ Periodic with period $T$ and & $a_k$ \\
+			& $y(t)$ fundamental frequency $\omega_0=2\pi/T$ & $b_k$ \\
+			\hline
+			Linearity & $Ax(t) + By(t)$ & $Aa_k + Bb_k$ \\
+			\hline
+			Time Shifting & $x(t-t_0)$ & $a_k e^{-jk\omega_0 t_0}$ \\
+			\hline
+			Frequency Shifting & $e^{jM\omega_0 t}x(t)$ & $a_{k-M}$ \\
+			\hline
+			Conjugation & $x^*(t)$ & $a_{-k}^*$ \\
+			\hline
+			Time Reversal & $x(-t)$ & $a_{-k}$ \\
+			\hline
+			Time Scaling & $x(\alpha t), \alpha > 0$ & $a_k$ \\
+			& (periodic with period $T/\alpha$) & \\
+			\hline
+			Periodic Convolution & $\int_T x(\tau)y(t-\tau)\,\dd\tau$ & $Ta_k b_k$ \\
+			\hline
+			Multiplication & $x(t)y(t)$ & $\sum_{l=-\infty}^{+\infty} a_l b_{k-l}$ \\
+			\hline
+			Differentiation & $\frac{dx(t)}{dt}$ & $jk\omega_0 a_k$ \\
+			\hline
+			Integration & $\int_{-\infty}^t x(\tau)\,\dd\tau$ & $(\frac{1}{jk\omega_0})a_k$ \\
+			& (finite valued and periodic only if $a_0=0$) & \\
+			\hline
+			Conjugate Symmetry & $x(t)$ real & $a_k = a_{-k}^*$ \\
+			for Real Signals & & $\text{Re}\{a_k\} = \text{Re}\{a_{-k}\}$ \\
+			& & $\text{Im}\{a_k\} = -\text{Im}\{a_{-k}\}$ \\
+			& & $|a_k| = |a_{-k}|$ \\
+			& & $\angle a_k = -\angle a_{-k}$ \\
+			\hline
+			Real and Even Signals & $x(t)$ real and even & $a_k$ real and even \\
+			\hline
+			Real and Odd Signals & $x(t)$ real and odd & $a_k$ purely imaginary and odd \\
+			\hline
+			Even-Odd Decomposition & $x_e(t) = \Ev\{x(t)\}$ & $\text{Re}\{a_k\}$ \\
+			of Real Signals & $x_o(t) = \Od\{x(t)\}$ & $j\text{Im}\{a_k\}$ \\
+			\hline
+			\multicolumn{3}{|c|}{\textbf{Parseval's Relation for Periodic Signals}} \\
+			\hline
+			\multicolumn{3}{|c|}{$\frac{1}{T}\int_T |x(t)|^2 \,\dd t = \sum_{k=-\infty}^{+\infty} |a_k|^2$} \\
+			\hline
+		\end{tabular}%
+		}
+		\label{tab:ctfs_properties}
+	\end{table}
+	
+	\begin{table}[H]
+		\centering
+		\caption{Properties of Discrete-Time Fourier Series}
+		\small
+		\renewcommand{\arraystretch}{1.3}
+		\resizebox{1\textwidth}{!}{%
+		\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{6cm}|}
+			\hline
+			\textbf{Property} & \textbf{Periodic Signal} & \textbf{Fourier Series Coefficients} \\
+			\hline
+			& $x[n]$ Periodic with period $N$ and & $a_k$ Periodic with \\
+			& $y[n]$ fundamental frequency $\omega_0=2\pi/N$ & $b_k$ period $N$ \\
+			\hline
+			Linearity & $Ax[n] + By[n]$ & $Aa_k + Bb_k$ \\
+			\hline
+			Time Shifting & $x[n-n_0]$ & $a_k e^{-jk(2\pi/N)n_0}$ \\
+			\hline
+			Frequency Shifting & $e^{jM(2\pi/N)n}x[n]$ & $a_{k-M}$ \\
+			\hline
+			Conjugation & $x^*[n]$ & $a_{-k}^*$ \\
+			\hline
+			Time Reversal & $x[-n]$ & $a_{-k}$ \\
+			\hline
+			Periodic Convolution & $\sum_{r=\langle N \rangle} x[r]y[n-r]$ & $Na_k b_k$ \\
+			\hline
+			Multiplication & $x[n]y[n]$ & $\sum_{l=\langle N \rangle} a_l b_{k-l}$ \\
+			\hline
+			First Difference & $x[n] - x[n-1]$ & $(1 - e^{-jk(2\pi/N)})a_k$ \\
+			\hline
+			Running Sum & $\sum_{k=-\infty}^{n} x[k]$ & $(\frac{1}{1-e^{-jk(2\pi/N)}})a_k$ \\
+			& (finite valued and periodic & \\
+			& only if $a_0=0$) & \\
+			\hline
+			Conjugate Symmetry & $x[n]$ real & $a_k = a_{-k}^*$ \\
+			for Real Signals & & $\text{Re}\{a_k\} = \text{Re}\{a_{-k}\}$ \\
+			& & $\text{Im}\{a_k\} = -\text{Im}\{a_{-k}\}$ \\
+			& & $|a_k| = |a_{-k}|$ \\
+			& & $\angle a_k = -\angle a_{-k}$ \\
+			\hline
+			Real and Even Signals & $x[n]$ real and even & $a_k$ real and even \\
+			\hline
+			Real and Odd Signals & $x[n]$ real and odd & $a_k$ purely imaginary and odd \\
+			\hline
+			Even-Odd Decomposition & $x_e[n] = \Ev\{x[n]\}$ & $\text{Re}\{a_k\}$ \\
+			of Real Signals & $x_o[n] = \Od\{x[n]\}$ & $j\text{Im}\{a_k\}$ \\
+			\hline
+			\multicolumn{3}{|c|}{\textbf{Parseval's Relation for Periodic Signals}} \\
+			\hline
+			\multicolumn{3}{|c|}{$\frac{1}{N}\sum_{n=\langle N \rangle} |x[n]|^2 = \sum_{k=\langle N \rangle} |a_k|^2$} \\
+			\hline
+		\end{tabular}%
+		}
+		\label{tab:dtfs_properties}
+	\end{table}
+	
+	\subsection*{16.6.2 DTFT Properties and Pairs}
+	
+	\begin{table}[H]
+		\centering
+		\small
+		\renewcommand{\arraystretch}{1.3}
+		\resizebox{1\textwidth}{!}{%
+		\begin{tabular}{|>{\raggedright\arraybackslash}p{3cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{6cm}|}
+			\hline
+			\textbf{Property} & \textbf{Aperiodic Signal} & \textbf{Fourier Transform} \\
+			\hline
+			& $x[n]$ & $X(e^{j\omega})$ periodic with \\
+			& $y[n]$ & $Y(e^{j\omega})$ period $2\pi$ \\
+			\hline
+			Linearity & $ax[n]+by[n]$ & $aX(e^{j\omega}) + bY(e^{j\omega})$ \\
+			\hline
+			Time Shifting & $x[n-n_0]$ & $e^{-j\omega n_0}X(e^{j\omega})$ \\
+			\hline
+			Frequency Shifting & $e^{j\omega_0 n}x[n]$ & $X(e^{j(\omega-\omega_0)})$ \\
+			\hline
+			Conjugation & $x^*[n]$ & $X^*(e^{-j\omega})$ \\
+			\hline
+			Time Reversal & $x[-n]$ & $X(e^{-j\omega})$ \\
+			\hline
+			Time Expansion & $x_{(k)}[n]=\begin{cases} x[n/k], & \text{if } n \text{ is a} \\ & \text{multiple of } k \\ 0, & \text{if } n \text{ is not a} \\ & \text{multiple of } k \end{cases}$ & $X(e^{jk\omega})$ \\
+			\hline
+			Convolution & $x[n]*y[n]$ & $X(e^{j\omega})Y(e^{j\omega})$ \\
+			\hline
+			Multiplication & $x[n]y[n]$ & $\frac{1}{2\pi}\int_{2\pi} X(e^{j\theta})Y(e^{j(\omega-\theta)})\,\dd\theta$ \\
+			\hline
+			Differencing in Time & $x[n]-x[n-1]$ & $(1-e^{-j\omega})X(e^{j\omega})$ \\
+			\hline
+			Accumulation & $\sum_{m=-\infty}^{n} x[m]$ & $\frac{1}{1-e^{-j\omega}}X(e^{j\omega}) +$ \\
+			& & $\pi X(e^{j0})\sum_{k=-\infty}^{+\infty}\delta(\omega-2\pi k)$ \\
+			\hline
+			Differentiation in Frequency & $nx[n]$ & $j\frac{\dd X(e^{j\omega})}{\dd\omega}$ \\
+			\hline
+			Conjugate Symmetry & $x[n]$ real & $X(e^{j\omega}) = X^*(e^{-j\omega})$ \\
+			for Real Signals & & $\text{Re}\{X(e^{j\omega})\} = \text{Re}\{X(e^{-j\omega})\}$ \\
+			& & $\text{Im}\{X(e^{j\omega})\} = -\text{Im}\{X(e^{-j\omega})\}$ \\
+			& & $|X(e^{j\omega})| = |X(e^{-j\omega})|$ \\
+			& & $\angle X(e^{j\omega}) = -\angle X(e^{-j\omega})$ \\
+			\hline
+			Symmetry for Real, Even Signals & $x[n]$ real and even & $X(e^{j\omega})$ real and even \\
+			\hline
+			Symmetry for Real, Odd Signals & $x[n]$ real and odd & $X(e^{j\omega})$ purely imaginary and odd \\
+			\hline
+			Even-odd Decomposition & $x_e[n] = \Ev\{x[n]\}$ & $\text{Re}\{X(e^{j\omega})\}$ \\
+			of Real Signals & $x_o[n] = \Od\{x[n]\}$ & $j\text{Im}\{X(e^{j\omega})\}$ \\
+			\hline
+			\multicolumn{3}{|c|}{\textbf{Parseval's Relation for Aperiodic Signals}} \\
+			\hline
+			\multicolumn{3}{|c|}{$\sum_{n=-\infty}^{+\infty} |x[n]|^2 = \frac{1}{2\pi}\int_{2\pi} |X(e^{j\omega})|^2 \,\dd\omega$} \\
+			\hline
+		\end{tabular}%
+		}
+		\vspace{0.5cm}
+		\caption{Properties of the Discrete-Time Fourier Transform}
+		\label{tab:dtft_properties}
+	\end{table}
+	
+	\begin{table}[H]
+		\centering
+		\small
+		\renewcommand{\arraystretch}{1.2}
+		\resizebox{0.95\textwidth}{!}{%
+		\begin{tabular}{|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{4cm}|>{\raggedright\arraybackslash}p{5cm}|}
+			\hline
+			\textbf{Signal} & \textbf{Fourier Transform} & \textbf{Fourier Series Coefficients (if periodic)} \\
+			\hline
+			$\sum_{k=\langle N \rangle} a_k e^{jk(2\pi/N)n}$ & $2\pi\sum_{k=-\infty}^{+\infty} a_k \delta(\omega - \frac{2\pi k}{N})$ & $a_k$ \\
+			\hline
+			$e^{j\omega_0 n}$ & $2\pi\sum_{l=-\infty}^{+\infty} \delta(\omega - \omega_0 - 2\pi l)$ & (a) $\omega_0=\frac{2\pi m}{N}$: $a_k = \begin{cases} 1, & k=m, m\pm N, \dots \\ 0, & \text{otherwise} \end{cases}$ \\
+			& & (b) $\omega_0/\pi$ irrational: The signal is aperiodic \\
+			\hline
+			$\cos(\omega_0 n)$ & $\pi\sum_{l=-\infty}^{+\infty} \{\delta(\omega-\omega_0-2\pi l) + \delta(\omega+\omega_0-2\pi l)\}$ & (a) $\omega_0=\frac{2\pi m}{N}$: $a_k = \begin{cases} \frac{1}{2}, & k=\pm m, \pm m\pm N, \dots \\ 0, & \text{otherwise} \end{cases}$ \\
+			& & (b) $\omega_0/\pi$ irrational: The signal is aperiodic \\
+			\hline
+			$\sin(\omega_0 n)$ & $\frac{\pi}{j}\sum_{l=-\infty}^{+\infty} \{\delta(\omega-\omega_0-2\pi l) - \delta(\omega+\omega_0-2\pi l)\}$ & (a) $\omega_0=\frac{2\pi m}{N}$: $a_k = \begin{cases} \frac{1}{2j}, & k=m, m\pm N, \dots \\ -\frac{1}{2j}, & k=-m, -m\pm N, \dots \\ 0, & \text{otherwise} \end{cases}$ \\
+			& & (b) $\omega_0/\pi$ irrational: The signal is aperiodic \\
+			\hline
+			$x[n]=1$ & $2\pi\sum_{l=-\infty}^{+\infty} \delta(\omega-2\pi l)$ & $a_k = \begin{cases} 1, & k=0, \pm N, \pm 2N, \dots \\ 0, & \text{otherwise} \end{cases}$ (periodic pulse train) \\
+			\hline
+			Periodic square wave & $2\pi\sum_{k=-\infty}^{+\infty} a_k \delta(\omega - \frac{2\pi k}{N})$ & $a_k=\frac{\sin[(2\pi k/N)(N_1+1/2)]}{N\sin(\pi k/N)}, k\ne 0, \pm N, \dots$ \\
+			$x[n]=\begin{cases} 1, & |n|\le N_1 \\ 0, & N_1<|n|\le N/2 \end{cases}$ & & $a_k=\frac{2N_1+1}{N}, k=0, \pm N, \pm 2N, \dots$ \\
+			and $x[n+N]=x[n]$ & & \\
+			\hline
+			$\sum_{k=-\infty}^{+\infty} \delta[n-kN]$ & $\frac{2\pi}{N}\sum_{k=-\infty}^{+\infty} \delta(\omega - \frac{2\pi k}{N})$ & $a_k=\frac{1}{N}$ for all k \\
+			\hline
+			$a^n u[n], |a|<1$ & $\frac{1}{1-ae^{-j\omega}}$ & \\
+			\hline
+			$x[n]=\begin{cases} 1, & |n|\le N_1 \\ 0, & |n|>N_1 \end{cases}$ & $\frac{\sin[\omega(N_1+1/2)]}{\sin(\omega/2)}$ & \\
+			\hline
+			$\frac{\sin(Wn)}{\pi n}, 0<W<\pi$ & $X(e^{j\omega})=\begin{cases} 1, & 0\le|\omega|\le W \\ 0, & W<|\omega|\le\pi \end{cases}$ & \\
+			& ($X(e^{j\omega})$ is periodic with period $2\pi$) & \\
+			\hline
+			$\delta[n]$ & 1 & \\
+			\hline
+			$u[n]$ & $\frac{1}{1-e^{-j\omega}} + \sum_{k=-\infty}^{+\infty} \pi\delta(\omega-2\pi k)$ & \\
+			\hline
+			$\delta[n-n_0]$ & $e^{-j\omega n_0}$ & \\
+			\hline
+			$(n+1)a^n u[n], |a|<1$ & $\frac{1}{(1-ae^{-j\omega})^2}$ & \\
+			\hline
+			$\frac{(n+r-1)!}{n!(r-1)!}a^n u[n], |a|<1$ & $\frac{1}{(1-ae^{-j\omega})^r}$ & \\
+			\hline
+		\end{tabular}%
+		}
+		\vspace{0.5cm}
+		\caption{Basic Discrete-Time Fourier Transform Pairs}
+		\label{tab:dtft_pairs_comprehensive}
+	\end{table}
+
+\newpage
+\section*{Summary and Next Lecture}
+	\begin{itemize}[noitemsep]
+		\item \textbf{Duality:} Interchanges roles of time and frequency
+		\item \textbf{Tables as a Tool:} Efficient problem solving by combining basic pairs with properties (shifting, scaling, differentiation, convolution)
+		\item \textbf{Next time:} Magnitude and phase of the Fourier transform and their roles in signal structure
+	\end{itemize}
+	
+\end{document}

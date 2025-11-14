@@ -1,0 +1,80 @@
+	\begin{tikzpicture}[
+		node distance=10mm and 22mm,
+		block/.style={rectangle, draw, minimum width=12mm, minimum height=8mm, align=center},
+		sum/.style={circle, draw, minimum size=7mm, inner sep=0pt},
+		>={Stealth},
+		% Style for placing labels on lines
+		coeff/.style={above, pos=0.5}
+		]
+		
+		% --- Main Horizontal Nodes at the Top ---
+		\coordinate (input) at (0,0);
+		\node[sum] (feedback_sum_top) at (2.5,0) {$+$};
+		\coordinate (w_point) at (5,0);
+		\node[sum] (feedforward_sum_top) at (7.5,0) {$+$};
+		\coordinate (output) at (10,0);
+		
+		% --- Draw the Top-Level Signal Path ---
+		\draw[->] (input) -- node[coeff, pos=0.4] {$x[n]$} (feedback_sum_top);
+		\draw[->] (feedback_sum_top) -- (w_point);
+		\node[above=2mm] at (w_point) {$w[n]$};
+		\draw[->] (w_point) -- node[coeff] {$b_0$} (feedforward_sum_top);
+		\draw[->] (feedforward_sum_top) -- node[coeff, pos=0.6] {$y[n]$} (output);
+		
+		% --- Central Delay Column ---
+		\node[block] (delay1) at ($(w_point)+(0,-2.2)$) {D};
+		\node[block] (delay2) at ($(delay1)+(0,-2.2)$) {D};
+		\node (dots) at ($(delay2)+(0,-1.8)$) {$\vdots$};
+		\node[block] (delayN_1) at ($(dots)+(0,-1.8)$) {D};
+		\node[block] (delayN) at ($(delayN_1)+(0,-2.2)$) {D};
+		
+		% --- Vertical Delay Bus ---
+		\draw[->] (w_point) -- (delay1);
+		\draw[->] (delay1) -- (delay2);
+		\draw[->,shorten >=1mm, shorten <=1mm] (delay2) -- (dots);
+		\draw[->,shorten >=1mm, shorten <=1mm] (dots) -- (delayN_1);
+		\draw[->] (delayN_1) -- (delayN);
+		
+		% --- Summers on Both Sides ---
+		\node[sum] (feedback_sum_1) at (feedback_sum_top |- delay1) {$+$};
+		\node[sum] (feedback_sum_2) at (feedback_sum_top |- delay2) {$+$};
+		\node[sum] (feedback_sum_N_1) at (feedback_sum_top |- delayN_1) {$+$};
+		\node[sum] (feedback_sum_N) at (feedback_sum_top |- delayN) {$+$};
+		
+		\node[sum] (feedforward_sum_1) at (feedforward_sum_top |- delay1) {$+$};
+		\node[sum] (feedforward_sum_2) at (feedforward_sum_top |- delay2) {$+$};
+		\node[sum] (feedforward_sum_N_1) at (feedforward_sum_top |- delayN_1) {$+$};
+		\node[sum] (feedforward_sum_N) at (feedforward_sum_top |- delayN) {$+$};
+		
+			% --- Feedback Connections (Left Side) ---
+			% Tap signal from AFTER each delay block
+	% Draw left, place the label, then draw up and over to the destination
+		\draw[->] (delay1.west) -- ++(-.7,0) node[above] {$-a_1$} |- (feedback_sum_1);
+		\draw[->] (delay2.west) -- ++(-.7,0) node[above] {$-a_2$} |- (feedback_sum_2);
+		\draw[->] (delayN_1.west) -- ++(-.7,0) node[above] {$-a_{N-1}$} |- (feedback_sum_N_1);
+		\draw[->] (delayN.west) -- ++(-.7,0) node[above] {$-a_N$} |- (feedback_sum_N);
+
+		
+		% --- Feedforward Connections (Right Side) ---
+		% Tap signal from BEFORE each delay block
+		\draw[->] (delay1.east) -- ++(.7,0) node[above] {$b_1$} |- (feedforward_sum_1);
+		\draw[->] (delay2.east) -- ++(.7,0) node[above] {$b_2$} |- (feedforward_sum_2);
+		\draw[->] (delayN_1.east) -- ++(.7,0) node[above] {$b_{N-1}$} |- (feedforward_sum_N_1);
+		\draw[->] (delayN.east) -- ++(.7,0) node[above] {$b_N$} |- (feedforward_sum_N);
+		
+		
+		% --- Vertical Summer Connections ---
+		% Connect the summers in an upward chain
+		\draw[->] (feedback_sum_1) -- (feedback_sum_top);
+		\draw[->] (feedback_sum_2) -- (feedback_sum_1);
+		\draw[->, dotted] (feedback_sum_N_1) -- (feedback_sum_2);
+		\draw[->] (feedback_sum_N) -- (feedback_sum_N_1);
+		
+		\draw[->] (feedforward_sum_1) -- (feedforward_sum_top);
+		\draw[->] (feedforward_sum_2) -- (feedforward_sum_1);
+		\draw[->, dotted] (feedforward_sum_N_1) -- (feedforward_sum_2);
+		\draw[->] (feedforward_sum_N) -- (feedforward_sum_N_1);
+		
+		% --- Title ---
+		
+	\end{tikzpicture}

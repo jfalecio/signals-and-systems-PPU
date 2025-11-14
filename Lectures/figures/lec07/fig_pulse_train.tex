@@ -1,0 +1,61 @@
+\begin{tikzpicture}[
+	scale=0.8,
+	>=Stealth,
+	% --- Style Definitions ---
+	axis/.style={->, thick, black!80},
+	signal/.style={line width=2pt, blue!70!black},
+	guideline/.style={dashed, gray!50, thin},
+	dimline/.style={<->, thin, gray},
+	annotation/.style={font=\small, inner sep=1.5pt},
+	]
+	
+	% --- Parameters ---
+	\def\A{2}           % Amplitude
+	\def\Period{4}      % Period (T_0)
+	\def\T1{0.8}        % Half pulse-width
+	\def\Nperiods{1}    % Number of full periods to show left/right of the origin
+	
+	% --- Dynamic Boundaries ---
+	\pgfmathsetmacro{\Xmax}{\Nperiods*\Period + \Period/2 + 0.5}
+	\pgfmathsetmacro{\Xmin}{-\Xmax}
+	\pgfmathsetmacro{\Ymax}{\A + 1.5}
+	
+	% --- Grid & Axes ---
+	\draw[step=0.5, gray!15, very thin] (\Xmin,-0.5) grid (\Xmax,\Ymax);
+	\draw[axis] (\Xmin, 0) -- (\Xmax, 0) node[right, font=\small] {$t$};
+	\draw[axis] (0, -0.8) -- (0, \Ymax) node[above, font=\small] {$x(t)$};
+	
+	% --- Signal Drawing ---
+	% Draw pulses (black for non-zero areas)
+	\foreach \n in {-\Nperiods,...,\Nperiods} {
+		\pgfmathsetmacro{\center}{\n*\Period}
+		\draw[line width=2pt, black] (\center-\T1, 0) -- (\center-\T1, \A) -- (\center+\T1, \A) -- (\center+\T1, 0);
+	}
+	
+	% --- Y-Axis Tick & Label ---
+	\draw[thick] (-0.1, \A) -- (0.1, \A);
+	\node[left, font=\small] at (-0.1, \A) {$1$};
+	
+	% --- X-Axis Ticks & Labels ---
+	\node[below=2pt, font=\small] at (0,0) {$0$};
+	% Only show T1 labels near origin
+	\draw[thick] (-\T1, -0.1) -- (-\T1, 0.1);
+	\node[below, font=\small] at (-\T1, -0.1) {$-T_1$};
+	\draw[thick] (\T1, -0.1) -- (\T1, 0.1);
+	\node[below, font=\small] at (\T1, -0.1) {$T_1$};
+	% Show Period labels further out
+	\draw[thick] (\Period, -0.1) -- (\Period, 0.1);
+	\node[below, font=\small] at (\Period, -0.1) {$T_0$};
+	\draw[thick] (-\Period, -0.1) -- (-\Period, 0.1);
+	\node[below, font=\small] at (-\Period, -0.1) {$-T_0$};
+	
+	% --- Dimension Line for Period ---
+	\draw[dimline] (0, -0.6) -- (\Period, -0.6);
+	\node[below, annotation] at (\Period/2, -0.6) {Period $T_0$};
+	
+	% --- Dimension Line for Pulse Width ---
+	\pgfmathsetmacro{\dimheight}{\A + 0.4}
+	\draw[dimline] (-\T1, \dimheight) -- (\T1, \dimheight);
+	\node[above=2pt, annotation] at (0, \dimheight) {Width $2T_1$};
+	
+\end{tikzpicture}

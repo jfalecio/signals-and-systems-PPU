@@ -1,0 +1,104 @@
+	\begin{tikzpicture}[
+	node distance=8mm and 18mm,
+	block/.style={rectangle, draw, minimum width=14mm, minimum height=8mm, align=center},
+	sum/.style={circle, draw, minimum size=7mm, inner sep=0pt},
+	coeff/.style={font=\small},
+	>={Stealth}
+	]
+	
+	% Main horizontal nodes
+	\coordinate (input) at (0,0);
+	\node[sum] (feedforward_sum) at (3.5,0) {$+$};
+	\node (intermediate_signal) at (5,0) [label=above:{$w[n]$}] {};
+	\node[sum] (feedback_sum) at (6.5,0) {$+$};
+	\coordinate (output) at (10.5,0);
+	
+	% Main path arrows and labels
+	\draw[->] (input) -- node[above,pos=0.35] {$x[n]$} (feedforward_sum);
+	\draw[->] (feedforward_sum) -- (intermediate_signal);
+	\draw[->] (intermediate_signal) -- (feedback_sum);
+	\draw[->] (feedback_sum) -- node[above] {$1/a_0$} (output) node[right=2mm] {$y[n]$};
+	
+	%
+	% Feedforward column (left)
+	%
+	% a vertical bus point where taps branch off
+	\coordinate (feedforward_bus) at (1,0);
+	
+	% delays stacked below ffbus
+	\node[block] (delay_1) at ($(feedforward_bus)+(0,-1.6)$) {D};
+	\node[block] (delay_2) at ($(delay_1)+(0,-1.2)$) {D};
+	\node (delay_dots) at ($(delay_2)+(0,-1.1)$) {$\vdots$};
+	\node[block] (delay_N_minus_1) at ($(delay_dots)+(0,-1.1)$) {D};
+	\node[block] (delay_N) at ($(delay_N_minus_1)+(0,-1.2)$) {D};
+	
+	% feedforward bus line and branch to ffsum
+	\draw (feedforward_bus) -- ++(0.8,0); % small visual bus
+	\draw[->] (feedforward_bus) -- node[above,pos=0.5,coeff] {$b_0$} (feedforward_sum);
+	
+	% connect the bus to first delay
+	\draw[->] (feedforward_bus) -- (delay_1.north);
+	
+	% chain delays
+	\draw[->] (delay_1) -- (delay_2);
+	\draw[->] (delay_2) -- (delay_dots);
+	\draw[->] (delay_dots) -- (delay_N_minus_1);
+	\draw[->] (delay_N_minus_1) -- (delay_N);
+	
+	% summers for each delayed tap
+	\node[sum] (sum_1) at ($(feedforward_sum) + (0,-1.6)$) {$+$};
+	\node[sum] (sum_2) at ($(sum_1) + (0,-1.2)$) {$+$};
+	\node (sum_dots) at ($(sum_2) + (0,-1.1)$) {$\vdots$};
+	\node[sum] (sum_N_minus_1) at ($(sum_dots) + (0,-1.1)$) {$+$};
+	
+	% connections from delays to the corresponding summers
+	\draw[->] (delay_1) -- node[above, pos=0.7] {$b_1$} (sum_1);
+	\draw[->] (delay_2) -- node[above, pos=0.7] {$b_2$} (sum_2);
+	\draw[->] (delay_N_minus_1) -- node[above, pos=0.7] {$b_{N-1}$} (sum_N_minus_1);
+	\draw[->] (delay_N) -| (sum_N_minus_1) node[above, pos=0.25] {$b_N$};
+	
+	% chain the summers into ffsum
+	\draw[->] (sum_1) -- (feedforward_sum);
+	\draw[->] (sum_2) -- (sum_1);
+	\draw[->] (sum_N_minus_1) -- (sum_dots);
+	\draw[->] (sum_dots) -- (sum_2);
+	
+	%
+	% Feedback column (right)
+	%
+	\coordinate (feedback_bus) at (9,0);
+	
+	\node[block] (feedback_delay_1) at ($(feedback_bus)+(0,-1.6)$) {D};
+	\node[block] (feedback_delay_2) at ($(feedback_delay_1)+(0,-1.2)$) {D};
+	\node (feedback_delay_dots) at ($(feedback_delay_2)+(0,-1.1)$) {$\vdots$};
+	\node[block] (feedback_delay_N_minus_1) at ($(feedback_delay_dots)+(0,-1.1)$) {D};
+	\node[block] (feedback_delay_N) at ($(feedback_delay_N_minus_1)+(0,-1.2)$) {D};
+	
+	% bus line and chain
+	\draw (feedback_bus) -- ++(-0.8,0); % small visual bus
+	\draw[->] (feedback_bus) -- (feedback_delay_1.north);
+	\draw[->] (feedback_delay_1) -- (feedback_delay_2);
+	\draw[->] (feedback_delay_2) -- (feedback_delay_dots);
+	\draw[->] (feedback_delay_dots) -- (feedback_delay_N_minus_1);
+	\draw[->] (feedback_delay_N_minus_1) -- (feedback_delay_N);
+	
+	% feedback summers
+	\node[sum] (feedback_sum_1) at ($(feedback_sum) + (0,-1.6)$) {$+$};
+	\node[sum] (feedback_sum_2) at ($(feedback_sum_1) + (0,-1.2)$) {$+$};
+	\node (feedback_sum_dots) at ($(feedback_sum_2) + (0,-1.1)$) {$\vdots$};
+	\node[sum] (feedback_sum_N_minus_1) at ($(feedback_sum_dots) + (0,-1.1)$) {$+$};
+	
+	% connections from feedback delays to feedback summers (with -a_i)
+	\draw[->] (feedback_delay_1) -- node[above, pos=0.7] {$-a_1$} (feedback_sum_1);
+	\draw[->] (feedback_delay_2) -- node[above, pos=0.7] {$-a_2$} (feedback_sum_2);
+	\draw[->] (feedback_delay_N_minus_1) -- node[above, pos=0.7] {$-a_{N-1}$} (feedback_sum_N_minus_1);
+	\draw[->] (feedback_delay_N) -| (feedback_sum_N_minus_1) node[above, pos=0.25] {$-a_N$};
+	
+	% chain feedback summers into main feedback summer
+	\draw[->] (feedback_sum_1) -- (feedback_sum);
+	\draw[->] (feedback_sum_2) -- (feedback_sum_1);
+	\draw[->] (feedback_sum_N_minus_1) -- (feedback_sum_dots);
+	\draw[->] (feedback_sum_dots) -- (feedback_sum_2);
+	
+	
+	\end{tikzpicture}

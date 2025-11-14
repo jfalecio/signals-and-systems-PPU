@@ -1,0 +1,304 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+\renewcommand{\qedsymbol}{}
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{7.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 7} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 7: The Response of LTI Systems to Complex Exponentials \& Continuous-Time Fourier Series}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 3, Sections 3.0--3.3
+	
+	\section*{Review of Lecture 6}
+	\begin{itemize}[noitemsep]
+		\item LTI properties from impulse response
+		\item Causality and stability conditions
+		\item LCCDEs in continuous and discrete time
+		\item Implementation structures and realizations
+	\end{itemize}
+	
+	\section*{7.1 Introduction}
+	
+	Last time, we connected the abstract properties of LTI systems to concrete conditions on their impulse responses. We established that:
+	\begin{itemize}[noitemsep]
+		\item \textbf{Causality} $\Leftrightarrow h(t)=0$ for $t<0$ (or $h[n]=0$ for $n<0$)
+		\item \textbf{Stability} $\Leftrightarrow \int_{-\infty}^{\infty} |h(t)|\dd t < \infty$ (or $\sum_{n=-\infty}^{\infty} |h[n]| < \infty$)
+	\end{itemize}
+	
+	We also introduced the most common way LTI systems are described in practice: linear constant-coefficient differential and difference equations. While convolution allows us to analyze these systems, the process can be cumbersome. Today, we begin to build a new, more powerful approach: frequency-domain analysis.
+	
+	The key insight is that complex exponentials have a special property when applied to LTI systems. This motivates us to represent signals as sums of complex exponentials. For periodic signals, we can use harmonically related complex exponentials, leading to the Fourier Series representation.
+	\newpage
+	\section*{7.2 Complex Exponentials as LTI Eigenfunctions}
+	
+	Let the input to a CT LTI system be $x(t) = e^{st}$ for any complex number $s$. The output is found by convolution:
+	\[
+	y(t) = \int_{-\infty}^{\infty} h(\tau) e^{s(t-\tau)}\dd\tau = e^{st} \int_{-\infty}^{\infty} h(\tau)e^{-s\tau}\dd\tau
+	\]
+	
+	The integral is a complex constant $H(s)$ that depends on $s$ called \textbf{system function} $H(s)$:
+	\[
+	e^{st} \xrightarrow{\text{LTI System}} H(s)e^{st}
+	\]
+	
+	For periodic complex exponentials, we set $s=j\omega$. The system function becomes the \textbf{frequency response}:
+	\[
+	H(j\omega) = \int_{-\infty}^{\infty} h(t)e^{-j\omega t}\dd t
+	\]
+	
+	If the input is a sum of complex exponentials, by linearity:
+	\[
+	\text{If } x(t) = \sum_k a_k e^{j\omega_k t} \quad \implies \quad y(t) = \sum_k a_k H(j\omega_k) e^{j\omega_k t}
+	\]
+	
+	This turns convolution into simple multiplication for each frequency component.
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec07/fig_eigenfunction_property.tex}
+		\caption{Complex exponentials pass through LTI systems with scaling only.}
+		\label{fig:eigenfunction_property}
+	\end{figure}
+	
+	
+	\section*{7.3 The Continuous-Time Fourier Series (CTFS)}
+	
+	The insight from the previous section motivates us to represent periodic signals as a sum of harmonically related complex exponentials. This representation is the \textbf{Fourier Series}.
+	
+	\subsection*{7.3.1 Synthesis Equation}
+	
+	For a periodic signal $x(t)$ with fundamental period $T_0$ and frequency $\omega_0=2\pi/T_0$, its Fourier series representation is:
+	\[
+	x(t) = \sum_{k=-\infty}^{\infty} a_k e^{jk\omega_0 t}
+	\]
+	
+	\begin{itemize}[noitemsep]
+		\item The terms for $k=\pm 1$ are the \textbf{fundamental components}
+		\item The terms for $k=\pm n$ are the \textbf{$n^{th}$ harmonics}
+		\item The coefficients $a_k$ are the \textbf{Fourier series coefficients}, which encode information about both the magnitude and phase of each harmonic component in the signal
+	\end{itemize}
+	
+	\subsection*{7.3.2 Analysis Equation}
+	
+	To find the coefficients, we can exploit the orthogonality of the harmonic components. The formula for the coefficients is:
+	\[
+	a_k = \frac{1}{T_0} \int_{T_0} x(t)e^{-jk\omega_0 t}\dd t
+	\]
+	
+	The integral can be taken over \textit{any} interval of length $T_0$.
+	
+	\subsection*{7.3.3 Orthogonality Property}
+	
+	The harmonically related complex exponentials are orthogonal over a period:
+	\[
+	\int_{T_0} e^{jk\omega_0 t} e^{-jn\omega_0 t} \dd t = \begin{cases}
+		T_0 & \text{if } k = n \\
+		0 & \text{if } k \neq n
+	\end{cases}
+	\]
+	
+	\begin{proof}
+		For $k \neq n$:
+		\[
+		\int_{T_0} e^{j(k-n)\omega_0 t} \dd t = \frac{1}{j(k-n)\omega_0} \left[ e^{j(k-n)\omega_0 t} \right]_{0}^{T_0} = \frac{1}{j(k-n)\omega_0} \left( e^{j(k-n)2\pi} - 1 \right) = 0
+		\]
+		since $e^{j(k-n)2\pi} = 1$ for integer $(k-n)$.
+		
+		For $k = n$:
+		\[
+		\int_{T_0} e^{j(k-n)\omega_0 t} \dd t = \int_{T_0} 1 \dd t = T_0
+		\]
+		\qed
+	\end{proof}
+	
+	This orthogonality property enables precise extraction of each frequency component's contribution.
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec07/fig_orthogonality.tex}
+		\caption{Harmonically related complex exponentials and their orthogonality.}
+		\label{fig:orthogonality}
+	\end{figure}
+	
+	\subsection*{7.3.4 Alternative Form: Trigonometric Fourier Series}
+	
+	While the complex exponential form is compact and mathematically convenient, the Fourier series can also be expressed as a sum of sines and cosines, which can be more intuitive for real signals.
+	
+	Any real periodic signal $x(t)$ can be written as:
+	\[
+	x(t) = A_0 + \sum_{k=1}^{\infty} \left( A_k \cos(k\omega_0 t) + B_k \sin(k\omega_0 t) \right)
+	\]
+	
+	The coefficients are found by:
+	\begin{align}
+		A_0 &= \frac{1}{T_0} \int_{T_0} x(t) \dd t \\
+		A_k &= \frac{2}{T_0} \int_{T_0} x(t) \cos(k\omega_0 t) \dd t \quad (k \geq 1) \\
+		B_k &= \frac{2}{T_0} \int_{T_0} x(t) \sin(k\omega_0 t) \dd t \quad (k \geq 1)
+	\end{align}
+	\newpage
+	\textbf{Relationship to Complex Coefficients:}
+	The two forms are directly related. Given the complex coefficients $a_k$ for a real signal:
+	\begin{itemize}[noitemsep]
+		\item $A_0 = a_0$
+		\item $A_k = 2 \text{Re}\{a_k\} = a_k + a_{-k}$
+		\item $B_k = -2 \text{Im}\{a_k\} = j(a_k - a_{-k})$
+	\end{itemize}
+	
+	Conversely, given the trigonometric coefficients:
+	\begin{itemize}[noitemsep]
+		\item $a_0 = A_0$
+		\item $a_k = \frac{1}{2}(A_k - jB_k)$ for $k > 0$
+		\item $a_{-k} = a_k^* = \frac{1}{2}(A_k + jB_k)$ for $k > 0$
+	\end{itemize}
+	
+	
+	\subsection*{7.3.5 Dirichlet Conditions for Convergence}
+	
+	The following are sufficient conditions for Fourier Series to converge:
+	\begin{enumerate}[noitemsep]
+		\item $x(t)$ must have at most a finite number of maxima and minima in one period
+		\item $x(t)$ must have at most a finite number of discontinuities in one period
+		\item $x(t)$ must be absolutely integrable over one period
+	\end{enumerate}
+	
+\begin{theorem}[Convergence at Discontinuities]
+	If $x(t)$ is a periodic function satisfying the Dirichlet conditions and $t_0$ is a point of jump discontinuity, then the Fourier Series converges pointwise to the midpoint value:
+	\[
+	\lim_{N \to \infty} \sum_{k=-N}^{N} a_k e^{jk\omega_0 t_0} = \frac{x(t_0^-) + x(t_0^+)}{2}
+	\]
+	where $x(t_0^-) = \lim_{t \to t_0^-} x(t)$ and $x(t_0^+) = \lim_{t \to t_0^+} x(t)$.
+\end{theorem}
+
+\begin{remark}
+	For continuous signals, the Fourier Series converges uniformly to the original signal. For signals with discontinuities, convergence is pointwise except at discontinuities, where it converges to the midpoint value.
+\end{remark}
+
+	
+	\section*{7.4 Examples}
+	
+	\subsection*{7.4.1 Fourier Coefficients for $x(t) = \sin(\omega_0 t)$}
+	
+	Using Euler's identity: $\sin(\omega_0 t) = \frac{1}{2j}e^{j\omega_0 t} - \frac{1}{2j}e^{-j\omega_0 t}$.
+	
+	By comparing this to the synthesis equation, we can see by inspection:
+	\[
+	a_1 = \frac{1}{2j}, \quad a_{-1} = -\frac{1}{2j}, \quad \text{and all other } a_k = 0
+	\]
+	
+	\textbf{Explanation:} The sine wave contains just the fundamental frequency components at $+\omega_0$ and $-\omega_0$, with corresponding positive and negative phases.
+	\newpage
+	\subsection*{7.4.2 Fourier Series of a Periodic Square Wave}
+	
+	Let $x(t)$ be a square wave with period $T_0$ that equals 1 for $|t|<T_1$ and 0 for $T_1<|t|<T_0/2$.
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec07/fig_pulse_train.tex}
+		\caption{Periodic rectangular pulse train with period $T_0$ and pulse width $2T_1$.}
+		\label{fig:pulse_train}
+	\end{figure}
+	
+	\begin{itemize}[noitemsep]
+		\item The DC component ($k=0$) is the average value: $a_0 = \frac{1}{T_0}\int_{-T_1}^{T_1} 1 \dd t = \frac{2T_1}{T_0}$
+		\item For $k \neq 0$:
+		\[
+		a_k = \frac{1}{T_0}\int_{-T_1}^{T_1} e^{-jk\omega_0 t}\dd t = \frac{2\sin(k\omega_0 T_1)}{k\omega_0 T_0} = \frac{\sin(k\omega_0 T_1)}{k\pi}
+		\]
+		This is a sinc-like function. For a symmetric square wave ($T_1 = T_0/4$), only odd harmonics appear with amplitude decaying as $1/k$.
+	\end{itemize}
+	
+	\subsection*{7.4.3 Duty-Cycle Rectangular Pulse Train}
+	
+	For a rectangular pulse train with duty cycle $D = 2T_1/T_0$, we can generalize the square wave result. First, let us define the normalized sinc function:
+	
+	\begin{definition}[Normalized Sinc Function]
+		The normalized sinc function is defined as:
+		\[
+		\text{sinc}(x) = \frac{\sin(\pi x)}{\pi x}
+		\]
+		with the special case $\text{sinc}(0) = 1$.
+	\end{definition}
+	
+	Starting from our previous result for the centered pulse:
+	\[
+	a_k = \frac{\sin(k\omega_0 T_1)}{k\pi}
+	\]
+	
+	Substituting $\omega_0 = 2\pi/T_0$ and $D = 2T_1/T_0$:
+	\[
+	a_k = \frac{\sin(k\pi (2T_1/T_0))}{k\pi} = \frac{\sin(k\pi D)}{k\pi}
+	\]
+	
+	To express this in terms of the sinc function, we multiply and divide by $D$:
+	\[
+	a_k = D \cdot \frac{\sin(k\pi D)}{k\pi D} = D \cdot \text{sinc}(kD)
+	\]
+	\newpage
+	\textbf{Key Points:}
+	\begin{itemize}[noitemsep]
+		\item Since the pulse is centered at $t=0$, the coefficients are real (no phase term)
+		\item The magnitude follows the sinc envelope: $|a_k| = D|\text{sinc}(kD)|$
+		\item For a square wave ($D = 1/2$), we get the familiar $1/k$ decay for odd harmonics
+	\end{itemize}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec07/fig_sinc_envelope.tex}
+		\caption{Fourier series coefficients for a rectangular pulse train showing the sinc envelope and discrete samples of a square wave with duty cycle $50\%$}
+		\label{fig:sinc_envelope}
+	\end{figure}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec07/fig_duty_cycle_examples.tex}
+		\caption{Rectangular pulse trains with different duty cycles $D$.}
+		\label{fig:duty_cycle_examples}
+	\end{figure}
+	
+	\subsection*{7.4.4 Fourier Synthesis Demonstration}
+	
+	\begin{figure}[H]
+		\centering
+		\input{figures/lec07/fig_fourier_synthesis.tex}
+		\caption{Fourier synthesis showing convergence to square wave.}
+		\label{fig:fourier_synthesis}
+	\end{figure}
+	
+	
+	\textbf{Key Observation:} Notice how the Gibbs phenomenon (overshoot) remains at ~9\% but gets squeezed to the discontinuity edges as more terms are added.
+	
+	
+	
+	\section*{7.5 Summary and Next Lecture}
+	
+	Today marks a fundamental shift in our approach. We have shown that complex exponentials are eigenfunctions of LTI systems, which means that analyzing systems in terms of these signals is algebraically simple.
+	
+	This motivated us to introduce the \textbf{Continuous-Time Fourier Series}, a tool for representing any periodic signal as a weighted sum of harmonically related complex exponentials. We now have a "recipe" for signals, where the ingredients are simple sinusoids.
+	
+	\textbf{Key Takeaways:}
+	\begin{itemize}[noitemsep]
+		\item Complex exponentials are LTI eigenfunctions: they pass through LTI systems unchanged except for scaling
+		\item Fourier series lets us express any periodic signal as a sum of exponentials, with coefficients encoding amplitude and phase at each harmonic
+		\item Time-domain convolution and differential equations correspond to simple multiplication or scaling in the frequency domain
+	\end{itemize}
+	
+	\textbf{Next lecture:} We will explore the properties of the Fourier Series. We'll see how operations in the time domain, like shifting or differentiation, have simple and predictable effects on the Fourier series coefficients, further simplifying our analysis.
+	
+	By mastering these tools, signal analysis becomes more intuitive, algebraic, and powerful
+	
+\end{document}

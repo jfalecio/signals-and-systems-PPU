@@ -1,0 +1,86 @@
+\usepackage{amsmath,amssymb,mathtools}
+\usepackage[margin=1in]{geometry}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{microtype}
+\usepackage{graphicx}
+\usepackage{tikz,float}
+\usepackage{subcaption}
+\usepackage{amsthm}
+\usepackage{hyperref}
+\usepackage{array}
+\usepackage{pgfplots}
+
+\usetikzlibrary{shapes.geometric, arrows.meta, positioning, calc, decorations.markings}
+\tikzset{
+	block/.style={rectangle, draw, text width=6em, text centered, rounded corners, minimum height=10mm},
+	sum/.style={circle, draw, node distance=1.5cm},
+	line/.style={draw, -{Stealth[length=2.5mm, width=1.5mm]}}
+}
+
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat=1.18}
+
+\pgfplotsset{
+	myaxes/.style={
+		axis lines=middle,
+		axis line style={-latex},
+		grid=major,
+		grid style={gray!15},
+		minor grid style={gray!35},
+		xlabel style={at={(ticklabel* cs:1)}, anchor=north west},
+		ylabel style={at={(ticklabel* cs:1)}, anchor=south east},
+		every axis plot/.append style={thick}
+	},
+	myplotstyle/.style={
+		width=14cm,
+		height=7cm,
+		axis lines=middle,
+		axis line style={-Stealth},
+		grid=both,
+		minor tick num=1,
+		major grid style={draw=gray!30},
+		minor grid style={draw=gray!15},
+		tick label style={font=\small, fill=white, inner sep=1.5pt},
+		xlabel={$t$},
+		ylabel={$x(t)$},
+		xlabel style={anchor=north east, font=\small},
+		ylabel style={anchor=south east, font=\small},
+		samples=401,
+	}
+}
+
+\newtheoremstyle{mynote}
+{6pt}      % Space above
+{6pt}      % Space below
+{}          % Body font (normal, not italic)
+{}          % Indent amount
+{\bfseries} % Theorem head font
+{.}         % Punctuation after theorem head
+{.5em}      % Space after theorem head
+{}          % Theorem head spec
+\theoremstyle{mynote}
+\newtheorem{definition}{Definition}
+\newtheorem{proposition}{Proposition}
+\newtheorem{example}{Example}
+\newtheorem{remark}{Remark}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+
+\newcommand{\T}{\mathcal{T}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\conv}{\ast}
+\newcommand{\dt}{\,\dd t}
+\newcommand{\dd}{\mathrm{d}}
+\newcommand{\imp}{\delta}
+\newcommand{\sinc}[1]{\frac{\sin(\pi #1)}{\pi #1}}
+
+
+\DeclareMathOperator{\rect}{rect}
+\DeclareMathOperator{\Ev}{Ev}
+\DeclareMathOperator{\Od}{Od}
+\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator{\step}{u}
+\DeclareMathOperator{\tri}{tri}

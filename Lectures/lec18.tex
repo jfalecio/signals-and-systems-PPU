@@ -1,0 +1,145 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{18.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 18} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 18: The Frequency Response of LTI Systems}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 6, Section 6.2
+	
+	\section*{Review of Lecture 17}
+	\begin{itemize}[noitemsep]
+		\item Fourier transform represented in polar form: $X(j\omega) = |X(j\omega)|e^{j\angle X(j\omega)}$
+		\item Magnitude tells us "what frequencies" are present
+		\item Phase tells us "how frequencies align in time"
+		\item Phase often more important than magnitude for signal structure
+		\item Today: applying magnitude/phase concepts to LTI systems
+	\end{itemize}
+
+\section*{18.1 Frequency Response of LTI Systems}
+
+For an LTI system with impulse response $h(t)$, the frequency response is:
+\[
+H(j\omega) = \int_{-\infty}^{\infty} h(t) e^{-j\omega t} \dd t
+\]
+
+The frequency response can be written in polar form:
+\[
+H(j\omega) = |H(j\omega)|e^{j\angle H(j\omega)}
+\]
+
+Since the output spectrum is $Y(j\omega) = H(j\omega)X(j\omega)$, we can express the output magnitude and phase as:
+\begin{itemize}[noitemsep]
+	\item \textbf{Output Magnitude:} $|Y(j\omega)| = |H(j\omega)| \cdot |X(j\omega)|$ (Magnitudes multiply)
+	\item \textbf{Output Phase:} $\angle Y(j\omega) = \angle H(j\omega) + \angle X(j\omega)$ (Phases add)
+\end{itemize}
+
+This shows how an LTI system modifies both the magnitude and phase of the input signal's spectrum.
+
+\begin{figure}[H]
+	\centering
+	\input{figures/lec18/fig_frequency_response_representation.tex}
+	\caption{Magnitude and phase response of an LTI system.}
+	\label{fig:frequency_response_representation}
+\end{figure}
+
+\section*{18.2 Linear Phase Systems}
+
+Consider a system that is a pure time delay: $y(t) = x(t-t_d)$. Its frequency response is:
+\[
+H(j\omega) = e^{-j\omega t_d}
+\]
+
+This has:
+\begin{itemize}[noitemsep]
+	\item \textbf{Magnitude Response:} $|H(j\omega)| = 1$ (all-pass filter)
+	\item \textbf{Phase Response:} $\angle H(j\omega) = -\omega t_d$ (linear in frequency)
+\end{itemize}
+
+\begin{definition}
+	A system has \textbf{linear phase} if its phase response is of the form $\angle H(j\omega) = -\alpha\omega$. All frequency components experience the same time delay $\alpha$, preserving the signal shape perfectly.
+\end{definition}
+
+\begin{figure}[H]
+	\centering
+	\input{figures/lec18/fig_linear_phase_system.tex}
+	\caption{Linear phase system preserves signal shape with constant delay.}
+	\label{fig:linear_phase_system}
+\end{figure}
+
+\paragraph{Key Properties:}
+\begin{itemize}[noitemsep]
+	\item Output: $y(t) = x(t - \alpha)$ (perfect shape preservation)
+	\item Constant group delay across all frequencies
+	\item No phase distortion
+\end{itemize}
+
+\section*{18.3 Group Delay}
+
+Most practical systems have nonlinear phase. The \textbf{group delay} characterizes the delay experienced by signal envelopes:
+
+\begin{definition}
+	The \textbf{group delay} is:
+	\[
+	\tau_g(\omega) = -\frac{d}{d\omega}\{\angle H(j\omega)\}
+	\]
+\end{definition}
+
+\subsection*{18.3.1 Phase Distortion}
+
+When group delay varies with frequency, different frequency components experience different delays, causing \textbf{phase distortion}. This distorts signal shape even with flat magnitude response.
+
+\begin{figure}[H]
+	\centering
+	\resizebox{0.8\textwidth}{!}{\input{figures/lec18/fig_phase_distortion_demo.tex}}
+	\caption{Phase distortion demonstration: linear vs. nonlinear phase systems.}
+	\label{fig:phase_distortion_demo}
+\end{figure}
+
+\section*{18.4 Phase Distortion Demonstration}
+
+Consider a signal with fundamental and third harmonic:
+\[
+x(t) = \sin(2\pi t) + 0.5\sin(6\pi t)
+\]
+
+When this passes through:
+\begin{enumerate}[noitemsep]
+	\item \textbf{Linear phase system:} All components delayed equally, shape preserved
+	\item \textbf{Nonlinear phase system:} Different delays cause shape distortion
+\end{enumerate}
+
+\begin{figure}[H]
+	\centering
+	\resizebox{0.8\textwidth}{!}{\input{figures/lec18/fig_harmonic_phase_distortion.tex}}
+	\caption{Effect of phase distortion on a signal with multiple harmonics.}
+	\label{fig:harmonic_phase_distortion}
+\end{figure}
+
+\newpage
+\section*{Summary and Next Lecture}
+	\begin{itemize}[noitemsep]
+		\item Magnitude response $|H(j\omega)|$ controls frequency amplification and attenuation
+		\item Phase response $\angle H(j\omega)$ controls time alignment of frequency components
+		\item Linear phase corresponds to pure time delay with no shape distortion
+		\item Group delay $\tau_g(\omega) = -\frac{d}{d\omega}\{\angle H(j\omega)\}$ characterizes signal envelope delay
+		\item Nonlinear phase causes non-constant group delay and phase distortion
+		\item \textbf{Next time:} Trade-offs between ideal and non-ideal filters
+	\end{itemize}
+
+\end{document}

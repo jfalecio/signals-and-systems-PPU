@@ -1,0 +1,358 @@
+\documentclass[11pt]{article}
+
+\input{signals-preamble.tex}
+
+\begin{document}
+	% Reset figure counter for this lecture
+	\renewcommand{\thefigure}{15.\arabic{figure}}
+	
+	% --- TITLE BLOCK ---
+	\thispagestyle{empty}
+	\noindent
+	\begin{tabular*}{\textwidth}{l @{\extracolsep{\fill}} r}
+		\textbf{Signals and Systems} & \textbf{Lecture 15} \\
+		\textit{Dr. Ghandi Manasra and Ahmed Rabei} & \textit{Fall 2025} \\
+	\end{tabular*}
+	\hrule
+	\vspace{0.4cm}
+	\begin{center}
+		\Large\textbf{Lecture 15: Properties of the DTFT \& LTI System Analysis}
+	\end{center}
+	\vspace{0.4cm}
+	
+	\section*{Reference}
+	Oppenheim \& Willsky, \textit{Signals and Systems}, Chapter 5, Sections 5.3, 5.4, \& 5.8
+	
+	\section*{Review of Lecture 14}
+	\begin{itemize}[noitemsep]
+		\item The DTFT pair consists of an infinite sum (analysis) and an integral over a $2\pi$ interval (synthesis)
+		\item The DTFT spectrum, $X(e^{j\omega})$, is \textbf{always a continuous and periodic function of $\omega$ with period $2\pi$}
+		\item Examples: decaying exponential, rectangular pulse, unit impulse
+		\item Convergence conditions and symmetry properties
+	\end{itemize}
+	
+	\section*{15.1 Introduction}
+	
+	Having developed the Discrete-Time Fourier Transform (DTFT) in our last lecture, we now build the DTFT properties and immediately apply them to analyze discrete-time LTI systems described by linear constant-coefficient \textbf{difference equations}.
+	
+	The properties of the DTFT are direct counterparts to those of the CTFT, with one crucial difference: any frequency shifts must be interpreted modulo $2\pi$ due to the periodic nature of the DTFT.
+	
+	We use the notation $x[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X(e^{j\omega})$ to indicate DTFT pairs throughout this lecture.
+	
+	\section*{15.2 Properties of the DTFT}
+	\subsection*{15.2.1 Linearity Property}
+	
+	\begin{theorem}[Linearity]
+		If $x_1[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X_1(e^{j\omega})$ and $x_2[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X_2(e^{j\omega})$, then:
+		\[
+		ax_1[n] + bx_2[n] \stackrel{\mathcal{F}}{\longleftrightarrow} aX_1(e^{j\omega}) + bX_2(e^{j\omega})
+		\]
+		for any constants $a, b \in \mathbb{C}$.
+	\end{theorem}
+	
+	\textbf{Proof:} This follows directly from the linearity of the summation in the DTFT definition:
+	\[
+	\mathcal{F}\{ax_1[n] + bx_2[n]\} = \sum_{n=-\infty}^{\infty} (ax_1[n] + bx_2[n]) e^{-j\omega n} = a\sum_{n=-\infty}^{\infty} x_1[n] e^{-j\omega n} + b\sum_{n=-\infty}^{\infty} x_2[n] e^{-j\omega n} = aX_1(e^{j\omega}) + bX_2(e^{j\omega})
+	\]
+	
+	\subsection*{15.2.2 Time Shifting Property}
+	
+	\begin{theorem}[Time Shifting]
+		If $x[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X(e^{j\omega})$, then:
+		\[
+		x[n - n_0] \stackrel{\mathcal{F}}{\longleftrightarrow} e^{-j\omega n_0}X(e^{j\omega})
+		\]
+		for any integer $n_0$.
+	\end{theorem}
+	
+	\textbf{Proof:} Let $y[n] = x[n - n_0]$. Then:
+	\[
+	Y(e^{j\omega}) = \sum_{n=-\infty}^{\infty} x[n - n_0] e^{-j\omega n} = \sum_{m=-\infty}^{\infty} x[m] e^{-j\omega (m + n_0)} = e^{-j\omega n_0} \sum_{m=-\infty}^{\infty} x[m] e^{-j\omega m} = e^{-j\omega n_0} X(e^{j\omega})
+	\]
+	
+	\textbf{Physical Interpretation:} Time shifting introduces a linear phase shift in the frequency domain. The magnitude spectrum remains unchanged, but the phase is modified by $-\omega n_0$.
+	
+	\subsection*{15.2.3 Frequency Shifting (Modulation) Property}
+	
+	\begin{theorem}[Frequency Shifting]
+		If $x[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X(e^{j\omega})$, then:
+		\[
+		e^{j\omega_0 n}x[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X(e^{j(\omega - \omega_0)})
+		\]
+		for any real $\omega_0$.
+	\end{theorem}
+	
+	\textbf{Proof:} 
+	\[
+	\mathcal{F}\{e^{j\omega_0 n}x[n]\} = \sum_{n=-\infty}^{\infty} e^{j\omega_0 n}x[n] e^{-j\omega n} = \sum_{n=-\infty}^{\infty} x[n] e^{-j(\omega - \omega_0)n} = X(e^{j(\omega - \omega_0)})
+	\]
+	
+	\textbf{Physical Interpretation:} Multiplication by $e^{j\omega_0 n}$ shifts the spectrum by $\omega_0$ in frequency. Due to the $2\pi$ periodicity of the DTFT, this shift is interpreted modulo $2\pi$.
+	
+	\subsection*{15.2.4 Symmetry Properties for Real Signals}
+	
+	\textbf{Recall (from Lecture 14, Section 14.4.1):} If $x[n]$ is real, then $X(e^{-j\omega}) = X^*(e^{j\omega})$.
+	
+	\subsection*{15.2.5 First Difference Property}
+	
+	\begin{theorem}[First Difference]
+		If $x[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X(e^{j\omega})$, then:
+		\[
+		x[n] - x[n-1] \stackrel{\mathcal{F}}{\longleftrightarrow} (1 - e^{-j\omega})X(e^{j\omega})
+		\]
+	\end{theorem}
+	
+	\textbf{Proof:} Using linearity and time shifting:
+	\[
+	\mathcal{F}\{x[n] - x[n-1]\} = X(e^{j\omega}) - e^{-j\omega}X(e^{j\omega}) = (1 - e^{-j\omega})X(e^{j\omega})
+	\]
+	
+	\textbf{Physical Interpretation:} The first difference is a high-pass operation. The factor $(1 - e^{-j\omega})$ is zero at $\omega = 0$ and largest at $\omega = \pi$, emphasizing high-frequency components.
+	
+	\subsection*{15.2.6 Accumulation (Summation) Property}
+	
+	\begin{theorem}[Accumulation]
+		If $x[n] \stackrel{\mathcal{F}}{\longleftrightarrow} X(e^{j\omega})$, then:
+		\[
+		\sum_{k=-\infty}^{n} x[k] \stackrel{\mathcal{F}}{\longleftrightarrow} \frac{1}{1-e^{-j\omega}}X(e^{j\omega}) + \pi X(e^{j0})\sum_{k=-\infty}^{\infty} \delta(\omega - 2\pi k)
+		\]
+	\end{theorem}
+	
+	\textbf{Physical Interpretation:} Accumulation is the discrete-time analog of integration. The term $\frac{1}{1-e^{-j\omega}}$ provides the main frequency response, while the impulse train accounts for the DC component.
+	
+	\subsection*{15.2.7 Multiplication Property}
+	
+	\begin{theorem}[Multiplication Property]
+		Multiplication in the time domain corresponds to \textbf{periodic convolution} in the frequency domain:
+		\[
+		x_1[n]x_2[n] \stackrel{\mathcal{F}}{\longleftrightarrow} \frac{1}{2\pi} \int_{2\pi} X_1(e^{j\theta})X_2(e^{j(\omega-\theta)})\,\dd\theta
+		\]
+	\end{theorem}
+	
+	The integral is over any interval of length $2\pi$.
+	
+	\subsection*{15.2.8 Parseval's Theorem}
+	
+	\begin{theorem}[Parseval's Theorem]
+		For a signal $x[n]$ with DTFT $X(e^{j\omega})$:
+		\[
+		\sum_{n=-\infty}^{\infty} |x[n]|^2 = \frac{1}{2\pi} \int_{2\pi} |X(e^{j\omega})|^2 \dd\omega.
+		\]
+	\end{theorem}
+	\begin{proof}
+		\renewcommand{\qedsymbol}{}
+		Start from the inverse DTFT:
+		\[
+		x[n] = \frac{1}{2\pi}\int_{2\pi} X(e^{j\omega})e^{j\omega n}\,\dd\omega.
+		\]
+		Then
+		\[
+		|x[n]|^2 = \frac{1}{(2\pi)^2}\int_{2\pi}\!\!\int_{2\pi} X(e^{j\omega})X^*(e^{j\theta}) e^{j(\omega-\theta)n}\,\dd\omega\,\dd\theta.
+		\]
+		Summing over all $n$ and using the orthogonality
+		\[
+		\sum_{n=-\infty}^{\infty} e^{j(\omega-\theta)n} = 2\pi\sum_{k=-\infty}^{\infty}\delta\big((\omega-\theta)-2\pi k\big),
+		\]
+		and the fact that the integrals are over any single $2\pi$-length interval, only the $k=0$ term contributes:
+		\[
+		\sum_{n=-\infty}^{\infty}|x[n]|^2
+		= \frac{1}{(2\pi)^2}\int_{2\pi}\!\!\int_{2\pi} X(e^{j\omega})X^*(e^{j\theta}) \cdot 2\pi\,\delta(\omega-\theta)\,\dd\omega\,\dd\theta
+		= \frac{1}{2\pi}\int_{2\pi} |X(e^{j\omega})|^2 \,\dd\omega.
+		\]
+	\end{proof}
+	
+	\subsection*{15.2.9 Frequency Differentiation Property}
+	
+	\begin{theorem}[Frequency Differentiation]
+		Differentiation in the frequency domain corresponds to multiplication by $n$ in the time domain:
+		\[
+		nx[n] \stackrel{\mathcal{F}}{\longleftrightarrow} j\frac{dX(e^{j\omega})}{d\omega}
+		\]
+	\end{theorem}
+	
+	This property is useful for finding DTFTs of signals that are multiplied by $n$, such as ramp signals and other polynomial-weighted sequences.
+	
+	
+	\section*{15.3 The Convolution Property}
+	
+	This is the most important property for analyzing discrete-time LTI systems. Just like in the continuous-time case, convolution in the time domain becomes simple multiplication in the frequency domain.
+	
+	\begin{theorem}[Convolution Property]
+		\[ y[n] = x[n] * h[n] \stackrel{\mathcal{F}}{\longleftrightarrow} Y(e^{j\omega}) = X(e^{j\omega})H(e^{j\omega}) \]
+	\end{theorem}
+	
+	The DTFT of the output of a discrete-time LTI system is simply the DTFT of the input multiplied by the system's \textbf{frequency response}, $H(e^{j\omega})$. The frequency response is the DTFT of the impulse response, $h[n]$.
+	
+	\begin{remark}
+		 The difficult summation of \textbf{convolution} becomes simple point-by-point \textbf{multiplication} of continuous, periodic spectra.
+	\end{remark}
+	
+	\section*{15.4 LTI Systems Described by Difference Equations}
+	
+	We can now use the convolution and time-shifting properties to analyze LTI systems described by linear constant-coefficient difference equations. The DTFT converts these recursive equations into simple algebraic equations.
+	
+	\subsection*{15.4.1 The Method}
+	
+	\begin{enumerate}[noitemsep]
+		\item Start with the system's difference equation:
+		$$\sum_{k=0}^{N} a_k y[n-k] = \sum_{k=0}^{M} b_k x[n-k]$$
+		\item Take the DTFT of both sides of the equation.
+		\item Apply the \textbf{Linearity} property to transform each term individually.
+		\item Apply the \textbf{Time-Shifting} property: $\mathcal{F}\left\{y[n-k]\right\} = e^{-j\omega k} Y(e^{j\omega})$.
+		\item This transforms the difference equation into an algebraic equation:
+		$$\left(\sum_{k=0}^{N} a_k e^{-j\omega k}\right) Y(e^{j\omega}) = \left(\sum_{k=0}^{M} b_k e^{-j\omega k}\right) X(e^{j\omega})$$
+		\item The frequency response of the system, $H(e^{j\omega})$, is the ratio $Y(e^{j\omega})/X(e^{j\omega})$:
+		$$H(e^{j\omega}) = \frac{Y(e^{j\omega})}{X(e^{j\omega})} = \frac{\sum_{k=0}^{M} b_k e^{-j\omega k}}{\sum_{k=0}^{N} a_k e^{-j\omega k}}$$
+	\end{enumerate}
+	
+	This systematic approach gives us a direct way to find the frequency response from the system's difference equation, enabling us to analyze the system's filtering characteristics and stability properties.
+	
+	\subsection*{15.4.2 Example: First-Order Recursive Lowpass Filter}
+	
+	\begin{example}
+		\textbf{Difference Equation:} $y[n] - ay[n-1] = x[n]$
+		
+		\textbf{Take DTFT:}
+		$$Y(e^{j\omega}) - a e^{-j\omega}Y(e^{j\omega}) = X(e^{j\omega})$$
+		
+		\textbf{Factor out $Y(e^{j\omega})$:}
+		$$(1 - ae^{-j\omega})Y(e^{j\omega}) = X(e^{j\omega})$$
+		
+		\textbf{Solve for the Frequency Response:}
+		$$H(e^{j\omega}) = \frac{Y(e^{j\omega})}{X(e^{j\omega})} = \frac{1}{1-ae^{-j\omega}}$$
+		
+		This is the same result we found for the decaying exponential impulse response $h[n]=a^n u[n]$.
+	\end{example}
+	
+	\section*{15.5 Examples and Applications}
+	
+	\subsection*{15.5.1 Example: First-Order System Analysis}
+	
+	\begin{example}
+		Consider the difference equation: $y[n] - \frac{1}{2}y[n-1] = x[n]$
+		
+		\textbf{Step 1: Take DTFT of both sides}
+		\[
+		Y(e^{j\omega}) - \frac{1}{2}e^{-j\omega}Y(e^{j\omega}) = X(e^{j\omega})
+		\]
+		
+		\textbf{Step 2: Factor out $Y(e^{j\omega})$}
+		\[
+		\left(1 - \frac{1}{2}e^{-j\omega}\right)Y(e^{j\omega}) = X(e^{j\omega})
+		\]
+		
+		\textbf{Step 3: Solve for the transfer function}
+		\[
+		H(e^{j\omega}) = \frac{Y(e^{j\omega})}{X(e^{j\omega})} = \frac{1}{1 - \frac{1}{2}e^{-j\omega}}
+		\]
+		
+		\textbf{Step 4: Find the magnitude response}
+		\[
+		|H(e^{j\omega})| = \frac{1}{|1 - \frac{1}{2}e^{-j\omega}|} = \frac{1}{\sqrt{1 + \frac{1}{4} - \cos(\omega)}} = \frac{1}{\sqrt{\frac{5}{4} - \cos(\omega)}}
+		\]
+		
+		\textbf{Step 5: Analyze the frequency response}
+		\begin{itemize}[noitemsep]
+			\item At $\omega = 0$: $|H(e^{j0})| = \frac{1}{\sqrt{\frac{5}{4} - 1}} = \frac{1}{\sqrt{\frac{1}{4}}} = 2$ (DC gain)
+			\item At $\omega = \pi$: $|H(e^{j\pi})| = \frac{1}{\sqrt{\frac{5}{4} - (-1)}} = \frac{1}{\sqrt{\frac{9}{4}}} = \frac{2}{3}$ (High-frequency gain)
+		\end{itemize}
+		
+		This system acts as a \textbf{lowpass filter} with a DC gain of 2 and high-frequency attenuation. The frequency response shows how the system preferentially passes low-frequency components while attenuating high-frequency components.
+	\end{example}
+	
+
+	
+	\subsection*{15.5.2 Example: System Interconnection}
+	
+	When LTI systems are connected in series (cascade), their overall transfer function is the product of individual transfer functions:
+	\[
+	H_{total}(e^{j\omega}) = H_1(e^{j\omega}) \cdot H_2(e^{j\omega}) \cdot \ldots \cdot H_n(e^{j\omega})
+	\]
+	
+	For parallel connections, transfer functions add:
+	\[
+	H_{total}(e^{j\omega}) = H_1(e^{j\omega}) + H_2(e^{j\omega}) + \ldots + H_n(e^{j\omega})
+	\]
+	
+	
+	\section*{15.6 Practice Problems and Examples}
+	
+	\subsection*{15.6.1 Solved Example}
+	
+	\begin{example}
+		Find the DTFT of $x[n] = n a^n u[n]$ for $|a| < 1$.
+		
+		\textbf{Solution:} We know that $a^n u[n] \stackrel{\mathcal{F}}{\longleftrightarrow} \frac{1}{1-ae^{-j\omega}}$.
+		
+		Using the differentiation property in frequency:
+		\[
+		n a^n u[n] \stackrel{\mathcal{F}}{\longleftrightarrow} j\frac{d}{d\omega}\left(\frac{1}{1-ae^{-j\omega}}\right) = \frac{ae^{-j\omega}}{(1-ae^{-j\omega})^2}
+		\]
+	\end{example}
+	
+	\subsection*{15.6.2 Practice Exercises}
+	
+	\begin{enumerate}[noitemsep]
+		\item \textbf{Find the DTFT of $x[n] = \delta[n-n_0]$.}
+		
+		\textbf{Solution:} Using the definition of DTFT:
+		\[
+		X(e^{j\omega}) = \sum_{n=-\infty}^{\infty} \delta[n-n_0] e^{-j\omega n} = e^{-j\omega n_0}
+		\]
+		Therefore: $\delta[n-n_0] \stackrel{\mathcal{F}}{\longleftrightarrow} e^{-j\omega n_0}$
+		
+		\item \textbf{Show that if $x[n]$ is real and even, then $X(e^{j\omega})$ is real and even.}
+		
+		\textbf{Solution:} If $x[n]$ is real and even, then $x[n] = x[-n]$. Taking the DTFT:
+		\[
+		X(e^{j\omega}) = \sum_{n=-\infty}^{\infty} x[n] e^{-j\omega n} = \sum_{n=-\infty}^{\infty} x[-n] e^{-j\omega n}
+		\]
+		Let $m = -n$:
+		\[
+		X(e^{j\omega}) = \sum_{m=-\infty}^{\infty} x[m] e^{j\omega m} = \sum_{m=-\infty}^{\infty} x[m] e^{-j(-\omega) m} = X(e^{-j\omega})
+		\]
+		Since $X(e^{j\omega}) = X(e^{-j\omega})$, the DTFT is even. Also, for real $x[n]$, we have conjugate symmetry $X(e^{-j\omega}) = X^*(e^{j\omega})$. Combining both gives
+		\[
+		X(e^{j\omega}) = X(e^{-j\omega}) = X^*(e^{j\omega}) \;\Rightarrow\; X(e^{j\omega}) \text{ is real}.
+		\]
+		
+		\item \textbf{Find the frequency response of the system $y[n] = x[n] - x[n-1]$.}
+		
+		\textbf{Solution:} Taking the DTFT of both sides:
+		\[
+		Y(e^{j\omega}) = X(e^{j\omega}) - e^{-j\omega}X(e^{j\omega}) = (1 - e^{-j\omega})X(e^{j\omega})
+		\]
+		Therefore: $H(e^{j\omega}) = \frac{Y(e^{j\omega})}{X(e^{j\omega})} = 1 - e^{-j\omega}$
+		
+		\item \textbf{Using Parseval's relation, find the energy of $x[n] = a^n u[n]$ for $|a| < 1$.}
+		
+		\textbf{Solution:} We know that $X(e^{j\omega}) = \frac{1}{1-ae^{-j\omega}}$. Using Parseval's theorem:
+		\[
+		\sum_{n=0}^{\infty} |a|^{2n} = \frac{1}{2\pi} \int_{2\pi} \frac{1}{|1-ae^{-j\omega}|^2} \dd\omega
+		\]
+		The left side is a geometric series: $\sum_{n=0}^{\infty} |a|^{2n} = \frac{1}{1-|a|^2}$
+		Therefore: $E = \frac{1}{1-|a|^2}$
+		
+		\item \textbf{Find the output of the system $y[n] - \frac{1}{4}y[n-2] = x[n]$ when the input is $x[n] = \cos(\frac{\pi n}{4})$.}
+		
+		\textbf{Solution:} First, find the frequency response:
+		\[
+		H(e^{j\omega}) = \frac{1}{1 - \frac{1}{4}e^{-j2\omega}}
+		\]
+		For the input $x[n] = \cos(\frac{\pi n}{4})$, we have $\omega_0 = \frac{\pi}{4}$:
+		\[
+		H(e^{j\pi/4}) = \frac{1}{1 - \frac{1}{4}e^{-j\pi/2}} = \frac{1}{1 - \frac{1}{4}(-j)} = \frac{1}{1 + \frac{j}{4}}
+		\]
+		The output is: $y[n] = |H(e^{j\pi/4})|\cos(\frac{\pi n}{4} + \arg(H(e^{j\pi/4})))$
+	\end{enumerate}
+	
+\section*{15.7 Summary and Next Lecture}
+	\begin{itemize}[noitemsep]
+		\item Used DTFT properties by recall (linearity, shifts, symmetry, difference/sum, multiplication, Parseval, frequency differentiation)
+		\item Convolution in time $\leftrightarrow$ multiplication in frequency
+		\item Difference equations turn into algebraic equations in the frequency domain
+		\item Worked examples: first-order systems and interconnections
+		\item \textbf{Next time:} Duality in the CTFT and CTFS/DTFT connections; using transform tables efficiently
+	\end{itemize}
+	
+\end{document}

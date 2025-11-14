@@ -1,0 +1,98 @@
+
+\begin{tikzpicture}[
+	brace_style/.style={
+		decoration={brace, mirror, raise=5pt},
+		decorate,
+		thick,
+		red!80!black
+	}
+	]
+	\begin{groupplot}[
+		group style={
+			group size=1 by 3,
+			vertical sep=2cm,
+		},
+		width=14cm,
+		height=4.5cm,
+		axis lines=middle,
+		xlabel={Frequency, $\omega$ (rad/s)},
+		xmin=-11, xmax=11,
+		ymin=0, ymax=1.5,
+		grid=major,
+		grid style={line width=.1pt, draw=gray!30},
+		no marks,
+		samples=200,
+		legend style={at={(0.98,0.98)}, anchor=north east, font=\footnotesize},
+		title style={yshift=-2mm}
+		]
+		
+		% PLOT 1: ORIGINAL CONTINUOUS-TIME SIGNAL SPECTRUM
+		\nextgroupplot[
+		title={\textbf{(a) Spectrum of the Original Continuous-Time Signal}},
+		ylabel={$|X(j\omega)|$},
+		xtick={-4, 0, 4},
+		xticklabels={$-\omega_M$, $0$, $\omega_M$},
+		ytick={1},
+		yticklabels={$A$},
+		]
+		\addplot[blue!80!black, very thick, domain=-4:4] {1 - abs(x)/4};
+		\addlegendentry{Bandlimited signal}
+		
+		\draw[<->, thick, blue!60] (axis cs:-4,1.2) -- (axis cs:4,1.2) 
+		node[midway, above, font=\small] {Bandwidth: $2\omega_M$};
+		
+		% PLOT 2: PROPER SAMPLING (NO ALIASING) - Nyquist satisfied
+		\nextgroupplot[
+		title={\textbf{(b) Spectrum of Sampled Signal ($\omega_s > 2\omega_M$, No Aliasing)}},
+		ylabel={$|X_s(j\omega)|$},
+		xtick={-9, -4, 0, 4, 9},
+		xticklabels={$-\omega_s$, $-\omega_M$, $0$, $\omega_M$, $\omega_s$},
+		ytick={1},
+		yticklabels={$A/T_s$},
+		]
+		\addplot[blue!80!black, very thick, domain=-4:4] {1 - abs(x)/4};
+		\addlegendentry{Main spectrum}
+		
+		\addplot[green!60!black, thick, dashed, domain=-13:-5] {1 - abs(x+9)/4};
+		\addplot[green!60!black, thick, dashed, domain=5:13] {1 - abs(x-9)/4};
+		\addlegendentry{Replicas (no overlap)}
+		
+		% Correctly illustrate the guard band
+		\draw[<->, thick, green!80!black] (axis cs:4,0.5) -- (axis cs:5,0.5) 
+		node[midway, above, font=\small, anchor=south] {Guard band};
+		
+		% PLOT 3: UNDERSAMPLING WITH ALIASING
+		\nextgroupplot[
+		title={\textbf{(c) Spectrum of Undersampled Signal ($\omega_s < 2\omega_M$, Aliasing Occurs)}},
+		ylabel={$|X_s(j\omega)|$},
+		xtick={-6, -4, -2, 0, 2, 4, 6},
+		xticklabels={$-\omega_s$, $-\omega_M$, $-\omega_s+\omega_M$, $0$, $\omega_s-\omega_M$, $\omega_M$, $\omega_s$},
+		ytick={1},
+		yticklabels={$A/T_s$},
+		]
+		\addplot[name path=main, blue!80!black, very thick, domain=-4:4] {1 - abs(x)/4};
+		\addlegendentry{Main spectrum}
+		
+		\addplot[name path=left, red!70!black, thick, dashed, domain=-10:-2] {1 - abs(x+6)/4};
+		\addplot[name path=right, red!70!black, thick, dashed, domain=2:10] {1 - abs(x-6)/4};
+		\addlegendentry{Overlapping replicas}
+		
+		\addplot[red!40, fill opacity=0.5] fill between[of=main and left, soft clip={domain=-4:-2}];
+		\addplot[red!40, fill opacity=0.5] fill between[of=main and right, soft clip={domain=2:4}];
+		
+		\draw[brace_style] (axis cs:2,0) -- (axis cs:4,0) 
+		node[midway, below=10pt, font=\small, red!80!black] {\textbf{Aliasing}};
+		\draw[brace_style] (axis cs:-4,0) -- (axis cs:-2,0) 
+		node[midway, below=10pt, font=\small, red!80!black] {\textbf{Aliasing}};
+		
+		\node[draw, fill=yellow!20, rounded corners, font=\footnotesize, align=center] 
+		at (axis cs:0, 1.3) {Nyquist criterion violated:\\$\omega_s < 2\omega_M$};
+		
+	\end{groupplot}
+\end{tikzpicture}
+
+
+
+
+
+

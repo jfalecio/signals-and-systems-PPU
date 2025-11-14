@@ -1,0 +1,67 @@
+\begin{tikzpicture}
+\begin{groupplot}[
+	group style={
+		group size=1 by 2,
+		vertical sep=1cm,
+	},
+	width=12cm,
+	height=4cm,
+	myaxes,
+	xlabel={$\omega$ (rad/s)},
+	grid=major,
+	grid style={gray!15},
+]
+
+% No aliasing case
+\nextgroupplot[
+	title={No Aliasing: $\omega_s > 2\omega_M$},
+	ylabel={$|X_p(j\omega)|$},
+	xmin=-8, xmax=8,
+	ymin=0, ymax=1.2,
+	xtick={-6, -3, 0, 3, 6},
+	xticklabels={$-\omega_s$, $-\omega_M$, $0$, $\omega_M$, $\omega_s$},
+	ytick={0, 0.5, 1},
+]
+% Original spectrum
+\addplot[blue, thick, domain=-3:3, samples=100] {1 - abs(x)/3};
+% Replicated spectra (well separated)
+\addplot[green, thick, domain={-3-6}:{-3+6}, samples=100] {1 - abs(x+6)/3};
+\addplot[green, thick, domain={3-6}:{3+6}, samples=100] {1 - abs(x-6)/3};
+
+% Add separation annotation
+\node[anchor=south] at (axis cs:0,0.8) {No Overlap};
+\draw[<->, thick, red] (axis cs:3,0.5) -- (axis cs:6,0.5);
+\node[anchor=south, red] at (axis cs:4.5,0.5) {Gap};
+
+% Aliasing case
+\nextgroupplot[
+	title={Aliasing: $\omega_s < 2\omega_M$},
+	ylabel={$|X_p(j\omega)|$},
+	xmin=-8, xmax=8,
+	ymin=0, ymax=1.2,
+	xtick={-4, -2, 0, 2, 4},
+	xticklabels={$-\omega_s$, $-\omega_M$, $0$, $\omega_M$, $\omega_s$},
+	ytick={0, 0.5, 1},
+]
+% Original spectrum
+\addplot[blue, thick, domain=-4:4, samples=100] {1 - abs(x)/4};
+% Replicated spectra (overlapping)
+\addplot[green, thick, domain={-4-4}:{-4+4}, samples=100] {1 - abs(x+4)/4};
+\addplot[green, thick, domain={4-4}:{4+4}, samples=100] {1 - abs(x-4)/4};
+
+% Add overlap annotation
+\node[anchor=south] at (axis cs:0,1.0) {Overlap = Aliasing};
+\draw[<->, thick, red] (axis cs:2,0.7) -- (axis cs:4,0.7);
+\node[anchor=south, red] at (axis cs:3,0.7) {Overlap};
+
+\end{groupplot}
+\end{tikzpicture}
+
+
+
+
+
+
+
+
+
