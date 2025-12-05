@@ -54,6 +54,38 @@ Worked examples and practice problems are provided in the `Solved Examples/` dir
 
 See the [Solved Examples/README.md](Solved%20Examples/README.md) for compilation instructions and content overview.
 
+## Compiled Executables
+
+Standalone Windows executables (.exe files) are available in the `Executables/` directory. These executables can run without MATLAB installed, requiring only the MATLAB Runtime.
+
+### Quick Start with Executables
+
+1. **Install MATLAB Runtime** (if not already installed):
+   - Download MATLAB Runtime from [MathWorks website](https://www.mathworks.com/products/compiler/matlab-runtime.html)
+   - Install the version corresponding to the MATLAB version used to compile the apps
+   - The required MATLAB Runtime version is specified in the `readme.txt` files included with each executable
+
+2. **Run an Executable**:
+   - Navigate to `Executables/Interactive Matlab Apps/` 
+   - Find the application you want to run (organized by lecture number)
+   - Double-click the `.exe` file to launch the application
+
+3. **Read the Documentation**:
+   - Each executable directory contains a `readme.txt` file with runtime requirements and usage information
+   - See [Executables/README.md](Executables/README.md) for detailed instructions and troubleshooting
+
+### About readme.txt Files
+
+The MATLAB Compiler automatically generates `readme.txt` files for each compiled application. These files contain:
+- Required MATLAB Runtime version
+- System requirements
+- Installation instructions for the MATLAB Runtime
+- Information about included toolboxes and dependencies
+
+**Important**: You must install the MATLAB Runtime before running any executable. The runtime is free and does not require a MATLAB license.
+
+For more information, see the [Executables/README.md](Executables/README.md) file.
+
 ## License
 
 This work is licensed under a [Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License](https://creativecommons.org/licenses/by-nc-sa/4.0/) (CC BY-NC-SA 4.0).

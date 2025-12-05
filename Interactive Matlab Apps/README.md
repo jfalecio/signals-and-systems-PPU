@@ -26,11 +26,41 @@ Interactive Matlab Apps/
 
 ## Requirements
 
+### For Running Source Code in MATLAB
+
 - MATLAB R2023b or later
 - Signal Processing Toolbox (for some applications)
 - Audio System Toolbox (for audio-related applications)
 
+### For Running Compiled Executables
+
+- **MATLAB Runtime** (free, no MATLAB license required)
+  - Download from [MathWorks website](https://www.mathworks.com/products/compiler/matlab-runtime.html)
+  - Install the version specified in the `readme.txt` file included with each executable
+  - The MATLAB Runtime is a standalone set of shared libraries that enables the execution of compiled MATLAB applications
+
+**Note**: Each compiled executable includes a `readme.txt` file in the `Executables/` directory that specifies the exact MATLAB Runtime version required. See [Executables/README.md](../Executables/README.md) for detailed instructions.
+
 ## Usage
+
+### Running Compiled Executables (Recommended for Users Without MATLAB)
+
+Standalone Windows executables (.exe files) are available in the `Executables/Interactive Matlab Apps/` directory. These can run without MATLAB installed:
+
+1. **Install MATLAB Runtime** (see Requirements above)
+2. Navigate to `Executables/Interactive Matlab Apps/` 
+3. Find the application by lecture number
+4. Double-click the `.exe` file to launch
+
+Each executable directory contains a `readme.txt` file with:
+- Required MATLAB Runtime version
+- System requirements
+- Installation instructions
+- Information about included toolboxes
+
+For more details, see [Executables/README.md](../Executables/README.md).
+
+### Running Source Code in MATLAB
 
 ### Running Applications
 

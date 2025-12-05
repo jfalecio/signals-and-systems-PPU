@@ -7,8 +7,20 @@
 *.swp
 *~
 
-# MATLAB Compiler
+# MATLAB Compiler Build Artifacts
+# Note: *.exe and readme.txt are NOT ignored - they will be committed to repo
 *.ctf
+for_testing/
+mccExcludedFiles.log
+run_*.sh
+run_*.bat
+compile_all_apps.m
+*_wrapper.m
+buildresult.json
+includedSupportPackages.txt
+requiredMCRProducts.txt
+unresolvedSymbols.txt
+*_wrapper.m
 
 # MATLAB Cache
 *.cache
